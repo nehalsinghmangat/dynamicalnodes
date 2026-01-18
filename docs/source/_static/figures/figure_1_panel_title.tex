@@ -1,0 +1,36 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
+
+\begin{document}
+\begin{tikzpicture}[
+  blackbox/.style = {
+    draw=black,
+    Textt=black,
+    very thick,
+    rounded corners,
+    minimum height=2em,
+    minimum width=5em,
+    align=center,
+    inner sep=8pt
+  },
+  arrow/.style = {
+    very thick,
+    -{Latex[width=3mm]}
+  },
+  node distance=2cm
+]
+
+% Boxes
+\node[blackbox] (theory) {Theory};
+\node[blackbox, right=of theory] (python) {Python};
+\node[blackbox, right=of python] (ros) {ROS};
+\node[blackbox, right=of ros] (gazebo) {Gazebo/Real/etc.};
+
+% Arrows
+\draw[arrow] (theory) -- (python);
+\draw[arrow] (python) -- (ros);
+\draw[arrow] (ros) -- (gazebo);
+
+\end{tikzpicture}
+\end{document}

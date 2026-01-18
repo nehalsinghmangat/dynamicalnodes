@@ -1,0 +1,12 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{fr}\PYG{p}{(}\PYG{n}{xr\PYGZus{}k}\PYG{p}{,} \PYG{n}{thr\PYGZus{}k}\PYG{p}{):}
+    \PYG{o}{...}
+    \PYG{k}{return} \PYG{n}{xr\PYGZus{}next}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{hr}\PYG{p}{(}\PYG{n}{xr\PYGZus{}k}\PYG{p}{,} \PYG{n}{thr\PYGZus{}k}\PYG{p}{):}
+    \PYG{o}{...}
+    \PYG{k}{return} \PYG{n}{s\PYGZus{}k}
+
+\PYG{n}{ref\PYGZus{}signal} \PYG{o}{=} \PYG{n}{DynaSys}\PYG{p}{(}\PYG{n}{f}\PYG{o}{=}\PYG{n}{fr}\PYG{p}{,}\PYG{n}{h}\PYG{o}{=}\PYG{n}{hr}\PYG{p}{)}
+\end{Verbatim}

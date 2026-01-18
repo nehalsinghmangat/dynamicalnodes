@@ -1,0 +1,6 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n}{xo\PYGZus{}next}\PYG{p}{,} \PYG{n}{xhatp\PYGZus{}k} \PYG{o}{=} \PYG{n}{observer}\PYG{o}{.}\PYG{n}{step}\PYG{p}{(}\PYG{n}{xo\PYGZus{}k}\PYG{p}{,}
+                                 \PYG{n}{u\PYGZus{}k}\PYG{p}{,}
+                                 \PYG{n}{y\PYGZus{}k}\PYG{p}{,}
+                                 \PYG{n}{tho\PYGZus{}k}\PYG{p}{)}
+\end{Verbatim}
