@@ -6,7 +6,7 @@
 
 **dynamicalnodes** is a Python development framework that bridges the chasm between theoretical control systems and their implementation in hardware. Designed for hobbyists, students, and academics alike, this framework won't cure cancer, but it can do the next best thing: make controlling robots easier.
 
-To get started, or to explore what this framework has to offer, click here: [dynamicalnodes Documentation](https://dynamicalnodes.readthedocs.io).
+To get started, or to explore what this framework has to offer, click here: [dynamicalnodes Documentation](https://nehalsinghmangat.github.io/dynamicalnodes).
 
 For a 22 second video describing this framework's intended workflow for, please click here: [SAIL 2025 -- Presenting dynamicalnodes](https://youtu.be/5GbVHo6QZrw).
 
