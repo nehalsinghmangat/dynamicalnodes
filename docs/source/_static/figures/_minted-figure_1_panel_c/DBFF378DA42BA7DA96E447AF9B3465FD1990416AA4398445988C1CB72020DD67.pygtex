@@ -1,5 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-
-\PYG{n}{xr\PYGZus{}next}\PYG{p}{,} \PYG{n}{s\PYGZus{}k} \PYG{o}{=} \PYG{n}{ref\PYGZus{}signal}\PYG{o}{.}\PYG{n}{step}\PYG{p}{(}\PYG{n}{xr\PYGZus{}k}\PYG{p}{,}
-                              \PYG{n}{thr\PYGZus{}k}\PYG{p}{)}
-\end{Verbatim}

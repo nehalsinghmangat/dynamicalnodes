@@ -8,7 +8,7 @@
 
     -- Shakespeare (paraphrased)
     
-This section consists of three examples of using the ``pykal.DynamicalSystem`` and ``pykal.DataChange`` modules to model and simulate control systems.
+This section consists of three examples of using the ``dynamicalnodes.DynamicalSystem`` and ``dynamicalnodes.DataChange`` modules to model and simulate control systems.
 
 "Example: Car Cruise Control" walks the reader through modeling a classic feedback system as the composition of dynamical systems. We recommended starting here.
 

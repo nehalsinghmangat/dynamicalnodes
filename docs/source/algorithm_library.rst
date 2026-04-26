@@ -2,7 +2,7 @@
 Algorithm Library
 ================
 
-Browse pykal's collection of implemented control and estimation algorithms.
+Browse dynamicalnodes's collection of implemented control and estimation algorithms.
 Each algorithm links to interactive Jupyter notebooks with working code you can download and run.
 Use the filters below to search by category, algorithm type, and implementation platform.
 
@@ -43,9 +43,9 @@ Use the filters below to search by category, algorithm type, and implementation 
        <label class="filter-label-main">Implementation Status:</label>
        <div class="checkbox-group">
          <label class="checkbox-label">
-           <input type="checkbox" class="impl-checkbox" value="pykal">
-           <span class="impl-circle impl-pykal"></span>
-           <span class="checkbox-text">pykal</span>
+           <input type="checkbox" class="impl-checkbox" value="dynamicalnodes">
+           <span class="impl-circle impl-dynamicalnodes"></span>
+           <span class="checkbox-text">dynamicalnodes</span>
          </label>
          <label class="checkbox-label">
            <input type="checkbox" class="impl-checkbox" value="turtlebot">
@@ -70,7 +70,7 @@ Use the filters below to search by category, algorithm type, and implementation 
    <div class="legend-box">
      <strong>Legend:</strong> Click on a colored circle to view the implementation notebook.
      <div class="legend-items">
-       <span class="legend-item"><span class="impl-circle impl-pykal"></span> pykal</span>
+       <span class="legend-item"><span class="impl-circle impl-dynamicalnodes"></span> dynamicalnodes</span>
        <span class="legend-item"><span class="impl-circle impl-turtlebot"></span> TurtleBot</span>
        <span class="legend-item"><span class="impl-circle impl-crazyflie"></span> Crazyflie</span>
      </div>

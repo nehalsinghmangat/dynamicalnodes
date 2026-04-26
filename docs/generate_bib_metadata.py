@@ -26,8 +26,8 @@ def parse_bibtex_entry(entry_text):
 
     metadata = {
         'keywords': get_field('keywords'),
-        'category': get_field('pykal_category'),
-        'impl_pykal': get_field('impl_pykal'),
+        'category': get_field('dynamicalnodes_category'),
+        'impl_dynamicalnodes': get_field('impl_dynamicalnodes'),
         'impl_turtlebot': get_field('impl_turtlebot'),
         'impl_crazyflie': get_field('impl_crazyflie'),
     }

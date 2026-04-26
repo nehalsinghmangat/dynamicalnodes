@@ -3,7 +3,7 @@
 =============
 Python to ROS
 =============
-``pykal`` leverages its prior casting of algorithms as discrete-time dynamical systems by rethinking ``ROS`` node architecture as a graph of dynamical systems. 
+``dynamicalnodes`` leverages its prior casting of algorithms as discrete-time dynamical systems by rethinking ``ROS`` node architecture as a graph of dynamical systems. 
 
 The "Installation" section will guide you through installing ``ros2`` package.
 
@@ -13,7 +13,7 @@ The "ROS Tips and Tricks" section serves as a reference for useful ROS commands.
 
 The "Troubleshooting" section offers solutions to common problems when interfacing with ROS. 
 
-The "Modules" section offers tips and usage examples of the ``pykal.ROSNode`` and ``pykal.ros2py_py2ros`` modules.
+The "Modules" section offers tips and usage examples of the ``dynamicalnodes.ROSNode`` and ``dynamicalnodes.ros2py_py2ros`` modules.
 
 ..  toctree::
     :maxdepth: 2

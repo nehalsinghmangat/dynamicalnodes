@@ -4,7 +4,7 @@
  Modules
 =========
 
-This section consists of tips, tricks, and usage examples of the ``pykal.ROSNode`` and ``pykal.ros2py_py2ros`` modules. The following notebooks are a complement to the API reference and it is recommended to have both at hand (e.g. in an open tab) while you are developing with ``pykal``.
+This section consists of tips, tricks, and usage examples of the ``dynamicalnodes.ROSNode`` and ``dynamicalnodes.ros2py_py2ros`` modules. The following notebooks are a complement to the API reference and it is recommended to have both at hand (e.g. in an open tab) while you are developing with ``dynamicalnodes``.
 
 "ROSNode" covers the core wrapper class that transforms Python callbacks into ROS2 nodes, including subscription/publication configuration, staleness policies, and node lifecycle management.
 

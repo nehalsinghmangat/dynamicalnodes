@@ -11,7 +11,7 @@ When you add or modify papers in the bibliography:
 
 ## Why This Approach?
 
-sphinxcontrib.bibtex doesn't render custom BibTeX fields (like `pykal_category`, `pykal_robot`, etc.) in the HTML output. To make filtering work, we:
+sphinxcontrib.bibtex doesn't render custom BibTeX fields (like `dynamicalnodes_category`, `dynamicalnodes_robot`, etc.) in the HTML output. To make filtering work, we:
 
 1. Store metadata in the `.bib` file (for easy maintenance)
 2. Auto-generate a JavaScript file (`bib_metadata.js`) from the `.bib` file
@@ -29,10 +29,10 @@ sphinxcontrib.bibtex doesn't render custom BibTeX fields (like `pykal_category`,
   year         = {2024},
   url          = {https://arxiv.org/abs/2401.12345},
   keywords     = {control, trajectory-planning},
-  pykal_category = {mpc},
-  pykal_observability = {full},
-  pykal_robot  = {crazyflie},
-  pykal_implemented = {planned},
+  dynamicalnodes_category = {mpc},
+  dynamicalnodes_observability = {full},
+  dynamicalnodes_robot  = {crazyflie},
+  dynamicalnodes_implemented = {planned},
   note         = {MPC controller for Crazyflie quadrotor}
 }
 ```

@@ -12,8 +12,8 @@ Quick Start
 ├── Getting Started
 └── Algorithm Library
 
-The pykal Pipeline
-├── What is pykal?
+The dynamicalnodes Pipeline
+├── What is dynamicalnodes?
 ├── Theory to Software
 ├── Software to Simulation
 └── Simulation to Hardware
@@ -39,7 +39,7 @@ Examples & Reference
 - Figure caption for the GIF panels
 
 **Kept:**
-- Core description of pykal
+- Core description of dynamicalnodes
 - GitHub repository link
 
 **Impact:**
@@ -81,7 +81,7 @@ Examples & Reference
 #### Part 1: Simple Setpoint Generator
 - Mathematical formulation of discrete-time thermostat
 - State update equation: `x_{k+1} = f(x_k, u_k) = x_k + u_k`
-- Implementation using `pykal.DynamicalSystem`
+- Implementation using `dynamicalnodes.DynamicalSystem`
 - Simulation example with step-by-step execution
 
 #### Part 2: Closed-Loop Thermal Control System
@@ -119,11 +119,11 @@ Complete working example with **four components:**
 - Builds complexity incrementally
 - Shows mathematical formulation → software implementation
 - Complete, runnable code examples
-- Demonstrates pykal's compositional philosophy
+- Demonstrates dynamicalnodes's compositional philosophy
 
 **Impact:**
 - Provides concrete, executable example
-- Demonstrates all key pykal concepts in one place
+- Demonstrates all key dynamicalnodes concepts in one place
 - Shows how to compose multiple dynamical systems
 - Excellent onboarding material for new users
 
@@ -251,10 +251,10 @@ Your changes reveal a clear documentation philosophy:
 1. `docs/source/conf.py` - Added bibtex support
 2. `docs/source/index.rst` - Restructured TOC into 3 sections
 3. `docs/source/introduction.rst` - Removed GIFs and epigraph
-4. `docs/source/what_is_pykal/control_algorithms_as_dynamical_systems.rst` - **Major content addition** (~400 lines)
-5. `docs/source/what_is_pykal/composing_dynamical_systems.rst` - Simplified title
-6. `docs/source/what_is_pykal/the_pykal_pipeline.rst` - Simplified navigation
-7. `docs/source/what_is_pykal/wrapping_dynamical_systems_in_ROS.rst` - Simplified title
+4. `docs/source/what_is_dynamicalnodes/control_algorithms_as_dynamical_systems.rst` - **Major content addition** (~400 lines)
+5. `docs/source/what_is_dynamicalnodes/composing_dynamical_systems.rst` - Simplified title
+6. `docs/source/what_is_dynamicalnodes/the_dynamicalnodes_pipeline.rst` - Simplified navigation
+7. `docs/source/what_is_dynamicalnodes/wrapping_dynamical_systems_in_ROS.rst` - Simplified title
 8. `docs/source/theory_to_software/estimators/kalman_filters/index.rst` - Formatting cleanup
 9. `pyproject.toml` - Added docs dependencies
 
@@ -275,7 +275,7 @@ Your changes reveal a clear documentation philosophy:
 ### High Impact Changes:
 1. **Thermal control tutorial** - Excellent teaching material
 2. **Documentation restructure** - Better user experience
-3. **Algorithm Library** - Key differentiator for pykal
+3. **Algorithm Library** - Key differentiator for dynamicalnodes
 
 ### Medium Impact Changes:
 1. **Simplified titles** - Cleaner navigation

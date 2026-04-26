@@ -13,7 +13,7 @@ This section consists of two examples: casting a state estimation algorithm as a
     :caption: Algorithms
     :maxdepth: 2
 
-    ../../notebooks/algorithm_library/kf_pykal
-    ../../notebooks/algorithm_library/pid_pykal
+    ../../notebooks/algorithm_library/kf_dynamicalnodes
+    ../../notebooks/algorithm_library/pid_dynamicalnodes
 
 :doc:`← Theory to Python <index>`

@@ -1,6 +1,6 @@
 # Bibliography System Guide
 
-This guide explains how to use the searchable, filterable bibliography system in pykal documentation.
+This guide explains how to use the searchable, filterable bibliography system in dynamicalnodes documentation.
 
 ## Overview
 
@@ -41,10 +41,10 @@ Add a new BibTeX entry with custom fields:
   year={2023},
   url={https://arxiv.org/abs/2301.12345},
   keywords={control, trajectory-planning},
-  pykal_category={mpc},
-  pykal_observability={full},
-  pykal_robot={crazyflie},
-  pykal_implemented={planned},
+  dynamicalnodes_category={mpc},
+  dynamicalnodes_observability={full},
+  dynamicalnodes_robot={crazyflie},
+  dynamicalnodes_implemented={planned},
   note={MPC controller for Crazyflie. Implementation planned for v0.3}
 }
 ```
@@ -55,25 +55,25 @@ Add a new BibTeX entry with custom fields:
 - `title`, `author`, `year`, `journal`/`booktitle`
 - `url`: Link to arXiv or DOI (highly recommended)
 
-**Custom pykal Fields:**
+**Custom dynamicalnodes Fields:**
 
 - **keywords**: Broad categories (comma-separated)
   - Options: `state-estimation`, `control`, `planning`, `filtering`, etc.
 
-- **pykal_category**: Specific algorithm type
+- **dynamicalnodes_category**: Specific algorithm type
   - Options: `kalman-filter`, `pid`, `mpc`, `lqr`, `ekf`, `ukf`, etc.
 
-- **pykal_observability**: State observability requirement
+- **dynamicalnodes_observability**: State observability requirement
   - Options: `full`, `partial`
 
-- **pykal_robot**: Target robot platform
+- **dynamicalnodes_robot**: Target robot platform
   - Options: `turtlebot`, `crazyflie`, `generic`, or custom robot names
 
-- **pykal_implemented**: Implementation status
+- **dynamicalnodes_implemented**: Implementation status
   - Options: `yes`, `planned`, `no`
 
 - **note**: Brief description and implementation details
-  - Mention the pykal module path if implemented
+  - Mention the dynamicalnodes module path if implemented
   - Mention planned version if not yet implemented
 
 ### 3. Filter Options
@@ -138,7 +138,7 @@ if (visible && newFilterValue !== 'all') {
 }
 
 // In initializeCitations():
-const newField = extractField(text, 'pykal_newfield') || '';
+const newField = extractField(text, 'dynamicalnodes_newfield') || '';
 citation.dataset.newField = newField;
 ```
 
@@ -171,15 +171,15 @@ The bibliography system works automatically on ReadTheDocs because:
 
 1. Find a paper you want to implement
 2. Add it to `references.bib` with appropriate metadata
-3. Set `pykal_implemented=no` or `pykal_implemented=planned`
-4. When you implement it, update `pykal_implemented=yes` and add the module path to the note
+3. Set `dynamicalnodes_implemented=no` or `dynamicalnodes_implemented=planned`
+4. When you implement it, update `dynamicalnodes_implemented=yes` and add the module path to the note
 5. Cite it in your documentation pages
 6. Users can filter to see all implemented algorithms for their robot!
 
 ## Tips
 
-- Use consistent naming for `pykal_category` values (e.g., always use "kalman-filter" not "kf" or "Kalman")
-- Keep `pykal_robot=generic` for algorithms that work on any platform
+- Use consistent naming for `dynamicalnodes_category` values (e.g., always use "kalman-filter" not "kf" or "Kalman")
+- Keep `dynamicalnodes_robot=generic` for algorithms that work on any platform
 - Link to arXiv when possible (free, stable, accessible)
 - Use the `note` field to help users find the implementation in your codebase
 - Add version numbers to planned implementations so users know when to expect them

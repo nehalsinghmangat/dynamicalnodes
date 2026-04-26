@@ -1,7 +1,7 @@
 Estimators
 ==========
 
-.. automodule:: pykal.algorithm_library.estimators
+.. automodule:: dynamicalnodes.algorithm_library.estimators
    :members:
    :undoc-members:
    :show-inheritance:
@@ -11,7 +11,7 @@ State estimation algorithms from the robotics and control theory literature.
 Kalman Filter
 -------------
 
-.. automodule:: pykal.algorithm_library.estimators.kf
+.. automodule:: dynamicalnodes.algorithm_library.estimators.kf
    :members:
    :undoc-members:
    :show-inheritance:
@@ -19,7 +19,7 @@ Kalman Filter
 Unscented Kalman Filter
 ------------------------
 
-.. automodule:: pykal.algorithm_library.estimators.ukf
+.. automodule:: dynamicalnodes.algorithm_library.estimators.ukf
    :members:
    :undoc-members:
    :show-inheritance:
@@ -27,7 +27,7 @@ Unscented Kalman Filter
 Particle Filter
 ---------------
 
-.. automodule:: pykal.algorithm_library.estimators.pf
+.. automodule:: dynamicalnodes.algorithm_library.estimators.pf
    :members:
    :undoc-members:
    :show-inheritance:
@@ -35,7 +35,7 @@ Particle Filter
 AI-UKF (Augmented Information UKF)
 ----------------------------------
 
-.. automodule:: pykal.algorithm_library.estimators.ai_ukf
+.. automodule:: dynamicalnodes.algorithm_library.estimators.ai_ukf
    :members:
    :undoc-members:
    :show-inheritance:

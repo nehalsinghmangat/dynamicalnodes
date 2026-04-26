@@ -1,7 +1,7 @@
-﻿pykal.data\_change.prepare
+﻿dynamicalnodes.data\_change.prepare
 ==========================
 
-.. currentmodule:: pykal.data_change
+.. currentmodule:: dynamicalnodes.data_change
 
 .. autoclass:: prepare
 

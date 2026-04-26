@@ -4,7 +4,7 @@
 Advanced ROS Features
 =====================
 
-This guide covers advanced ROS2 features for building production-quality robotics systems with ``pykal``.
+This guide covers advanced ROS2 features for building production-quality robotics systems with ``dynamicalnodes``.
 
 .. contents:: Quick Navigation
    :local:
@@ -135,7 +135,7 @@ Using tf2 in Python
 Publishing Transforms
 ---------------------
 
-If your ``pykal`` estimator produces pose estimates, publish them as transforms:
+If your ``dynamicalnodes`` estimator produces pose estimates, publish them as transforms:
 
 .. code-block:: python
 
@@ -166,7 +166,7 @@ If your ``pykal`` estimator produces pose estimates, publish them as transforms:
            
            self.tf_broadcaster.sendTransform(t)
 
-Integrating tf2 with pykal
+Integrating tf2 with dynamicalnodes
 ---------------------------
 
 Since ``ROSNode`` doesn't natively support tf2, use a wrapper:
@@ -174,16 +174,16 @@ Since ``ROSNode`` doesn't natively support tf2, use a wrapper:
 .. code-block:: python
 
    class PykalNodeWithTF:
-       def __init__(self, pykal_node):
-           self.pykal_node = pykal_node
+       def __init__(self, dynamicalnodes_node):
+           self.dynamicalnodes_node = dynamicalnodes_node
            self.tf_buffer = Buffer()
-           self.tf_listener = TransformListener(self.tf_buffer, pykal_node._node)
+           self.tf_listener = TransformListener(self.tf_buffer, dynamicalnodes_node._node)
        
        def create_node(self):
-           self.pykal_node.create_node()
+           self.dynamicalnodes_node.create_node()
        
        def start(self):
-           self.pykal_node.start()
+           self.dynamicalnodes_node.start()
        
        def lookup_transform(self, target, source):
            return self.tf_buffer.lookup_transform(target, source, rclpy.time.Time())
@@ -362,7 +362,7 @@ Run multiple robots without topic conflicts:
        rate_hz=10.0
    )
 
-**Note**: ``pykal``'s ``ROSNode`` doesn't natively support namespaces. You need to modify topic names manually:
+**Note**: ``dynamicalnodes``'s ``ROSNode`` doesn't natively support namespaces. You need to modify topic names manually:
 
 .. code-block:: python
 
@@ -532,7 +532,7 @@ QoS Profiles
        history=HistoryPolicy.KEEP_ALL
    )
 
-**Note**: ``pykal``'s ``ROSNode`` doesn't expose QoS settings. You'd need to modify the source or create publishers/subscribers manually.
+**Note**: ``dynamicalnodes``'s ``ROSNode`` doesn't expose QoS settings. You'd need to modify the source or create publishers/subscribers manually.
 
 Matching QoS
 ------------
@@ -729,15 +729,15 @@ Summary
 ✓ **Parameters**: Dynamic configuration
 ✓ **Actions**: Long-running tasks with feedback
 
-**Integration with pykal**:
+**Integration with dynamicalnodes**:
 
 - Most features require extending ``ROSNode`` or using native ROS2 nodes
-- tf2, bags, and RViz work seamlessly with pykal nodes
+- tf2, bags, and RViz work seamlessly with dynamicalnodes nodes
 - Parameters and QoS need custom wrappers
 
 **Next Steps**:
 
-- Implement multi-robot coordination in pykal
+- Implement multi-robot coordination in dynamicalnodes
 - Record experimental data with bags
 - Create custom RViz displays for your system
 - Build action servers for complex tasks

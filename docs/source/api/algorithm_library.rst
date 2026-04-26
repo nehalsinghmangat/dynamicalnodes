@@ -1,12 +1,12 @@
 Algorithm Library
 =================
 
-.. automodule:: pykal.algorithm_library
+.. automodule:: dynamicalnodes.algorithm_library
    :members:
    :undoc-members:
    :show-inheritance:
 
-The Algorithm Library provides peer-reviewed algorithms from robotics and control theory literature, implemented as pure Python functions compatible with pykal's DynamicalSystem abstraction.
+The Algorithm Library provides peer-reviewed algorithms from robotics and control theory literature, implemented as pure Python functions compatible with dynamicalnodes's DynamicalSystem abstraction.
 
 Submodules
 ----------

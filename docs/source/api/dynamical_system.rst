@@ -1,7 +1,7 @@
 DynamicalSystem
 ===============
 
-.. automodule:: pykal.dynamical_system
+.. automodule:: dynamicalnodes.dynamical_system
    :members:
    :undoc-members:
    :show-inheritance:

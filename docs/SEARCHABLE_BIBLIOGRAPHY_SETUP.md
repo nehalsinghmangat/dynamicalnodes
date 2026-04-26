@@ -1,6 +1,6 @@
 # Searchable Bibliography Setup - Complete Summary
 
-This document summarizes the searchable, filterable bibliography system that has been set up for your pykal documentation.
+This document summarizes the searchable, filterable bibliography system that has been set up for your dynamicalnodes documentation.
 
 ## What Was Done
 
@@ -13,10 +13,10 @@ This document summarizes the searchable, filterable bibliography system that has
 ### 2. Bibliography File (`docs/source/references.bib`)
 - Created with custom fields for filtering:
   - `keywords`: Broad categories (state-estimation, control, planning)
-  - `pykal_category`: Specific algorithm (kalman-filter, pid, mpc, etc.)
-  - `pykal_observability`: Full or partial state observability
-  - `pykal_robot`: Target platform (turtlebot, crazyflie, generic)
-  - `pykal_implemented`: Status (yes, planned, no)
+  - `dynamicalnodes_category`: Specific algorithm (kalman-filter, pid, mpc, etc.)
+  - `dynamicalnodes_observability`: Full or partial state observability
+  - `dynamicalnodes_robot`: Target platform (turtlebot, crazyflie, generic)
+  - `dynamicalnodes_implemented`: Status (yes, planned, no)
 - Includes template and two example entries (Kalman, UKF)
 
 ### 3. Bibliography Page (`docs/source/bibliography.rst`)
@@ -62,18 +62,18 @@ This document summarizes the searchable, filterable bibliography system that has
   year={2024},
   url={https://arxiv.org/abs/2401.12345},
   keywords={state-estimation, filtering},
-  pykal_category={kalman-filter},
-  pykal_observability={full},
-  pykal_robot={turtlebot},
-  pykal_implemented={yes},
-  note={Implementation in pykal.utilities.estimators.kf}
+  dynamicalnodes_category={kalman-filter},
+  dynamicalnodes_observability={full},
+  dynamicalnodes_robot={turtlebot},
+  dynamicalnodes_implemented={yes},
+  note={Implementation in dynamicalnodes.utilities.estimators.kf}
 }
 ```
 
 2. **Cite it in your documentation:**
 
 ```rst
-The algorithm from :cite:`yourpaper2024` is implemented in pykal.
+The algorithm from :cite:`yourpaper2024` is implemented in dynamicalnodes.
 ```
 
 3. **Rebuild docs:**
@@ -92,24 +92,24 @@ make html
 - filtering
 - (add more as needed)
 
-**Algorithm** (from `pykal_category` field):
+**Algorithm** (from `dynamicalnodes_category` field):
 - kalman-filter
 - pid
 - mpc
 - lqr
 - (add more as needed)
 
-**Observability** (from `pykal_observability` field):
+**Observability** (from `dynamicalnodes_observability` field):
 - full
 - partial
 
-**Robot Platform** (from `pykal_robot` field):
+**Robot Platform** (from `dynamicalnodes_robot` field):
 - turtlebot
 - crazyflie
 - generic
 - (add more as needed)
 
-**Implementation Status** (from `pykal_implemented` field):
+**Implementation Status** (from `dynamicalnodes_implemented` field):
 - yes - Fully implemented
 - planned - Implementation planned
 - no - Not planned for implementation
@@ -117,8 +117,8 @@ make html
 ## Features
 
 ### Visual Indicators
-- ✅ **Green left border**: Implemented papers (`pykal_implemented=yes`)
-- 🟡 **Yellow left border**: Planned papers (`pykal_implemented=planned`)
+- ✅ **Green left border**: Implemented papers (`dynamicalnodes_implemented=yes`)
+- 🟡 **Yellow left border**: Planned papers (`dynamicalnodes_implemented=planned`)
 - 🏷️ **Badges**: Automatic "IMPLEMENTED" or "PLANNED" badges on entries
 
 ### Interactive Filtering
@@ -200,7 +200,7 @@ To test the system locally:
 
 If you want to add a new filter dimension (e.g., "Complexity: Linear/Nonlinear"):
 
-1. Add the field to your BibTeX entries: `pykal_complexity={linear}`
+1. Add the field to your BibTeX entries: `dynamicalnodes_complexity={linear}`
 2. Add a filter dropdown in `bibliography.rst`
 3. Update `bibliography.js` to extract and filter on this field
 4. Update the usage guide
@@ -254,5 +254,5 @@ If you want to add a new filter dimension (e.g., "Complexity: Linear/Nonlinear")
 
 4. **Developer adding new feature:**
    - Check if algorithm is already in bibliography
-   - If yes, update `pykal_implemented` to `yes` and add note
+   - If yes, update `dynamicalnodes_implemented` to `yes` and add note
    - If no, add paper to bibliography with proper metadata

@@ -1,6 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-
-\PYG{n}{xp\PYGZus{}next}\PYG{p}{,} \PYG{n}{y\PYGZus{}k} \PYG{o}{=} \PYG{n}{plant}\PYG{o}{.}\PYG{n}{step}\PYG{p}{(}\PYG{n}{xc\PYGZus{}k}\PYG{p}{,}
-                         \PYG{n}{u\PYGZus{}k}\PYG{p}{,}
-                         \PYG{n}{thp\PYGZus{}k}\PYG{p}{)}
-\end{Verbatim}

@@ -2,7 +2,7 @@
 Community
 =========
 
-Thank you for your interest in contributing to **pykal**! This is an open-source project by and for researchers to assist in the world of academic robotics. This page assumes you have a working knowledge of the **pykal** package. If not, or if you'd like a refresher, please check out our :doc:`../getting_started/index` guide in the sidebar.
+Thank you for your interest in contributing to **dynamicalnodes**! This is an open-source project by and for researchers to assist in the world of academic robotics. This page assumes you have a working knowledge of the **dynamicalnodes** package. If not, or if you'd like a refresher, please check out our :doc:`../getting_started/index` guide in the sidebar.
 
 ==================
 Community Library
@@ -30,9 +30,9 @@ Each entry links to Jupyter notebooks shared by the community. Use the filters b
        <label class="filter-label-main">Implementation Status:</label>
        <div class="checkbox-group">
          <label class="checkbox-label">
-           <input type="checkbox" class="impl-checkbox-community" value="pykal">
-           <span class="impl-circle impl-pykal"></span>
-           <span class="checkbox-text">pykal</span>
+           <input type="checkbox" class="impl-checkbox-community" value="dynamicalnodes">
+           <span class="impl-circle impl-dynamicalnodes"></span>
+           <span class="checkbox-text">dynamicalnodes</span>
          </label>
          <label class="checkbox-label">
            <input type="checkbox" class="impl-checkbox-community" value="turtlebot">
@@ -57,7 +57,7 @@ Each entry links to Jupyter notebooks shared by the community. Use the filters b
    <div class="legend-box">
      <strong>Legend:</strong> Click on a colored circle to view the implementation notebook.
      <div class="legend-items">
-       <span class="legend-item"><span class="impl-circle impl-pykal"></span> pykal </span>
+       <span class="legend-item"><span class="impl-circle impl-dynamicalnodes"></span> dynamicalnodes </span>
        <span class="legend-item"><span class="impl-circle impl-turtlebot"></span> TurtleBot</span>
        <span class="legend-item"><span class="impl-circle impl-crazyflie"></span> Crazyflie</span>
      </div>

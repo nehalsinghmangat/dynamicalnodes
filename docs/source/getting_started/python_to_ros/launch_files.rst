@@ -1,12 +1,12 @@
 :doc:`← Python to ROS <index>`
 
 ======================
-ROS2 Launch Files with pykal
+ROS2 Launch Files with dynamicalnodes
 ======================
 
 In the tutorials so far, we've been manually creating and starting nodes one by one in Jupyter notebooks. This is great for learning, but professional ROS development uses **launch files** to start entire systems with a single command.
 
-This guide shows how to create Python launch files for ``pykal`` ROS systems.
+This guide shows how to create Python launch files for ``dynamicalnodes`` ROS systems.
 
 Why Launch Files?
 =================
@@ -33,7 +33,7 @@ Why Launch Files?
 
 .. code-block:: bash
 
-   ros2 launch pykal_demos turtlebot_navigation.launch.py
+   ros2 launch dynamicalnodes_demos turtlebot_navigation.launch.py
 
 **Benefits**:
 
@@ -64,10 +64,10 @@ ROS2 uses **Python launch files** (not XML like ROS1):
            ),
        ])
 
-Launch File Structure for pykal
+Launch File Structure for dynamicalnodes
 ================================
 
-Since ``pykal`` nodes are created programmatically (not from executables), we use a different approach:
+Since ``dynamicalnodes`` nodes are created programmatically (not from executables), we use a different approach:
 
 **Option 1: Create a Standalone Script**
 ----------------------------------------
@@ -78,7 +78,7 @@ Create a Python script that runs nodes:
 
    # scripts/turtlebot_system.py
    import rclpy
-   from pykal_demos.turtlebot_nodes import (
+   from dynamicalnodes_demos.turtlebot_nodes import (
        create_waypoint_node,
        create_controller_node,
        create_simulator_node,
@@ -158,7 +158,7 @@ Then launch with:
 
 .. code-block:: bash
 
-   ros2 launch pykal_demos turtlebot_navigation.launch.py
+   ros2 launch dynamicalnodes_demos turtlebot_navigation.launch.py
 
 **Option 3: Multi-Process Launch (Recommended)**
 -------------------------------------------------
@@ -207,7 +207,7 @@ Let's create a complete launch system for TurtleBot navigation.
 
 **Directory Structure**::
 
-   pykal_demos/
+   dynamicalnodes_demos/
    ├── launch/
    │   ├── turtlebot_software.launch.py
    │   ├── turtlebot_gazebo.launch.py
@@ -228,7 +228,7 @@ Each node in its own file:
 
    # scripts/turtlebot_waypoint_node.py
    import rclpy
-   from pykal.ros.ros_node import ROSNode
+   from dynamicalnodes.ros.ros_node import ROSNode
    from geometry_msgs.msg import PoseStamped
    import numpy as np
    
@@ -269,7 +269,7 @@ Each node in its own file:
        use_sim_time = LaunchConfiguration('use_sim_time', default='false')
        
        # Get package directory
-       pkg_dir = get_package_share_directory('pykal_demos')
+       pkg_dir = get_package_share_directory('dynamicalnodes_demos')
        scripts_dir = os.path.join(pkg_dir, 'scripts')
        
        return LaunchDescription([
@@ -303,7 +303,7 @@ Each node in its own file:
 
 .. code-block:: bash
 
-   ros2 launch pykal_demos turtlebot_software.launch.py
+   ros2 launch dynamicalnodes_demos turtlebot_software.launch.py
 
 Launching with Gazebo
 ======================
@@ -338,8 +338,8 @@ For Gazebo integration, modify the launch file:
            output='screen'
        )
        
-       # Start pykal nodes (NO simulator this time!)
-       pkg_dir = get_package_share_directory('pykal_demos')
+       # Start dynamicalnodes nodes (NO simulator this time!)
+       pkg_dir = get_package_share_directory('dynamicalnodes_demos')
        scripts_dir = os.path.join(pkg_dir, 'scripts')
        
        return LaunchDescription([
@@ -398,7 +398,7 @@ Load in launch file:
    from launch_ros.actions import Node
    
    Node(
-       package='pykal_demos',
+       package='dynamicalnodes_demos',
        executable='turtlebot_kf_node.py',
        parameters=[os.path.join(pkg_dir, 'config', 'turtlebot_params.yaml')]
    )
@@ -454,13 +454,13 @@ Run multiple robots with namespaces:
 .. code-block:: python
 
    robot1 = Node(
-       package='pykal_demos',
+       package='dynamicalnodes_demos',
        executable='turtlebot_system',
        namespace='robot1'
    )
    
    robot2 = Node(
-       package='pykal_demos',
+       package='dynamicalnodes_demos',
        executable='turtlebot_system',
        namespace='robot2'
    )
@@ -475,20 +475,20 @@ Verify your launch file works:
 .. code-block:: bash
 
    # Check syntax
-   ros2 launch --show-args pykal_demos turtlebot_software.launch.py
+   ros2 launch --show-args dynamicalnodes_demos turtlebot_software.launch.py
    
    # List all nodes that will be launched
-   ros2 launch --show-nodes pykal_demos turtlebot_software.launch.py
+   ros2 launch --show-nodes dynamicalnodes_demos turtlebot_software.launch.py
    
    # Actually launch
-   ros2 launch pykal_demos turtlebot_software.launch.py
+   ros2 launch dynamicalnodes_demos turtlebot_software.launch.py
 
 Debugging launch issues:
 
 .. code-block:: bash
 
    # Verbose output
-   ros2 launch pykal_demos turtlebot_software.launch.py --debug
+   ros2 launch dynamicalnodes_demos turtlebot_software.launch.py --debug
    
    # Check if nodes are running
    ros2 node list
@@ -497,7 +497,7 @@ Debugging launch issues:
    ros2 topic list
    
    # Monitor logs
-   ros2 launch pykal_demos turtlebot_software.launch.py --screen
+   ros2 launch dynamicalnodes_demos turtlebot_software.launch.py --screen
 
 Best Practices
 ==============
@@ -538,7 +538,7 @@ Launch files are essential for professional ROS development:
 ✓ **Flexibility**: Switch between simulation/hardware
 ✓ **Debugging**: Better logging and process management
 
-For ``pykal`` systems:
+For ``dynamicalnodes`` systems:
 
 1. Create standalone node scripts
 2. Create launch file to run scripts

@@ -3,7 +3,7 @@
 ## Overview
 
 The new bibliography system tracks paper implementations across three platforms:
-- 🔵 **pykal core** (blue circle) - Generic algorithm implementation
+- 🔵 **dynamicalnodes core** (blue circle) - Generic algorithm implementation
 - 🟢 **TurtleBot** (green circle) - TurtleBot-specific implementation
 - 🟡 **Crazyflie** (yellow circle) - Crazyflie-specific implementation
 - ⚫ **Not implemented** (gray circle) - No implementation yet
@@ -22,8 +22,8 @@ Each colored circle is **clickable** and links directly to a self-contained, dow
   year         = {2024},
   url          = {https://arxiv.org/abs/2401.12345},
   keywords     = {control, trajectory-planning},
-  pykal_category = {mpc},
-  impl_pykal   = {examples/mpc_demo.ipynb},
+  dynamicalnodes_category = {mpc},
+  impl_dynamicalnodes   = {examples/mpc_demo.ipynb},
   impl_turtlebot = {},
   impl_crazyflie = {examples/mpc_crazyflie.ipynb},
   note         = {MPC implementation for quadrotors}
@@ -69,7 +69,7 @@ Standard BibTeX fields:
 - `title`, `author`, `year`, `journal`/`booktitle`
 - `url` - Link to arXiv or DOI
 
-### Custom pykal Fields
+### Custom dynamicalnodes Fields
 
 **`keywords`** - Broad categories (comma-separated)
 - Options: `state-estimation`, `control`, `planning`, `filtering`, etc.
@@ -77,17 +77,17 @@ Standard BibTeX fields:
 keywords = {control, trajectory-planning}
 ```
 
-**`pykal_category`** - Specific algorithm
+**`dynamicalnodes_category`** - Specific algorithm
 - Options: `kalman-filter`, `ekf`, `ukf`, `pid`, `mpc`, `lqr`, etc.
 ```bibtex
-pykal_category = {mpc}
+dynamicalnodes_category = {mpc}
 ```
 
-**`impl_pykal`** - Path to pykal core implementation notebook
+**`impl_dynamicalnodes`** - Path to dynamicalnodes core implementation notebook
 - Empty `{}` if not implemented
 - Relative path from `docs/source/`
 ```bibtex
-impl_pykal = {examples/kalman_filter_demo.ipynb}
+impl_dynamicalnodes = {examples/kalman_filter_demo.ipynb}
 ```
 
 **`impl_turtlebot`** - Path to TurtleBot implementation notebook
@@ -102,7 +102,7 @@ impl_crazyflie = {examples/mpc_crazyflie.ipynb}
 
 **`note`** - Brief description and context
 ```bibtex
-note = {Classic Kalman filter. Implementations for pykal core and TurtleBot}
+note = {Classic Kalman filter. Implementations for dynamicalnodes core and TurtleBot}
 ```
 
 ## Filter Behavior
@@ -111,12 +111,12 @@ note = {Classic Kalman filter. Implementations for pykal core and TurtleBot}
 Shows papers matching selected category from `keywords` field.
 
 ### Algorithm Filter
-Shows papers matching selected algorithm from `pykal_category` field.
+Shows papers matching selected algorithm from `dynamicalnodes_category` field.
 
 ### Implementation Status (Radio Buttons)
 - **Show All** - All papers regardless of implementation
 - **Not Yet Implemented** - Papers with no implementations (all impl fields empty)
-- **Implemented in pykal** - Papers with `impl_pykal` set
+- **Implemented in dynamicalnodes** - Papers with `impl_dynamicalnodes` set
 - **Implemented for TurtleBot** - Papers with `impl_turtlebot` set
 - **Implemented for Crazyflie** - Papers with `impl_crazyflie` set
 
@@ -152,7 +152,7 @@ Shows papers matching selected algorithm from `pykal_category` field.
     "## Requirements\n",
     "\n",
     "```bash\n",
-    "pip install numpy matplotlib pykal\n",
+    "pip install numpy matplotlib dynamicalnodes\n",
     "```"
    ]
   },
@@ -164,7 +164,7 @@ Shows papers matching selected algorithm from `pykal_category` field.
    "source": [
     "import numpy as np\n",
     "import matplotlib.pyplot as plt\n",
-    "from pykal import DynamicalSystem\n",
+    "from dynamicalnodes import DynamicalSystem\n",
     "# ... your imports"
    ]
   },
@@ -204,7 +204,7 @@ Shows papers matching selected algorithm from `pykal_category` field.
     "\n",
     "## References\n",
     "- Author (Year). Paper title\n",
-    "- pykal docs: https://pykal.readthedocs.io"
+    "- dynamicalnodes docs: https://dynamicalnodes.readthedocs.io"
    ]
   }
  ],
@@ -234,11 +234,11 @@ Let's implement an Extended Kalman Filter for TurtleBot:
   year         = {2020},
   url          = {https://arxiv.org/abs/2001.12345},
   keywords     = {state-estimation, filtering, nonlinear},
-  pykal_category = {ekf},
-  impl_pykal   = {examples/ekf_demo.ipynb},
+  dynamicalnodes_category = {ekf},
+  impl_dynamicalnodes   = {examples/ekf_demo.ipynb},
   impl_turtlebot = {examples/ekf_turtlebot.ipynb},
   impl_crazyflie = {},
-  note         = {EKF for nonlinear state estimation. Implemented for pykal and TurtleBot}
+  note         = {EKF for nonlinear state estimation. Implemented for dynamicalnodes and TurtleBot}
 }
 ```
 
@@ -279,7 +279,7 @@ docs/
 │   ├── bibliography.rst                  # Filter UI
 │   ├── examples/                         # Implementation notebooks
 │   │   ├── kf_turtlebot_demo.ipynb      # Example notebook
-│   │   ├── ekf_demo.ipynb               # Your pykal core impl
+│   │   ├── ekf_demo.ipynb               # Your dynamicalnodes core impl
 │   │   └── ekf_turtlebot.ipynb          # Your TurtleBot impl
 │   └── _static/
 │       ├── css/
@@ -293,14 +293,14 @@ docs/
 ## Colors and Visual Design
 
 ### Circle Colors
-- 🔵 Blue (`#007bff`) - pykal core
+- 🔵 Blue (`#007bff`) - dynamicalnodes core
 - 🟢 Green (`#28a745`) - TurtleBot
 - 🟡 Yellow (`#ffc107`) - Crazyflie
 - ⚫ Gray (`#6c757d`) - Not implemented
 
 ### Border Colors
 Citations get a left border matching their primary implementation:
-- Blue border → Has pykal core implementation
+- Blue border → Has dynamicalnodes core implementation
 - Green border → Has TurtleBot implementation
 - Yellow border → Has Crazyflie implementation
 
@@ -330,7 +330,7 @@ Citations get a left border matching their primary implementation:
 ## Troubleshooting
 
 **Circles not appearing:**
-- Check that impl fields are not empty: `impl_pykal = {path}` not `impl_pykal = {}`
+- Check that impl fields are not empty: `impl_dynamicalnodes = {path}` not `impl_dynamicalnodes = {}`
 - Regenerate metadata: `python3 generate_bib_metadata.py`
 - Rebuild docs: `make html`
 
@@ -352,7 +352,7 @@ Citations get a left border matching their primary implementation:
 ## Best Practices
 
 ✅ **DO:**
-- Create one notebook per implementation (pykal, TurtleBot, Crazyflie)
+- Create one notebook per implementation (dynamicalnodes, TurtleBot, Crazyflie)
 - Make notebooks fully self-contained and runnable
 - Include download instructions in notebooks
 - Use relative paths from `docs/source/`

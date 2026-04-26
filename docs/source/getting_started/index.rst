@@ -2,7 +2,7 @@
 Getting Started
 ================
 
-``pykal`` is a Python package that serves as a bridge between theoretical control/estimation algorithms and their implementation onto hardware.  
+``dynamicalnodes`` is a Python package that serves as a bridge between theoretical control/estimation algorithms and their implementation onto hardware.  
 
 .. container:: graphviz-tight
 
@@ -38,7 +38,7 @@ Getting Started
           Theory -> Python -> ROS -> Gazebo;
       }
 
-To get started modeling algorithms in ``pykal``, read the "Overview" and "Theory to Python" sections. To implement these algorithms into ROS and/or Gazebo, also read the "Python to ROS" and "ROS to Gazebo" sections.
+To get started modeling algorithms in ``dynamicalnodes``, read the "Overview" and "Theory to Python" sections. To implement these algorithms into ROS and/or Gazebo, also read the "Python to ROS" and "ROS to Gazebo" sections.
 
 
 ..  toctree::

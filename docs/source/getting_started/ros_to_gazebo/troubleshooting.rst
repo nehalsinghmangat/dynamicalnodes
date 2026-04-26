@@ -4,7 +4,7 @@
 Troubleshooting Gazebo Issues
 ==============================
 
-This guide covers common issues when working with Gazebo simulations in ``pykal``, along with their solutions.
+This guide covers common issues when working with Gazebo simulations in ``dynamicalnodes``, along with their solutions.
 
 .. contents:: Quick Navigation
    :local:
@@ -793,7 +793,7 @@ Check ROS2-Gazebo Bridge
    # Check bridge parameters
    ros2 param list /ros_gz_bridge
 
-Test Without pykal Wrapper
+Test Without dynamicalnodes Wrapper
 ---------------------------
 
 .. code-block:: bash
@@ -801,7 +801,7 @@ Test Without pykal Wrapper
    # Launch Gazebo manually
    gazebo --verbose
 
-   # If this fails, issue is with Gazebo installation, not pykal
+   # If this fails, issue is with Gazebo installation, not dynamicalnodes
 
 Monitor System Resources
 -------------------------
@@ -853,7 +853,7 @@ Getting Help
 If you encounter issues not covered here:
 
 1. **Check documentation**:
-   - pykal docs: https://pykal.readthedocs.io
+   - dynamicalnodes docs: https://dynamicalnodes.readthedocs.io
    - Gazebo docs: https://gazebosim.org/docs
    - ROS2-Gazebo docs: https://github.com/ros-simulation/gazebo_ros_pkgs
 

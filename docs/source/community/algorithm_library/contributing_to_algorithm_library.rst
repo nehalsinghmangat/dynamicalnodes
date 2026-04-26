@@ -4,8 +4,8 @@ Contributing to the Algorithm Library
 The algorithm library is ...
 
 1. ***Add the paper** to ``references.bib``
-2. **Implement the algorithm** in pykal (as DynamicalSystem-compatible functions)
-3. **Create implementation notebooks** showing usage in pykal, TurtleBot, and/or Crazyflie
+2. **Implement the algorithm** in dynamicalnodes (as DynamicalSystem-compatible functions)
+3. **Create implementation notebooks** showing usage in dynamicalnodes, TurtleBot, and/or Crazyflie
 4. **Update metadata** so your implementation appears in the Algorithm Library
 
 Step 1: Add Your Paper to references.bib
@@ -30,7 +30,7 @@ Optional Fields
 - **volume, number, pages**: Citation details
 - **publisher**: Publisher name
 - **url**: DOI or paper URL
-- **impl_pykal**: Path to pykal implementation notebook (e.g., ``"notebooks/my_algorithm.ipynb"``)
+- **impl_dynamicalnodes**: Path to dynamicalnodes implementation notebook (e.g., ``"notebooks/my_algorithm.ipynb"``)
 - **impl_turtlebot**: Path to TurtleBot implementation notebook
 - **impl_crazyflie**: Path to Crazyflie implementation notebook
 - **note**: Brief description of the algorithm and implementations
@@ -51,7 +51,7 @@ Template
      publisher    = {IEEE},
      url          = {https://doi.org/10.1109/example},
      keywords     = {control},
-     impl_pykal   = {notebooks/my_algorithm_pykal.ipynb},
+     impl_dynamicalnodes   = {notebooks/my_algorithm_dynamicalnodes.ipynb},
      impl_turtlebot = {notebooks/my_algorithm_turtlebot.ipynb},
      impl_crazyflie = {notebooks/my_algorithm_crazyflie.ipynb},
      note         = {Brief description of what this algorithm does}
@@ -73,21 +73,21 @@ Example
      publisher    = {American Society of Mechanical Engineers},
      url          = {https://doi.org/10.1115/1.3662552},
      keywords     = {estimation},
-     impl_pykal   = {notebooks/algorithm_library/kf_pykal.ipynb},
+     impl_dynamicalnodes   = {notebooks/algorithm_library/kf_dynamicalnodes.ipynb},
      impl_turtlebot = {notebooks/turtlebot_kf_demo.ipynb},
      impl_crazyflie = {notebooks/crazyflie_kf_demo.ipynb},
      note         = {Classic Kalman filter paper}
    }
 
-Step 2: Implement the Algorithm in pykal
+Step 2: Implement the Algorithm in dynamicalnodes
 =========================================
 
-Location: ``src/pykal/algorithm_library/``
+Location: ``src/dynamicalnodes/algorithm_library/``
 
 Algorithms are organized by category:
 
-- **Estimators**: ``src/pykal/algorithm_library/estimators/``
-- **Controllers**: ``src/pykal/algorithm_library/controllers/``
+- **Estimators**: ``src/dynamicalnodes/algorithm_library/estimators/``
+- **Controllers**: ``src/dynamicalnodes/algorithm_library/controllers/``
 
 Implementation Guidelines
 -------------------------
@@ -100,7 +100,7 @@ Implementation Guidelines
    - Define ``h()`` for observation/output
    - Use the ``_smart_call()`` pattern for flexible parameter binding
 
-3. **Follow pykal conventions**:
+3. **Follow dynamicalnodes conventions**:
 
    - Functions should be pure (no side effects)
    - Accept parameters via dictionary
@@ -141,7 +141,7 @@ Implementation Guidelines
 
    .. code-block:: python
 
-      # In src/pykal/algorithm_library/controllers/__init__.py
+      # In src/dynamicalnodes/algorithm_library/controllers/__init__.py
       from . import my_algorithm
 
       __all__ = ["pid", "my_algorithm"]
@@ -151,9 +151,9 @@ Example Structure
 
 .. code-block:: python
 
-   # src/pykal/algorithm_library/controllers/my_algorithm.py
+   # src/dynamicalnodes/algorithm_library/controllers/my_algorithm.py
    import numpy as np
-   from pykal import DynamicalSystem
+   from dynamicalnodes import DynamicalSystem
 
    class MyAlgorithm:
        """Implementation of My Algorithm (Author, Year)."""
@@ -181,7 +181,7 @@ Location: ``docs/source/notebooks/``
 
 Create Jupyter notebooks demonstrating your algorithm:
 
-1. **pykal implementation** (``my_algorithm_pykal.ipynb``):
+1. **dynamicalnodes implementation** (``my_algorithm_dynamicalnodes.ipynb``):
 
    - Pure software demonstration
    - Use synthetic data or simple examples
@@ -213,7 +213,7 @@ Each notebook should include:
    ## Theory
    Mathematical formulation (reference the paper)
 
-   ## Implementation in pykal
+   ## Implementation in dynamicalnodes
    Code showing how to use the algorithm
 
    ## Results
@@ -230,8 +230,8 @@ Notebook Template
    # Cell 1: Imports
    import numpy as np
    import matplotlib.pyplot as plt
-   from pykal import DynamicalSystem
-   from pykal.algorithm_library.controllers import my_algorithm
+   from dynamicalnodes import DynamicalSystem
+   from dynamicalnodes.algorithm_library.controllers import my_algorithm
 
    # Cell 2: Setup
    # Define parameters, initial conditions, etc.
@@ -259,7 +259,7 @@ After creating your notebooks:
 
    .. code-block:: bibtex
 
-      impl_pykal   = {notebooks/my_algorithm_pykal.ipynb},
+      impl_dynamicalnodes   = {notebooks/my_algorithm_dynamicalnodes.ipynb},
       impl_turtlebot = {notebooks/my_algorithm_turtlebot.ipynb},
 
    Note: Paths are relative to ``docs/source/``
@@ -297,7 +297,7 @@ Before submitting:
 
    .. code-block:: bash
 
-      pytest --doctest-modules src/pykal/algorithm_library/
+      pytest --doctest-modules src/dynamicalnodes/algorithm_library/
 
 2. **Test notebooks**:
 
@@ -322,7 +322,7 @@ Before submitting:
 Submitting Your Contribution
 =============================
 
-1. Fork the pykal repository on GitHub
+1. Fork the dynamicalnodes repository on GitHub
 2. Create a feature branch (``git checkout -b add-my-algorithm``)
 3. Add your implementation files
 4. Commit changes with descriptive messages
@@ -331,14 +331,14 @@ Submitting Your Contribution
 
    - Description of the algorithm
    - Link to the original paper
-   - Summary of implementations (pykal/TurtleBot/Crazyflie)
+   - Summary of implementations (dynamicalnodes/TurtleBot/Crazyflie)
    - Any testing you performed
 
 Questions or Issues?
 ====================
 
-- Open an issue on `GitHub <https://github.com/nehalsinghmangat/pykal/issues>`_
+- Open an issue on `GitHub <https://github.com/nehalsinghmangat/dynamicalnodes/issues>`_
 - Check existing documentation and examples
 - Review the Kalman filter implementation as a reference
 
-Thank you for contributing to pykal!
+Thank you for contributing to dynamicalnodes!

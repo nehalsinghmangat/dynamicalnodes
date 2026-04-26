@@ -3,7 +3,7 @@
 =======
 Modules
 =======
-This sections consists of tips, tricks, and usage examples of the ``pykal.DynamicalSystem`` and ``pykal.DataChange`` modules. The following notebooks are a great complement to the API reference and are useful to have on hand when you are developing with ``pykal``.
+This sections consists of tips, tricks, and usage examples of the ``dynamicalnodes.DynamicalSystem`` and ``dynamicalnodes.DataChange`` modules. The following notebooks are a great complement to the API reference and are useful to have on hand when you are developing with ``dynamicalnodes``.
 
 
 ..  toctree::

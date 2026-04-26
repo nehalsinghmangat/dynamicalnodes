@@ -1,7 +1,7 @@
 Gazebo Simulation
 =================
 
-.. automodule:: pykal.gazebo
+.. automodule:: dynamicalnodes.gazebo
    :members:
    :undoc-members:
    :show-inheritance:
@@ -9,7 +9,7 @@ Gazebo Simulation
 Gazebo Launcher
 ---------------
 
-.. automodule:: pykal.gazebo.gazebo
+.. automodule:: dynamicalnodes.gazebo.gazebo
    :members:
    :undoc-members:
    :show-inheritance:

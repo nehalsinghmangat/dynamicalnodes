@@ -59,13 +59,13 @@ For Crazyflie simulation:
 Development Installation
 -------------------------
 
-For contributing to pykal or running tests:
+For contributing to dynamicalnodes or running tests:
 
 .. code-block:: bash
 
    # Clone the repository
-   git clone https://github.com/nehalsinghmangat/pykal.git
-   cd pykal
+   git clone https://github.com/nehalsinghmangat/dynamicalnodes.git
+   cd dynamicalnodes
 
    # Create and activate virtual environment
    python3 -m venv .venv
@@ -107,16 +107,16 @@ Verify your installation with these quick tests:
 .. code-block:: bash
 
    # Test core functionality
-   python -c "from pykal import DynamicalSystem; print('✓ Core pykal works')"
+   python -c "from dynamicalnodes import DynamicalSystem; print('✓ Core dynamicalnodes works')"
 
    # Test ROS2 integration (only if ROS2 installed)
-   python -c "from pykal import ROSNode; print('✓ ROS2 integration works')"
+   python -c "from dynamicalnodes import ROSNode; print('✓ ROS2 integration works')"
 
    # Test Gazebo utilities (only if ROS2 installed)
-   python -c "from pykal.gazebo import start_gazebo, stop_gazebo; print('✓ Gazebo utilities work')"
+   python -c "from dynamicalnodes.gazebo import start_gazebo, stop_gazebo; print('✓ Gazebo utilities work')"
 
    # Test Kalman filter
-   python -c "from pykal.estimators import KF; print('✓ Estimators work')"
+   python -c "from dynamicalnodes.estimators import KF; print('✓ Estimators work')"
 
 Troubleshooting
 ---------------
@@ -127,7 +127,7 @@ ROS2 is not installed or not sourced. Either:
 
 1. Install ROS2 (see ROS2 Installation section)
 2. Source ROS2 setup: ``source /opt/ros/<distro>/setup.bash``
-3. Only use core pykal features (avoid ``ROSNode``)
+3. Only use core dynamicalnodes features (avoid ``ROSNode``)
 
 **Python version too old**
 
@@ -160,13 +160,13 @@ ROS2 is not installed or not sourced. Either:
    deactivate
 
    # Remove old environment
-   rm -rf pykal-env
+   rm -rf dynamicalnodes-env
 
    # Create fresh environment
-   python3 -m venv pykal-env
-   source pykal-env/bin/activate
+   python3 -m venv dynamicalnodes-env
+   source dynamicalnodes-env/bin/activate
    pip install --upgrade pip
-   pip install pykal
+   pip install dynamicalnodes
 
 **Tests fail after development installation**
 

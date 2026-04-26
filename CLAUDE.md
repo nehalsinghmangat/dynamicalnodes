@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**pykal** is a Python development framework bridging theoretical control systems and hardware implementation for robotics. It follows a four-step pipeline: Theory → Software → Simulation → Hardware.
+**dynamicalnodes** is a Python development framework bridging theoretical control systems and hardware implementation for robotics. It follows a four-step pipeline: Theory → Software → Simulation → Hardware.
 
 The framework enables users to:
 1. Model control systems as composable dynamical systems
@@ -16,21 +16,21 @@ The framework enables users to:
 
 ### Three Main Components
 
-1. **DynamicalSystem** (`src/pykal/dynamical_system.py`)
+1. **DynamicalSystem** (`src/dynamicalnodes/dynamical_system.py`)
    - Core abstraction for modeling any control system component
    - Encapsulates state evolution (`f`) and observation (`h`) functions
    - Uses `_smart_call()` for flexible parameter binding from a shared parameter dictionary
    - The `step()` method executes one iteration: state update → observation
    - Components can be composed by chaining outputs to inputs
 
-2. **ROSNode** (`src/pykal/ros_node.py`)
+2. **ROSNode** (`src/dynamicalnodes/ros_node.py`)
    - Wraps arbitrary Python callbacks as ROS2 nodes
    - Maps ROS topics to Python function arguments and return values
    - Handles message conversion via `ROS2PY_DEFAULT` and `PY2ROS_DEFAULT` registries
    - Manages threading, executors, staleness policies, and node lifecycle
    - **Critical**: The node is created separately from spinning; use `create_node()` before `start()`
 
-3. **Utilities** (`src/pykal/utilities/`)
+3. **Utilities** (`src/dynamicalnodes/utilities/`)
    - `estimators/kf.py`: Kalman filter implementation as DynamicalSystem-compatible functions
    - `ros2py_py2ros.py`: Bidirectional converters between ROS messages and NumPy arrays
    - `gazebo.py`: Gazebo simulation launcher for Jupyter notebooks (start_gazebo/stop_gazebo)
@@ -65,13 +65,13 @@ pip install -e ".[docs]"
 pytest
 
 # Run specific doctest in a file
-pytest --doctest-modules src/pykal/dynamical_system.py
+pytest --doctest-modules src/dynamicalnodes/dynamical_system.py
 
 # Run with verbose output
 pytest -v
 
 # Run with coverage
-pytest --cov=pykal --cov-report=html
+pytest --cov=dynamicalnodes --cov-report=html
 ```
 
 The project uses doctests extensively. All `.py` files are tested for embedded doctests via the `--doctest-glob="*.py"` configuration.
@@ -93,10 +93,10 @@ make clean
 python3 docs/generate_bib_metadata.py
 ```
 
-Documentation is hosted on ReadTheDocs at https://pykal.readthedocs.io
+Documentation is hosted on ReadTheDocs at https://dynamicalnodes.readthedocs.io
 
 **Bibliography System**: The Algorithm Library shows clickable colored circles linking to implementation notebooks:
-- Blue circle: `impl_pykal` field in `references.bib`
+- Blue circle: `impl_dynamicalnodes` field in `references.bib`
 - Green circle: `impl_turtlebot` field
 - Yellow circle: `impl_crazyflie` field
 
@@ -121,7 +121,7 @@ mypy src/
 flake8 src/
 
 # Linting with pylint
-pylint src/pykal/
+pylint src/dynamicalnodes/
 ```
 
 ### Building and Publishing
@@ -180,7 +180,7 @@ The Gazebo launcher (`utilities/gazebo.py`):
 ## Project Structure
 
 ```
-src/pykal/
+src/dynamicalnodes/
 ├── __init__.py              # Exports DynamicalSystem, ROSNode, utilities
 ├── dynamical_system.py      # Core DynamicalSystem abstraction
 ├── ros_node.py              # ROS2 node wrapper

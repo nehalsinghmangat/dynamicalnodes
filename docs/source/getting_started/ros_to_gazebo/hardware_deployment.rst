@@ -4,7 +4,7 @@
 Deploying to Real Hardware
 ================================
 
-The final step: taking your ``pykal`` control system from Gazebo simulation to **real robots**. This guide covers the complete workflow for deploying to TurtleBot3 and Crazyflie hardware.
+The final step: taking your ``dynamicalnodes`` control system from Gazebo simulation to **real robots**. This guide covers the complete workflow for deploying to TurtleBot3 and Crazyflie hardware.
 
 .. contents:: Quick Navigation
    :local:
@@ -13,7 +13,7 @@ The final step: taking your ``pykal`` control system from Gazebo simulation to *
 The Deployment Pipeline
 =======================
 
-Your pykal system has progressed through:
+Your dynamicalnodes system has progressed through:
 
 1. **Theory** → Mathematical models and algorithms
 2. **Python** → DynamicalSystem implementations  
@@ -71,7 +71,7 @@ Software Requirements
 
 .. code-block:: bash
 
-   # Your pykal system (already have)
+   # Your dynamicalnodes system (already have)
    # ROS2 Humble
    # Network access to robot
 
@@ -164,7 +164,7 @@ Step 2: Modify Launch File for Hardware
            # Start Gazebo (provides /odom, accepts /cmd_vel)
            IncludeLaunchDescription(...),
            
-           # Start pykal nodes
+           # Start dynamicalnodes nodes
            ExecuteProcess(cmd=['python3', 'waypoint_node.py']),
            ExecuteProcess(cmd=['python3', 'controller_node.py']),
            ExecuteProcess(cmd=['python3', 'kf_node.py']),
@@ -183,7 +183,7 @@ Step 2: Modify Launch File for Hardware
            # NO Gazebo launch!
            # Robot bringup already running on TurtleBot
            
-           # Start pykal nodes (IDENTICAL to Gazebo!)
+           # Start dynamicalnodes nodes (IDENTICAL to Gazebo!)
            ExecuteProcess(cmd=['python3', 'waypoint_node.py']),
            ExecuteProcess(cmd=['python3', 'controller_node.py']),
            ExecuteProcess(cmd=['python3', 'kf_node.py']),
@@ -201,7 +201,7 @@ Step 3: Run Hardware Test
    # Ensure network connectivity
    export ROS_DOMAIN_ID=0  # Match TurtleBot
    
-   # Launch pykal nodes
+   # Launch dynamicalnodes nodes
    ros2 launch my_package turtlebot_hardware.launch.py
 
 **Expected behavior**:
@@ -321,7 +321,7 @@ Step 2: Test Crazyflie Communication
    # Test manual flight
    ros2 run crazyswarm2 teleop_twist_keyboard
 
-Step 3: Modify pykal Nodes for Hardware
+Step 3: Modify dynamicalnodes Nodes for Hardware
 ----------------------------------------
 
 **Key Differences**:
@@ -409,7 +409,7 @@ Step 5: Run Hardware Flight Test
    # Terminal 1: Crazyswarm2
    ros2 launch crazyswarm2 launch.py
    
-   # Terminal 2: pykal nodes
+   # Terminal 2: dynamicalnodes nodes
    ros2 launch my_package crazyflie_hardware.launch.py
    
    # Terminal 3: Takeoff
@@ -654,7 +654,7 @@ Common Workflow: Sim to Hardware
 Summary
 =======
 
-**The pykal Hardware Deployment Philosophy**:
+**The dynamicalnodes Hardware Deployment Philosophy**:
 
 ✓ **Same Code**: Controller/estimator logic unchanged across platforms
 ✓ **Different Sources**: Software → Gazebo → Hardware provide /odom

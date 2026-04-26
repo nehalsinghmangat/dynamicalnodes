@@ -1,7 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{fr}\PYG{p}{(}\PYG{n}{xr\PYGZus{}k}\PYG{p}{,} \PYG{n}{θrk}\PYG{p}{):}
-    \PYG{k}{return} \PYG{n}{xrk\PYGZus{}next}
-
-\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{hr}\PYG{p}{(}\PYG{n}{xrk}\PYG{p}{,} \PYG{n}{thetark}\PYG{p}{):}
-    \PYG{k}{return} \PYG{n}{sk}
-\end{Verbatim}

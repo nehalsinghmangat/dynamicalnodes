@@ -1,7 +1,7 @@
 ROS Integration
 ===============
 
-.. automodule:: pykal.ros
+.. automodule:: dynamicalnodes.ros
    :members:
    :undoc-members:
    :show-inheritance:
@@ -9,7 +9,7 @@ ROS Integration
 ROSNode
 -------
 
-.. automodule:: pykal.ros.ros_node
+.. automodule:: dynamicalnodes.ros.ros_node
    :members:
    :undoc-members:
    :show-inheritance:
@@ -17,7 +17,7 @@ ROSNode
 Message Converters
 ------------------
 
-.. automodule:: pykal.ros.ros2py_py2ros
+.. automodule:: dynamicalnodes.ros.ros2py_py2ros
    :members:
    :undoc-members:
    :show-inheritance:

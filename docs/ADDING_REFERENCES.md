@@ -1,13 +1,13 @@
-# Adding References to the pykal Bibliography
+# Adding References to the dynamicalnodes Bibliography
 
-This guide explains how to add new papers to the pykal bibliography so they work correctly with the filterable visualization system.
+This guide explains how to add new papers to the dynamicalnodes bibliography so they work correctly with the filterable visualization system.
 
 ## Quick Checklist
 
 When adding a new paper:
 - [ ] Use correct BibTeX key format: `authorYEARkeyword` (e.g., `kalman1960new`)
 - [ ] Include all required standard fields
-- [ ] Add custom pykal fields: `keywords`, `pykal_category`, `impl_*`, `note`
+- [ ] Add custom dynamicalnodes fields: `keywords`, `dynamicalnodes_category`, `impl_*`, `note`
 - [ ] Set implementation paths or empty `{}` for each platform
 - [ ] Run `python3 docs/generate_bib_metadata.py`
 - [ ] Build docs: `cd docs && make html`
@@ -84,7 +84,7 @@ Include these standard fields for all entries:
 - **year**: 4-digit year (must match year in BibTeX key)
 - **url**: Link to paper (DOI preferred, arXiv acceptable)
 
-## Required Custom pykal Fields
+## Required Custom dynamicalnodes Fields
 
 Add these custom fields to every entry:
 
@@ -92,11 +92,11 @@ Add these custom fields to every entry:
 @article{kalman1960new,
   % ... standard fields ...
   keywords       = {state-estimation, filtering},
-  pykal_category = {kalman-filter},
-  impl_pykal     = {examples/kf_demo.ipynb},
+  dynamicalnodes_category = {kalman-filter},
+  impl_dynamicalnodes     = {examples/kf_demo.ipynb},
   impl_turtlebot = {examples/kf_turtlebot.ipynb},
   impl_crazyflie = {},
-  note           = {Classic Kalman filter. Implementations for pykal and TurtleBot}
+  note           = {Classic Kalman filter. Implementations for dynamicalnodes and TurtleBot}
 }
 ```
 
@@ -116,7 +116,7 @@ Add these custom fields to every entry:
   - `localization` - Localization and SLAM
   - Add others as needed
 
-**`pykal_category`** - Specific algorithm type (single value)
+**`dynamicalnodes_category`** - Specific algorithm type (single value)
 - Used by: Algorithm filter dropdown
 - Format: `algorithm-name` (lowercase, hyphenated)
 - Options:
@@ -130,7 +130,7 @@ Add these custom fields to every entry:
   - `slam` - SLAM algorithms
   - Add to `docs/source/bibliography.rst` dropdown when adding new types
 
-**`impl_pykal`** - Path to pykal core implementation notebook
+**`impl_dynamicalnodes`** - Path to dynamicalnodes core implementation notebook
 - Used by: Blue circle (🔵)
 - Format: `path/to/notebook.ipynb` (relative to `docs/source/`)
 - Set to `{}` if not implemented
@@ -152,7 +152,7 @@ Add these custom fields to every entry:
 - Used by: Appears in rendered bibliography
 - Format: Plain text, no LaTeX commands
 - Include: Brief context and which platforms are implemented
-- Example: `Classic Kalman filter paper. Implementations available in pykal core and TurtleBot`
+- Example: `Classic Kalman filter paper. Implementations available in dynamicalnodes core and TurtleBot`
 
 ## Complete Example
 
@@ -170,11 +170,11 @@ Here's a complete, correctly formatted entry:
   publisher      = {American Society of Mechanical Engineers},
   url            = {https://doi.org/10.1115/1.3662552},
   keywords       = {state-estimation,filtering},
-  pykal_category = {kalman-filter},
-  impl_pykal     = {theory_to_software/estimators/kalman_filters/standard_kalman_filter.ipynb},
+  dynamicalnodes_category = {kalman-filter},
+  impl_dynamicalnodes     = {theory_to_software/estimators/kalman_filters/standard_kalman_filter.ipynb},
   impl_turtlebot = {examples/kf_turtlebot_demo.ipynb},
   impl_crazyflie = {},
-  note           = {Classic Kalman filter paper. Implementations available in pykal core and TurtleBot}
+  note           = {Classic Kalman filter paper. Implementations available in dynamicalnodes core and TurtleBot}
 }
 ```
 
@@ -183,7 +183,7 @@ This will produce:
 - 🟢 Green circle → links to `examples/kf_turtlebot_demo.html`
 - Appears when filtering for "state-estimation" or "filtering" categories
 - Appears when filtering for "kalman-filter" algorithm
-- Appears when filtering for "pykal" or "turtlebot" implementations
+- Appears when filtering for "dynamicalnodes" or "turtlebot" implementations
 
 ## Common Entry Types
 
@@ -200,8 +200,8 @@ This will produce:
   organization   = {SPIE},
   url            = {https://doi.org/10.1117/12.280797},
   keywords       = {state-estimation,filtering,nonlinear},
-  pykal_category = {ukf},
-  impl_pykal     = {},
+  dynamicalnodes_category = {ukf},
+  impl_dynamicalnodes     = {},
   impl_turtlebot = {},
   impl_crazyflie = {},
   note           = {Unscented Kalman Filter (UKF). Not yet implemented}
@@ -210,7 +210,7 @@ This will produce:
 
 Result: ⚫ Single gray circle (not implemented)
 
-### Paper Implemented Only in pykal Core
+### Paper Implemented Only in dynamicalnodes Core
 
 ```bibtex
 @article{zarchan2013fundamentals,
@@ -220,11 +220,11 @@ Result: ⚫ Single gray circle (not implemented)
   year           = {2013},
   url            = {https://doi.org/10.2514/4.867200},
   keywords       = {state-estimation,filtering},
-  pykal_category = {kalman-filter},
-  impl_pykal     = {examples/kf_fundamentals.ipynb},
+  dynamicalnodes_category = {kalman-filter},
+  impl_dynamicalnodes     = {examples/kf_fundamentals.ipynb},
   impl_turtlebot = {},
   impl_crazyflie = {},
-  note           = {Kalman filter fundamentals with practical examples. Generic implementation in pykal core}
+  note           = {Kalman filter fundamentals with practical examples. Generic implementation in dynamicalnodes core}
 }
 ```
 
@@ -240,8 +240,8 @@ Result: 🔵 Blue circle only
   year           = {2024},
   url            = {https://arxiv.org/abs/2401.12345},
   keywords       = {control,planning,optimization},
-  pykal_category = {mpc},
-  impl_pykal     = {examples/mpc_demo.ipynb},
+  dynamicalnodes_category = {mpc},
+  impl_dynamicalnodes     = {examples/mpc_demo.ipynb},
   impl_turtlebot = {examples/mpc_turtlebot.ipynb},
   impl_crazyflie = {examples/mpc_crazyflie.ipynb},
   note           = {MPC for quadrotor control. Fully implemented across all platforms}
@@ -375,7 +375,7 @@ git push
 1. **Metadata not generated** - JavaScript object empty
    - Fix: Run `python3 docs/generate_bib_metadata.py`
 
-2. **Custom fields missing** - No `keywords` or `pykal_category`
+2. **Custom fields missing** - No `keywords` or `dynamicalnodes_category`
    - Fix: Add all required custom fields to BibTeX entry
 
 3. **Browser console errors** - JavaScript failing
@@ -385,9 +385,9 @@ git push
 
 If you're adding a paper with a new algorithm type not in the dropdown:
 
-1. **Add to BibTeX** with new `pykal_category`:
+1. **Add to BibTeX** with new `dynamicalnodes_category`:
    ```bibtex
-   pykal_category = {new-algorithm-name}
+   dynamicalnodes_category = {new-algorithm-name}
    ```
 
 2. **Update bibliography.rst** to add dropdown option:
@@ -438,7 +438,7 @@ To add a fourth platform (e.g., "Husky"), you need to:
 5. **Update JavaScript** in `_static/js/bibliography.js`:
    ```javascript
    const implementations = [
-     { key: 'impl_pykal', class: 'impl-pykal', label: 'pykal core', url: metadata.impl_pykal },
+     { key: 'impl_dynamicalnodes', class: 'impl-dynamicalnodes', label: 'dynamicalnodes core', url: metadata.impl_dynamicalnodes },
      { key: 'impl_turtlebot', class: 'impl-turtlebot', label: 'TurtleBot', url: metadata.impl_turtlebot },
      { key: 'impl_crazyflie', class: 'impl-crazyflie', label: 'Crazyflie', url: metadata.impl_crazyflie },
      { key: 'impl_husky', class: 'impl-husky', label: 'Husky', url: metadata.impl_husky }
@@ -505,8 +505,8 @@ docs/
   year           = {YEAR},                  % matches key
   url            = {https://doi.org/...},   % DOI or arXiv
   keywords       = {cat1,cat2,cat3},        % comma-separated, no spaces
-  pykal_category = {algorithm-type},        % single value, hyphenated
-  impl_pykal     = {path/to/nb.ipynb},      % or {} if not implemented
+  dynamicalnodes_category = {algorithm-type},        % single value, hyphenated
+  impl_dynamicalnodes     = {path/to/nb.ipynb},      % or {} if not implemented
   impl_turtlebot = {path/to/nb.ipynb},      % or {}
   impl_crazyflie = {path/to/nb.ipynb},      % or {}
   note           = {Brief description...}   % plain text

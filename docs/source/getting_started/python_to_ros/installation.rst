@@ -5,7 +5,7 @@ Installation
 ============
 
 
-To use pykal's ROS2 integration (``ROSNode``, message conversion, Gazebo simulation), you need ROS2 installed.
+To use dynamicalnodes's ROS2 integration (``ROSNode``, message conversion, Gazebo simulation), you need ROS2 installed.
 
 **Supported Configurations:**
 
@@ -13,7 +13,7 @@ To use pykal's ROS2 integration (``ROSNode``, message conversion, Gazebo simulat
 * **Ubuntu 22.04 LTS** → ROS2 Humble Hawksbill
 
 .. note::
-   ROS2 is optional. Core pykal functionality (``DynamicalSystem``) works without ROS2. The ``ROSNode`` class and ROS utilities will only fail if actually used without ROS2 installed.
+   ROS2 is optional. Core dynamicalnodes functionality (``DynamicalSystem``) works without ROS2. The ``ROSNode`` class and ROS utilities will only fail if actually used without ROS2 installed.
 
 Ubuntu 24.04: ROS2 Jazzy Installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.abspath("../../src"))
 
 # -- Project information -----------------------------------------------------
 
-project = "pykal"
+project = "dynamicalnodes"
 copyright = "2025, Nehal Singh Mangat"
 author = "Nehal Singh Mangat"
 release = "0.1.0"  # Version of the project

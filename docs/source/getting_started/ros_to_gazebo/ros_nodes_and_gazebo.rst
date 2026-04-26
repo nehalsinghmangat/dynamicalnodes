@@ -4,7 +4,7 @@
  ROS Nodes and Gazebo
 ======================
 
-This section demonstrates how to integrate the ROS nodes you created in the "Python to ROS" section with Gazebo simulation environments. By using ``pykal.gazebo`` wrappers, you can test your control systems in realistic simulated environments before deploying to hardware.
+This section demonstrates how to integrate the ROS nodes you created in the "Python to ROS" section with Gazebo simulation environments. By using ``dynamicalnodes.gazebo`` wrappers, you can test your control systems in realistic simulated environments before deploying to hardware.
 
 "Example: Turtlebot Gazebo Integration" shows how to modify the Turtlebot ROS node architecture to interface with a Gazebo-simulated Turtlebot, including topic remapping and simulation-specific configurations.
 

@@ -16,7 +16,7 @@
 
 3. **Reorganized Navigation with Three Sections**
    - **Quick Start** - Getting Started + Algorithm Library
-   - **The pykal Pipeline** - Core concepts and workflow
+   - **The dynamicalnodes Pipeline** - Core concepts and workflow
    - **Examples & Reference** - Robot examples and license
 
 4. **Created Getting Started Guide**
@@ -32,8 +32,8 @@ Quick Start
 ├── Getting Started          [NEW]
 └── Algorithm Library        [RENAMED & PROMOTED]
 
-The pykal Pipeline
-├── What is pykal?
+The dynamicalnodes Pipeline
+├── What is dynamicalnodes?
 ├── Theory to Software
 ├── Software to Simulation
 └── Simulation to Hardware
@@ -62,7 +62,7 @@ Examples & Reference
 1. **Discoverability** - Prominent placement helps users find implementations
 2. **Interactive** - Filtering system is a unique feature worth highlighting
 3. **Practical** - Emphasizes working code over academic references
-4. **Clear Value** - Shows what pykal can actually do
+4. **Clear Value** - Shows what dynamicalnodes can actually do
 
 ## Additional Recommendations
 
@@ -141,7 +141,7 @@ Popular Algorithms
 
 Quick links to commonly used algorithms:
 
-- :ref:`Kalman Filter <kalman1960new>` - 🔵 🟢 pykal, TurtleBot
+- :ref:`Kalman Filter <kalman1960new>` - 🔵 🟢 dynamicalnodes, TurtleBot
 - :ref:`Extended Kalman Filter <julier1997new>` - ⚪ Coming soon
 - :ref:`PID Controller <...>` - 🔵 🟢 🟡 All platforms
 ```
@@ -150,7 +150,7 @@ Quick links to commonly used algorithms:
 
 Update sections to reference the Algorithm Library:
 
-**In "What is pykal?":**
+**In "What is dynamicalnodes?":**
 ```rst
 .. note::
 
@@ -179,7 +179,7 @@ Platform Support Matrix
    :widths: 40 20 20 20
 
    * - Algorithm
-     - pykal
+     - dynamicalnodes
      - TurtleBot
      - Crazyflie
    * - Kalman Filter
@@ -205,14 +205,14 @@ In the Algorithm Library description, add visual indicators:
 Algorithm Library
 ================
 
-Browse pykal's collection of **50+ algorithms** across **3 platforms**.
+Browse dynamicalnodes's collection of **50+ algorithms** across **3 platforms**.
 
 .. raw:: html
 
    <div style="display: flex; gap: 10px; margin: 20px 0;">
      <span style="background: #007bff; color: white; padding: 4px 12px;
                   border-radius: 12px; font-size: 14px;">
-       🔵 15 pykal core
+       🔵 15 dynamicalnodes core
      </span>
      <span style="background: #28a745; color: white; padding: 4px 12px;
                   border-radius: 12px; font-size: 14px;">
@@ -246,7 +246,7 @@ In `conf.py`, add metadata for the Algorithm Library:
 
 ```python
 html_meta = {
-    'description': 'pykal Algorithm Library - Browse 50+ implemented control and estimation algorithms with interactive Jupyter notebooks',
+    'description': 'dynamicalnodes Algorithm Library - Browse 50+ implemented control and estimation algorithms with interactive Jupyter notebooks',
     'keywords': 'kalman filter, control systems, robotics, ROS2, python, algorithms',
 }
 ```
@@ -260,9 +260,9 @@ For better search engine understanding:
 {
   "@context": "https://schema.org",
   "@type": "SoftwareLibrary",
-  "name": "pykal Algorithm Library",
+  "name": "dynamicalnodes Algorithm Library",
   "description": "Collection of control and estimation algorithms with implementations",
-  "url": "https://pykal.readthedocs.io/algorithm_library.html"
+  "url": "https://dynamicalnodes.readthedocs.io/algorithm_library.html"
 }
 </script>
 ```

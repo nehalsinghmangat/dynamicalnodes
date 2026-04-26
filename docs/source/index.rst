@@ -1,18 +1,18 @@
-pykal: From Theory to Python to ROS
+dynamicalnodes: From Theory to Python to ROS
 ===================================
-**pykal** is a Python development framework that bridges the chasm between theoretical control systems and their implementation in hardware. Designed for hobbyists, students, and academics alike, this framework won't cure cancer, but it can do the next best thing: make controlling robots easier.
+**dynamicalnodes** is a Python development framework that bridges the chasm between theoretical control systems and their implementation in hardware. Designed for hobbyists, students, and academics alike, this framework won't cure cancer, but it can do the next best thing: make controlling robots easier.
 
-To learn more about the **pykal** package and how to use it, see the :doc:`getting_started/index` guide in the sidebar.
+To learn more about the **dynamicalnodes** package and how to use it, see the :doc:`getting_started/index` guide in the sidebar.
 
 To access community-made tutorial notebooks, example systems, and other fun robot things, see the :doc:`community/index` page in the sidebar. 
 
-To access the GitHub repo, `click here <https://github.com/nehalsinghmangat/pykal?tab=readme-ov-file>`_.
+To access the GitHub repo, `click here <https://github.com/nehalsinghmangat/dynamicalnodes?tab=readme-ov-file>`_.
 
 =================
 Algorithm Library
 =================
 
-Browse **pykal**'s collection of implemented control and estimation algorithms!
+Browse **dynamicalnodes**'s collection of implemented control and estimation algorithms!
 Each algorithm links to interactive Jupyter notebooks with working code you can download and run.
 Use the filters below to search by category and implementation platform.
 
@@ -34,9 +34,9 @@ Use the filters below to search by category and implementation platform.
        <label class="filter-label-main">Implementation Status:</label>
        <div class="checkbox-group">
          <label class="checkbox-label">
-           <input type="checkbox" class="impl-checkbox" value="pykal">
-           <span class="impl-circle impl-pykal"></span>
-           <span class="checkbox-text">pykal</span>
+           <input type="checkbox" class="impl-checkbox" value="dynamicalnodes">
+           <span class="impl-circle impl-dynamicalnodes"></span>
+           <span class="checkbox-text">dynamicalnodes</span>
          </label>
          <label class="checkbox-label">
            <input type="checkbox" class="impl-checkbox" value="turtlebot">
@@ -61,7 +61,7 @@ Use the filters below to search by category and implementation platform.
    <div class="legend-box">
      <strong>Legend:</strong> Click on a colored circle to view the implementation notebook.
      <div class="legend-items">
-       <span class="legend-item"><span class="impl-circle impl-pykal"></span> pykal </span>
+       <span class="legend-item"><span class="impl-circle impl-dynamicalnodes"></span> dynamicalnodes </span>
        <span class="legend-item"><span class="impl-circle impl-turtlebot"></span> TurtleBot</span>
        <span class="legend-item"><span class="impl-circle impl-crazyflie"></span> Crazyflie</span>
      </div>

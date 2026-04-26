@@ -13,7 +13,7 @@ To add your notebook to the community library:
    - Your name as author
    - Year
    - Keywords (estimation, control, or other)
-   - Implementation paths (impl_pykal, impl_turtlebot, impl_crazyflie as applicable)
+   - Implementation paths (impl_dynamicalnodes, impl_turtlebot, impl_crazyflie as applicable)
    - Brief note describing what your notebook does
 
 3. Run `python3 docs/generate_bib_metadata.py` to regenerate metadata

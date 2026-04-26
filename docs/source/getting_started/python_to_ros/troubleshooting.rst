@@ -4,7 +4,7 @@
 Troubleshooting Common Issues
 ==============================
 
-This guide covers common issues when working with ``pykal``, ROS2, and Gazebo, along with their solutions.
+This guide covers common issues when working with ``dynamicalnodes``, ROS2, and Gazebo, along with their solutions.
 
 .. contents:: Quick Navigation
    :local:
@@ -72,7 +72,7 @@ Node Not Publishing
 
    .. code-block:: python
 
-      from pykal.ros.ros2py_py2ros import PY2ROS_DEFAULT
+      from dynamicalnodes.ros.ros2py_py2ros import PY2ROS_DEFAULT
       from geometry_msgs.msg import Twist
       
       # Check if converter exists
@@ -144,7 +144,7 @@ Node Not Receiving Messages
 
    .. code-block:: python
 
-      from pykal.ros.ros2py_py2ros import ROS2PY_DEFAULT
+      from dynamicalnodes.ros.ros2py_py2ros import ROS2PY_DEFAULT
       from sensor_msgs.msg import Imu
       
       # Check if converter exists
@@ -173,7 +173,7 @@ Message Conversion Errors
 
 .. code-block:: python
 
-   from pykal.ros.ros2py_py2ros import ROS2PY_DEFAULT, PY2ROS_DEFAULT
+   from dynamicalnodes.ros.ros2py_py2ros import ROS2PY_DEFAULT, PY2ROS_DEFAULT
    from custom_msgs.msg import MyMessage
    import numpy as np
    
@@ -607,7 +607,7 @@ Enable Verbose Logging
    import logging
    logging.basicConfig(level=logging.DEBUG)
    
-   # Now see detailed logs from pykal
+   # Now see detailed logs from dynamicalnodes
 
 Check ROS Topic Communication
 ------------------------------
@@ -716,11 +716,11 @@ Getting Help
 If you encounter issues not covered here:
 
 1. **Check documentation**:
-   - pykal docs: https://pykal.readthedocs.io
+   - dynamicalnodes docs: https://dynamicalnodes.readthedocs.io
    - ROS2 docs: https://docs.ros.org/en/humble/
 
 2. **Search existing issues**:
-   - GitHub: https://github.com/your-org/pykal/issues
+   - GitHub: https://github.com/your-org/dynamicalnodes/issues
 
 3. **Ask for help**:
    - Create new issue with minimal reproducible example

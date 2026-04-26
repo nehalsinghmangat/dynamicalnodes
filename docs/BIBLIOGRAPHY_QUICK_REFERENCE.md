@@ -13,11 +13,11 @@
   year={YEAR},
   url={https://arxiv.org/abs/XXXX.XXXXX},
   keywords={PICK: state-estimation OR control OR planning},
-  pykal_category={PICK: kalman-filter, ekf, ukf, pid, mpc, lqr, etc.},
-  pykal_observability={PICK: full OR partial},
-  pykal_robot={PICK: turtlebot, crazyflie, generic, etc.},
-  pykal_implemented={PICK: yes, planned, no},
-  note={Brief description. If implemented: "Implementation in pykal.module.path"}
+  dynamicalnodes_category={PICK: kalman-filter, ekf, ukf, pid, mpc, lqr, etc.},
+  dynamicalnodes_observability={PICK: full OR partial},
+  dynamicalnodes_robot={PICK: turtlebot, crazyflie, generic, etc.},
+  dynamicalnodes_implemented={PICK: yes, planned, no},
+  note={Brief description. If implemented: "Implementation in dynamicalnodes.module.path"}
 }
 ```
 
@@ -86,9 +86,9 @@ open build/html/bibliography.html
 
 ## Implementation Workflow
 
-1. Find paper → Add to `references.bib` with `pykal_implemented=no`
-2. Plan implementation → Update to `pykal_implemented=planned`
-3. Implement → Update to `pykal_implemented=yes`, add module path to note
+1. Find paper → Add to `references.bib` with `dynamicalnodes_implemented=no`
+2. Plan implementation → Update to `dynamicalnodes_implemented=planned`
+3. Implement → Update to `dynamicalnodes_implemented=yes`, add module path to note
 4. Cite in docs → Use `:cite:`key`` in relevant pages
 5. Push → ReadTheDocs rebuilds automatically
 
@@ -102,11 +102,11 @@ open build/html/bibliography.html
   year={1960},
   url={https://doi.org/10.1115/1.3662552},
   keywords={state-estimation, filtering},
-  pykal_category={kalman-filter},
-  pykal_observability={full},
-  pykal_robot={generic},
-  pykal_implemented={yes},
-  note={Classic KF. Implementation: pykal.utilities.estimators.kf}
+  dynamicalnodes_category={kalman-filter},
+  dynamicalnodes_observability={full},
+  dynamicalnodes_robot={generic},
+  dynamicalnodes_implemented={yes},
+  note={Classic KF. Implementation: dynamicalnodes.utilities.estimators.kf}
 }
 ```
 
@@ -118,10 +118,10 @@ open build/html/bibliography.html
   year={1997},
   url={https://doi.org/10.1117/12.280797},
   keywords={state-estimation, filtering, nonlinear},
-  pykal_category={ukf},
-  pykal_observability={full},
-  pykal_robot={generic},
-  pykal_implemented={planned},
+  dynamicalnodes_category={ukf},
+  dynamicalnodes_observability={full},
+  dynamicalnodes_robot={generic},
+  dynamicalnodes_implemented={planned},
   note={UKF for nonlinear systems. Planned for v0.3}
 }
 ```
@@ -134,10 +134,10 @@ open build/html/bibliography.html
   year={2011},
   url={https://example.com/paper},
   keywords={control, trajectory-planning},
-  pykal_category={mpc},
-  pykal_observability={full},
-  pykal_robot={crazyflie},
-  pykal_implemented={planned},
+  dynamicalnodes_category={mpc},
+  dynamicalnodes_observability={full},
+  dynamicalnodes_robot={crazyflie},
+  dynamicalnodes_implemented={planned},
   note={MPC controller optimized for Crazyflie platform}
 }
 ```

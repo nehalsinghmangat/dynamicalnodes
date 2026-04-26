@@ -1,7 +1,7 @@
-﻿pykal.data\_change.corrupt
+﻿dynamicalnodes.data\_change.corrupt
 ==========================
 
-.. currentmodule:: pykal.data_change
+.. currentmodule:: dynamicalnodes.data_change
 
 .. autoclass:: corrupt
 

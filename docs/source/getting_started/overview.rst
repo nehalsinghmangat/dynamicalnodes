@@ -7,7 +7,7 @@ In this section, we will discuss:
 
 - the personal background of the auther 
 - a serious problem in robotics
-- a proposed solution (hint: it may be ``pykal``)
+- a proposed solution (hint: it may be ``dynamicalnodes``)
 - the structure of the "Tutorial"" and how best to work through it 
 
 Who am I?
@@ -29,7 +29,7 @@ This is a tragedy of efficiency, to say nothing of the sanity lost in troublesho
 
 The Solution
 ============
-The ``pykal`` package is a Python package designed to make the following transitions as painless as possible:
+The ``dynamicalnodes`` package is a Python package designed to make the following transitions as painless as possible:
 
 .. container:: graphviz-tight
 
@@ -67,11 +67,11 @@ The ``pykal`` package is a Python package designed to make the following transit
 
 
    
-`ROS <https://www.ros.org/>`_ and `Gazebo <https://gazebosim.org/home>`_  are mature open-source robotics platforms that have already eased the burden of the last bridge; ``pykal`` aims to ease the burden of the first two. How?
+`ROS <https://www.ros.org/>`_ and `Gazebo <https://gazebosim.org/home>`_  are mature open-source robotics platforms that have already eased the burden of the last bridge; ``dynamicalnodes`` aims to ease the burden of the first two. How?
 
-``pykal`` uses the :doc:`discrete-time dynamical system <../notebooks/tutorial/theory_to_python/dynamical_system>` as a compositional primitive in defining algorithms and control systems. Such representations are modular, easy to implement, and easy to debug, thus spanning the gap between "Theory" and "Python"".
+``dynamicalnodes`` uses the :doc:`discrete-time dynamical system <../notebooks/tutorial/theory_to_python/dynamical_system>` as a compositional primitive in defining algorithms and control systems. Such representations are modular, easy to implement, and easy to debug, thus spanning the gap between "Theory" and "Python"".
 
-Further, a modular framework induces a simple API between Python and ROS, which lets us abstract away from the CLI and interface with ROS from a Jupyter notebook via ``pykal``. In addition to a quality of life improvement, the composition of dynamical systems has a direct correspondence with ``ROS`` node architecturem, making it possible to implement and debug such architecturs in Python before automagically translating them into ``ROS``. Thus, the second bridge from "Python" to "ROS" is spanned. 
+Further, a modular framework induces a simple API between Python and ROS, which lets us abstract away from the CLI and interface with ROS from a Jupyter notebook via ``dynamicalnodes``. In addition to a quality of life improvement, the composition of dynamical systems has a direct correspondence with ``ROS`` node architecturem, making it possible to implement and debug such architecturs in Python before automagically translating them into ``ROS``. Thus, the second bridge from "Python" to "ROS" is spanned. 
 
 Using the Tutorial
 ==================
@@ -87,7 +87,7 @@ If you are new to this package and want to try casting algorithms/control system
 
 Python to ROS
 ^^^^^^^^^^^^^
-If you are comfortable using ``pykal`` to cast algorithms/control systems as dynamical systems and want to begin simulating things in ``ROS``, :doc:`start here <./python_to_ros/index>`. 
+If you are comfortable using ``dynamicalnodes`` to cast algorithms/control systems as dynamical systems and want to begin simulating things in ``ROS``, :doc:`start here <./python_to_ros/index>`. 
 
 ROS to Gazebo
 ^^^^^^^^^^^^^

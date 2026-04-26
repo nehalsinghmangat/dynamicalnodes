@@ -1,14 +1,14 @@
-![Doctest Status](https://github.com/nehalsinghmangat/pykal/actions/workflows/doctest.yml/badge.svg) [![Doctest Status](https://github.com/nehalsinghmangat/pykal/actions/workflows/doctest.yml)](https://github.com/nehalsinghmangat/pykal/actions/workflows/doctest.yml)
+![Doctest Status](https://github.com/nehalsinghmangat/dynamicalnodes/actions/workflows/doctest.yml/badge.svg) [![Doctest Status](https://github.com/nehalsinghmangat/dynamicalnodes/actions/workflows/doctest.yml)](https://github.com/nehalsinghmangat/dynamicalnodes/actions/workflows/doctest.yml)
 
-# pykal: From Theory to Python to ROS
+# dynamicalnodes: From Theory to Python to ROS
 
 > _"Cross a river once, swim; cross a river a thousand times, build a bridge."_  — Punjabi saying
 
-**pykal** is a Python development framework that bridges the chasm between theoretical control systems and their implementation in hardware. Designed for hobbyists, students, and academics alike, this framework won't cure cancer, but it can do the next best thing: make controlling robots easier.
+**dynamicalnodes** is a Python development framework that bridges the chasm between theoretical control systems and their implementation in hardware. Designed for hobbyists, students, and academics alike, this framework won't cure cancer, but it can do the next best thing: make controlling robots easier.
 
-To get started, or to explore what this framework has to offer, click here: [pykal Documentation](https://pykal.readthedocs.io).
+To get started, or to explore what this framework has to offer, click here: [dynamicalnodes Documentation](https://dynamicalnodes.readthedocs.io).
 
-For a 22 second video describing this framework's intended workflow for, please click here: [SAIL 2025 -- Presenting pykal](https://youtu.be/5GbVHo6QZrw).
+For a 22 second video describing this framework's intended workflow for, please click here: [SAIL 2025 -- Presenting dynamicalnodes](https://youtu.be/5GbVHo6QZrw).
 
 ---
 ## Turtlebot: A journey of four steps
@@ -36,9 +36,9 @@ For a 22 second video describing this framework's intended workflow for, please 
 ---
 ## 👁️ Watch for Releases
 
-To get notified when **pykal** is officially released:
+To get notified when **dynamicalnodes** is officially released:
 
-1. Go to the GitHub repo: [https://github.com/nehalsinghmangat/pykal](https://github.com/nehalsinghmangat/pykal)
+1. Go to the GitHub repo: [https://github.com/nehalsinghmangat/dynamicalnodes](https://github.com/nehalsinghmangat/dynamicalnodes)
 2. Click the `👁️ Watch` button near the top-right of the page.
 3. Select **"Custom"** or **"Releases only"** from the dropdown.
 4. Ensure **"Releases"** is checked.

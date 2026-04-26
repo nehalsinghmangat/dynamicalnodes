@@ -4,12 +4,12 @@
  Installation
 ==============
 
-This guide provides step-by-step installation instructions for **pykal**.
+This guide provides step-by-step installation instructions for **dynamicalnodes**.
 
 Prerequisites
 -------------
 
-**pykal** requires:
+**dynamicalnodes** requires:
 
 * **Python 3.12 or higher**
 * **pip** (Python package installer)
@@ -23,23 +23,23 @@ Install via pip:
 
 .. code-block:: bash
 
-   pip install pykal
+   pip install dynamicalnodes
 
-We **strongly recommend** using a virtual environment. Using a virtual environment isolates pykal dependencies from your system Python:
+We **strongly recommend** using a virtual environment. Using a virtual environment isolates dynamicalnodes dependencies from your system Python:
 
 .. code-block:: bash
 
    # Create a new virtual environment
-   python3 -m venv pykal-env
+   python3 -m venv dynamicalnodes-env
 
    # Activate the virtual environment
-   source pykal-env/bin/activate
+   source dynamicalnodes-env/bin/activate
 
-   # Install pykal
-   pip install pykal
+   # Install dynamicalnodes
+   pip install dynamicalnodes
 
    # Verify installation
-   pip list | grep pykal
+   pip list | grep dynamicalnodes
 
 To deactivate the virtual environment later:
 

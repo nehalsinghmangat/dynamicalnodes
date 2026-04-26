@@ -1,7 +1,7 @@
 API Reference
 =============
 
-This section provides detailed API documentation for all pykal modules.
+This section provides detailed API documentation for all dynamicalnodes modules.
 
 .. toctree::
    :maxdepth: 2
