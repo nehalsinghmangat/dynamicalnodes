@@ -1,10 +1,10 @@
 # dynamicalnodes: A Python Framework for Discrete-Time Control Systems on ROS 2
 
-> _"All the world's a [control system], and all the men and women merely [control systems]."_ - William Shakespeare (paraphrased)
+> _"All the world's a [control system], and all the men and women merely [control systems]."_ - William Shakespeare
 
-> _"An idiot admires complexity; a genius admires [control systems]."_ - Terry Davis (paraphrased)
+> _"An idiot admires complexity; a genius admires [control systems]."_ - Terry Davis 
 
-> _"Give me a [control system] long enough and a [computer] on which to place it, and I shall move the world."_ - Archimedes (paraphrased)
+> _"Give me a [control system] long enough and a [computer] on which to place it, and I shall move the world."_ - Archimedes 
 
 **dynamicalnodes** is a Python development framework that bridges the gap between control systems and their implementation onto ROS 2. Designed for hobbyists, students, and academics alike, this framework won't cure cancer, but it can do the next best thing: make robotics easier.
 
