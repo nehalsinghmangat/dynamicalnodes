@@ -1,4 +1,4 @@
-# dynamicalnodes: A Python Framework for Discrete-Time Control Systems on ROS 2
+# dynamicalnodes: Control Systems on ROS 2
 
 > _"All the world's a [control system], and all the men and women merely [control systems]."_ - William Shakespeare
 
