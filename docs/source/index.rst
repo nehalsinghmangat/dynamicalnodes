@@ -20,6 +20,7 @@ system as inputs to another.
    :maxdepth: 1
    :caption: Notebooks
 
+   notebooks/algorithm_library
    notebooks/cruise_control
 
 .. toctree::
