@@ -24,6 +24,7 @@ from turtlesim.msg import Pose
 from nav_msgs.msg import Odometry, Path
 from sensor_msgs.msg import (
     Imu,
+    NavSatFix,
     LaserScan,
     Image,
     CompressedImage,
@@ -559,6 +560,42 @@ def py2ros_imu(arr: NDArray) -> Imu:
 
 
 # ---------------------------------------------------------------------------
+# sensor_msgs/NavSatFix  <->  np.ndarray(3,)  [latitude, longitude, altitude]
+# ---------------------------------------------------------------------------
+
+def ros2py_nav_sat_fix(msg: NavSatFix) -> NDArray:
+    """
+    NavSatFix → [latitude, longitude, altitude]
+
+    >>> from sensor_msgs.msg import NavSatFix
+    >>> msg = NavSatFix()
+    >>> msg.latitude, msg.longitude, msg.altitude = 37.5, -122.0, 10.0
+    >>> ros2py_nav_sat_fix(msg).tolist()
+    [37.5, -122.0, 10.0]
+    """
+    return np.array([msg.latitude, msg.longitude, msg.altitude], dtype=float)
+
+
+def py2ros_nav_sat_fix(arr: NDArray) -> NavSatFix:
+    """
+    [latitude, longitude, altitude] → NavSatFix
+
+    >>> import numpy as np
+    >>> msg = py2ros_nav_sat_fix(np.array([37.5, -122.0, 10.0]))
+    >>> msg.latitude, msg.longitude, msg.altitude
+    (37.5, -122.0, 10.0)
+    """
+    flat = np.asarray(arr, dtype=float).ravel()
+    if flat.size != 3:
+        raise ValueError(f"py2ros_nav_sat_fix expected length 3, got {flat.size}")
+    msg = NavSatFix()
+    msg.latitude = float(flat[0])
+    msg.longitude = float(flat[1])
+    msg.altitude = float(flat[2])
+    return msg
+
+
+# ---------------------------------------------------------------------------
 # nav_msgs/Odometry  <->  np.ndarray(13,)
 # (pose + twist; covariances ignored)
 # ---------------------------------------------------------------------------
@@ -907,9 +944,9 @@ def py2ros_uint8_multiarray(arr: NDArray) -> UInt8MultiArray:
 # std_msgs/Float64  <->  scalar float (as 1D array)
 # ---------------------------------------------------------------------------
 
-def ros2py_float64(msg: Float64) -> NDArray:
-    """Convert Float64 message to 1D numpy array with single element."""
-    return np.array([msg.data], dtype=float)
+def ros2py_float64(msg: Float64) -> float:
+    """Convert Float64 message to Python float."""
+    return float(msg.data)
 
 
 def py2ros_float64(arr: NDArray) -> Float64:
@@ -994,6 +1031,7 @@ ROS2PY_DEFAULT = {
     AccelStamped: ros2py_accel_stamped,
     Vector3Stamped: ros2py_vector3_stamped,
     Imu: ros2py_imu,
+    NavSatFix: ros2py_nav_sat_fix,
     Odometry: ros2py_odometry,
     Path: ros2py_path,
     JointState: ros2py_joint_state,
@@ -1019,6 +1057,7 @@ PY2ROS_DEFAULT = {
     AccelStamped: py2ros_accel_stamped,
     Vector3Stamped: py2ros_vector3_stamped,
     Imu: py2ros_imu,
+    NavSatFix: py2ros_nav_sat_fix,
     Odometry: py2ros_odometry,
     Path: py2ros_path,
     JointState: py2ros_joint_state,

@@ -3,33 +3,27 @@ dynamicalnodes: A modular Python framework for dynamical systems, estimation, an
 """
 
 from .dynamical_system import DynamicalSystem
-from . import rostools
+from .rosnode import ROSNode
 
-# Lazy imports for ROS2-dependent symbols — only fail if actually used
+# Lazy import — requires a live ROS2 installation
+_ROS2_MODULES = {
+    "ros2py_py2ros": ("ros2py_py2ros", None),
+}
+
+
 def __getattr__(name):
-    if name == "ROSNode":
+    if name in _ROS2_MODULES:
+        module_name, attr = _ROS2_MODULES[name]
         try:
-            from .rosnode import ROSNode
-            return ROSNode
+            import importlib
+            mod = importlib.import_module(f".{module_name}", package=__name__)
+            return mod if attr is None else getattr(mod, attr)
         except ImportError as e:
             raise ImportError(
-                f"ROSNode requires ROS2 dependencies. Install with: pip install dynamicalnodes[ros2]\n"
-                f"Original error: {e}"
-            ) from e
-    if name == "reset_ros":
-        try:
-            from .rostools import reset_ros
-            return reset_ros
-        except ImportError as e:
-            raise ImportError(
-                f"reset_ros requires ROS2 dependencies. Install with: pip install dynamicalnodes[ros2]\n"
+                f"{name} requires ROS2 dependencies. Install with: pip install dynamicalnodes[ros2]\n"
                 f"Original error: {e}"
             ) from e
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
-__all__ = [
-    "DynamicalSystem",
-    "ROSNode",
-    "reset_ros",
-    "rostools",
-]
+
+__all__ = ["DynamicalSystem", "ROSNode"]

@@ -6,4 +6,3 @@ API Reference
 
    dynamical_system
    rosnode
-   rostools

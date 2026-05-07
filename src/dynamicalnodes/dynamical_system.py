@@ -186,6 +186,11 @@ class DynamicalSystem:
             Keyword arguments passed to f and h. Each function receives
             only the kwargs it declares in its signature via `_smart_call`.
 
+            A reserved key ``_state`` may be passed to inject the current
+            state without knowing ``f``'s first parameter name. It is
+            removed from kwargs before dispatch and inserted under the
+            correct name automatically.
+
         Returns
         -------
         Any
