@@ -10,27 +10,32 @@ Each component (plant, controller, estimator, reference generator) is modeled as
 observation function ``h``. Components compose naturally by passing outputs of one
 system as inputs to another.
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Getting Started
+.. raw:: html
 
-   installation
+   <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;margin:1.5rem 0;text-align:center;">
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Notebooks
+     <div>
+       <p style="font-weight:600;margin-bottom:0.5rem;">Theory</p>
+       <img src="_static/figures/feedback_diagram_discrete_time.svg"
+            style="width:100%;margin-bottom:0.75rem;" alt="Discrete-time feedback diagram">
+       <img src="_static/figures/car.svg"
+            style="width:100%;" alt="Car plant">
+     </div>
 
-   notebooks/algorithm_library
-   notebooks/cruise_control
+     <div>
+       <p style="font-weight:600;margin-bottom:0.5rem;">Python</p>
+       <img src="_static/figures/feedback_diagram_dynamicalsystem_objects.svg"
+            style="width:100%;margin-bottom:0.75rem;" alt="DynamicalSystem objects diagram">
+       <img src="_static/figures/cruise_control_dynamicalsystem_plot.png"
+            style="width:100%;" alt="Cruise control simulation plot">
+     </div>
 
-.. toctree::
-   :maxdepth: 1
-   :caption: API Reference
+     <div>
+       <p style="font-weight:600;margin-bottom:0.5rem;">ROS2</p>
+       <img src="_static/figures/rosgraph.svg"
+            style="width:100%;margin-bottom:0.75rem;" alt="ROS graph">
+       <img src="_static/figures/cruise_control.gif"
+            style="width:100%;" alt="Cruise control live demo">
+     </div>
 
-   api/index
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Legal
-
-   license
+   </div>
