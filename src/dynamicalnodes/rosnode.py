@@ -351,34 +351,6 @@ class ROSNode:
             return None
         return list(output.values())[0] if len(self._pubs_cfg) == 1 else output
 
-    def reset_simulation(self) -> None:
-        """
-        Reset the node's state for a new simulation run.
-
-        Examples
-        --------
-        >>> from dynamicalnodes import DynamicalSystem, ROSNode
-        >>> from std_msgs.msg import Float64
-        >>> from dynamicalnodes.ros2py_py2ros import py2ros_float64
-        >>> import numpy as np
-        >>>
-        >>> sys = DynamicalSystem(f=lambda x: x + 1, h=lambda x: x)
-        >>> node = ROSNode(
-        ...     dynamical_system=sys,
-        ...     publishes_to=[{"topic": "/out", "msg_type": Float64,
-        ...                    "py2ros": py2ros_float64}],
-        ...     state_name="x",
-        ... )
-        >>> node._state = np.array([0.0])
-        >>> _ = node.step()
-        >>> node._state
-        array([1.])
-        >>> node.reset_simulation()
-        >>> node._state is None
-        True
-        """
-        self._state = None
-
     @property
     def state(self) -> Any:
         """Current state of the dynamical system."""
