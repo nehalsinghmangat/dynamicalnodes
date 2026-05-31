@@ -10,7 +10,7 @@ A Docker image is provided that bundles dynamicalnodes, ROS2 Jazzy, and
 `PlotJuggler <https://github.com/facontidavide/PlotJuggler>`_ for immediate use
 without a local ROS2 install.
 
-**Prerequisites:** Docker and Docker Compose. On Ubuntu:
+**Prerequisites:** Docker. On Ubuntu / Linux Mint:
 
 .. code-block:: bash
 
@@ -20,11 +20,11 @@ without a local ROS2 install.
    sudo install -m 0755 -d /etc/apt/keyrings
    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
    sudo chmod a+r /etc/apt/keyrings/docker.asc
-   echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+   echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-   # Install Docker Engine and the Compose plugin
+   # Install Docker Engine
    sudo apt-get update
-   sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+   sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
 Allow the container to access your display (required for PlotJuggler):
 
@@ -32,39 +32,27 @@ Allow the container to access your display (required for PlotJuggler):
 
    xhost +local:docker
 
-Clone the repo and start the container in the background:
+Clone the repo and build the image:
 
 .. code-block:: bash
 
    git clone https://github.com/nehalsinghmangat/dynamicalnodes
    cd dynamicalnodes
-   sudo docker compose up --build -d
+   sudo docker build -t dynamicalnodes .
 
-Open a shell inside the running container:
+Run the container:
 
 .. code-block:: bash
 
-   sudo docker compose exec dynamicalnodes bash
+   sudo docker run -it --env DISPLAY=$DISPLAY --volume /tmp/.X11-unix:/tmp/.X11-unix --network host dynamicalnodes
 
 ROS2 is sourced automatically. You can immediately run:
 
 .. code-block:: bash
 
    ros2 topic list
-   plotjuggler
+   ros2 run plotjuggler plotjuggler
    python3 -c "import dynamicalnodes; print('ok')"
-
-**GUI on macOS:** Install `XQuartz <https://www.xquartz.org/>`_, then before
-starting the container set:
-
-.. code-block:: bash
-
-   export DISPLAY=host.docker.internal:0
-
-**ROS2 node discovery:** ``network_mode: host`` is set in ``docker-compose.yml``,
-which enables full DDS multicast across your network. This works on Linux. On
-macOS and Windows (Docker Desktop), host networking behaves differently and
-cross-host node discovery may be limited.
 
 **JupyterLab inside the container:**
 
@@ -75,10 +63,8 @@ it inside the container:
 
    jupyter lab --ip=0.0.0.0 --no-browser --allow-root
 
-Then open your **host browser** at ``http://localhost:8888``. Copy the token
-from the terminal output when prompted. Because ``network_mode: host`` is set,
-port 8888 on the container is directly accessible on your machine with no
-additional port mapping needed.
+Then open your **host browser** at ``http://localhost:8888``. The port is
+directly accessible because ``--network host`` is set.
 
 Requirements
 ------------
