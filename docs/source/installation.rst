@@ -44,7 +44,7 @@ Run the container:
 
 .. code-block:: bash
 
-   sudo docker run -it --env DISPLAY=$DISPLAY --volume /tmp/.X11-unix:/tmp/.X11-unix --network host dynamicalnodes
+   sudo docker run -it --env DISPLAY=$DISPLAY --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(pwd):/ws/dynamicalnodes --network host dynamicalnodes
 
 ROS2 is sourced automatically. You can immediately run:
 

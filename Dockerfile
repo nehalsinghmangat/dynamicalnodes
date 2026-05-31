@@ -14,6 +14,8 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 RUN echo "source /opt/ros/jazzy/setup.bash" >> /root/.bashrc
 
+WORKDIR /ws/dynamicalnodes
+
 EXPOSE 8888
 
 CMD ["bash"]
