@@ -61,10 +61,9 @@ it inside the container:
 
 .. code-block:: bash
 
-   jupyter lab --ip=0.0.0.0 --no-browser --allow-root
+   jupyter lab --ip=0.0.0.0 --no-browser --allow-root --ServerApp.token='' --ServerApp.password=''
 
-Then open your **host browser** at ``http://localhost:8888``. The port is
-directly accessible because ``--network host`` is set.
+Then open your **host browser** at ``http://localhost:8888`` — no login required.
 
 Requirements
 ------------

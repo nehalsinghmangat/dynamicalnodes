@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
 
 COPY . /ws/dynamicalnodes/
 RUN python3 -m venv /opt/venv --system-site-packages && \
-    /opt/venv/bin/pip install /ws/dynamicalnodes jupyterlab
+    /opt/venv/bin/pip install "/ws/dynamicalnodes[docs]"
 
 ENV PATH="/opt/venv/bin:$PATH"
 

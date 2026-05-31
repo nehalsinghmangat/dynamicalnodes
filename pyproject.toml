@@ -46,7 +46,7 @@ docs = [
   "sphinx-copybutton>=0.5",
   "myst_nb",
   "sphinx-autodoc-typehints>=1.24.0",
-  "matplotlib>=3.7",
+  "matplotlib>=3.9",
   "scipy>=1.11",
   "jupyter",
   "jaxtyping>=0.2",
