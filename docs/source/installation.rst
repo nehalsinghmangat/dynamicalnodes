@@ -10,22 +10,41 @@ A Docker image is provided that bundles dynamicalnodes, ROS2 Jazzy, and
 `PlotJuggler <https://github.com/facontidavide/PlotJuggler>`_ for immediate use
 without a local ROS2 install.
 
-**Prerequisites:** `Docker <https://docs.docker.com/get-docker/>`_ and
-`Docker Compose <https://docs.docker.com/compose/install/>`_.
+**Prerequisites:** Docker and Docker Compose. On Ubuntu:
 
-Build and start the container:
+.. code-block:: bash
+
+   # Add Docker's official GPG key and repository
+   sudo apt-get update
+   sudo apt-get install -y ca-certificates curl
+   sudo install -m 0755 -d /etc/apt/keyrings
+   sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+   sudo chmod a+r /etc/apt/keyrings/docker.asc
+   echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+   # Install Docker Engine and the Compose plugin
+   sudo apt-get update
+   sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+Allow the container to access your display (required for PlotJuggler):
+
+.. code-block:: bash
+
+   xhost +local:docker
+
+Clone the repo and start the container in the background:
 
 .. code-block:: bash
 
    git clone https://github.com/nehalsinghmangat/dynamicalnodes
    cd dynamicalnodes
-   docker compose up --build
+   sudo docker compose up --build -d
 
-To open a shell inside the running container:
+Open a shell inside the running container:
 
 .. code-block:: bash
 
-   docker compose exec dynamicalnodes bash
+   sudo docker compose exec dynamicalnodes bash
 
 ROS2 is sourced automatically. You can immediately run:
 
@@ -35,14 +54,8 @@ ROS2 is sourced automatically. You can immediately run:
    plotjuggler
    python3 -c "import dynamicalnodes; print('ok')"
 
-**GUI (PlotJuggler) on Linux:** Allow the container to access your display before
-starting the container:
-
-.. code-block:: bash
-
-   xhost +local:docker
-
-**GUI on macOS:** Install `XQuartz <https://www.xquartz.org/>`_, then set:
+**GUI on macOS:** Install `XQuartz <https://www.xquartz.org/>`_, then before
+starting the container set:
 
 .. code-block:: bash
 

@@ -15,6 +15,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.mathjax",
     "sphinx_autodoc_typehints",
+    "sphinx_copybutton",
 ]
 
 myst_enable_extensions = ["dollarmath", "amsmath"]
