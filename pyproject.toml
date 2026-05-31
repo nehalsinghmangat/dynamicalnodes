@@ -40,6 +40,8 @@ docs = [
   "matplotlib>=3.7",
   "scipy>=1.11",
   "jupyter",
+  "jaxtyping>=0.2",
+  "beartype>=0.15",
 ]
 
 [project.urls]

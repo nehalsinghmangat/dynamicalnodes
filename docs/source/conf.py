@@ -60,7 +60,7 @@ html_static_path = ["_static"]
 html_css_files = ["css/custom.css"]
 
 html_theme_options = {
-    "navigation_depth": 3,
+    "navigation_depth": 4,
     "collapse_navigation": False,
     "sticky_navigation": True,
 }

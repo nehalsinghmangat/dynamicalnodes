@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="300" height="90" viewBox="0 0 300 90"
+     xmlns="http://www.w3.org/2000/svg">
+  <!-- u_k input (red) -->
+  <line x1="0" y1="45" x2="72" y2="45" stroke="#000000" stroke-width="1.2"/>
+  <polygon points="72,42 80,45 72,48" fill="#000000"/>
+  <text x="40" y="38" text-anchor="middle"
+        font-style="italic"
+        font-family="CMU Serif, Latin Modern Roman, STIX Two Text, serif"
+        font-size="13" fill="#ff0000">u<tspan dy="4" font-size="10">k</tspan></text>
+  <!-- block -->
+  <a href="#" style="cursor:pointer;">
+    <rect x="80" y="10" width="140" height="70"
+          fill="none" stroke="#007f00" stroke-width="1.8"/>
+    <text x="150" y="40" text-anchor="middle"
+          font-weight="bold" font-style="normal"
+          font-family="CMU Serif, Latin Modern Roman, STIX Two Text, serif"
+          font-size="14" fill="#000000">Plant</text>
+    <text x="150" y="62" text-anchor="middle"
+          font-style="italic"
+          font-family="CMU Serif, Latin Modern Roman, STIX Two Text, serif"
+          font-size="13" fill="#000000">(f<tspan dy="4" font-size="10">p</tspan><tspan dy="-4">, h</tspan><tspan dy="4" font-size="10">p</tspan><tspan dy="-4">)</tspan></text>
+  </a>
+  <!-- y_k output (green) -->
+  <line x1="220" y1="45" x2="284" y2="45" stroke="#000000" stroke-width="1.2"/>
+  <polygon points="284,42 292,45 284,48" fill="#000000"/>
+  <text x="256" y="38" text-anchor="middle"
+        font-style="italic"
+        font-family="CMU Serif, Latin Modern Roman, STIX Two Text, serif"
+        font-size="13" fill="#007f00">y<tspan dy="4" font-size="10">k</tspan></text>
+</svg>

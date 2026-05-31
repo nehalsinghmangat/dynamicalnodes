@@ -33,13 +33,13 @@ from dynamicalnodes.ros2py_py2ros import ros2py_nav_sat_fix, ros2py_imu, py2ros_
 def kf_f(zk, imu, Fk, Bk, Hk, Qk, Rk, gps=None):
     """Predict always; update only when GPS is available."""
     x, P = zk
-    ax = float(imu[7])                  # linear_acceleration.x is at index 7
+    ax = float(imu[7])  # linear_acceleration.x is at index 7
     x_pred = Fk @ x + Bk * ax
     P_pred = Fk @ P @ Fk.T + Qk
     if gps is not None:
-        y     = np.array([float(gps[0])])  # latitude = x position
-        S     = Hk @ P_pred @ Hk.T + Rk
-        K     = P_pred @ Hk.T @ np.linalg.inv(S)
+        y = np.array([float(gps[0])])  # latitude = x position
+        S = Hk @ P_pred @ Hk.T + Rk
+        K = P_pred @ Hk.T @ np.linalg.inv(S)
         x_upd = x_pred + K @ (y - Hk @ x_pred)
         P_upd = (np.eye(2) - K @ Hk) @ P_pred
     else:

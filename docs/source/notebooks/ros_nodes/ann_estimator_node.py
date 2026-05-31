@@ -32,7 +32,7 @@ from dynamicalnodes.ros2py_py2ros import ros2py_nav_sat_fix, ros2py_imu, py2ros_
 
 def ann_h(gps, imu, W1, b1, W2, b2):
     inp = np.array([float(gps[0]), float(imu[7])])  # [x_gps, ax_imu]
-    return W2 @ np.tanh(W1 @ inp + b1) + b2         # [x_est, vx_est]
+    return W2 @ np.tanh(W1 @ inp + b1) + b2  # [x_est, vx_est]
 
 
 # ──────────────────────────────────────────────────────────────────────

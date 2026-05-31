@@ -31,9 +31,20 @@ from dynamicalnodes.ros2py_py2ros import py2ros_imu
 
 def imu_h(tk, A, omega):
     ax = -A * omega**2 * np.sin(omega * tk)  # true acceleration
-    return np.array([0.0, 0.0, 0.0, 1.0,  # orientation (unit quaternion)
-                     0.0, 0.0, 0.0,         # angular velocity
-                     ax,  0.0, 0.0])         # linear acceleration
+    return np.array(
+        [
+            0.0,
+            0.0,
+            0.0,
+            1.0,  # orientation (unit quaternion)
+            0.0,
+            0.0,
+            0.0,  # angular velocity
+            ax,
+            0.0,
+            0.0,
+        ]
+    )  # linear acceleration
 
 
 # ──────────────────────────────────────────────────────────────────────
