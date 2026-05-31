@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dynamicalnodes"
-version = "0.1"
+version = "0.1.0"
 description = "dynamicalnodes is a Python library for modeling general control systems."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -16,6 +16,15 @@ authors = [
   { name = "Nehal Singh Mangat", email = "nehalsinghmangat.software@gmail.com" }
 ]
 keywords = ["control", "estimation", "ros2"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Software Development :: Libraries",
+]
 dependencies = [
   "numpy>=1.24",
 ]
@@ -47,10 +56,18 @@ docs = [
 [project.urls]
 Homepage = "https://github.com/nehalsinghmangat/dynamicalnodes"
 Documentation = "https://nehalsinghmangat.github.io/dynamicalnodes"
+Issues = "https://github.com/nehalsinghmangat/dynamicalnodes/issues"
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
 doctest_optionflags = ["NORMALIZE_WHITESPACE", "ELLIPSIS"]
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
 
 [tool.setuptools]
 package-dir = {"" = "src"}
