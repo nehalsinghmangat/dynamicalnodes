@@ -22,7 +22,6 @@ myst_enable_extensions = ["dollarmath", "amsmath"]
 myst_heading_anchors = 3
 
 nb_execution_mode = "off"
-nb_download_button = True
 
 autodoc_mock_imports = [
     "rclpy",
