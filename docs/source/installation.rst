@@ -1,7 +1,92 @@
 Installation
 ============
 
-We **highly recommend** you install things using the Docker environment below to avoid any conflicts with existing ros installations you might have on your local machine. Once you've played around with the theory-to-ros pipeline and determined it fits your use case, then you may want to consider installing things locally for the computational benefits.
+Two paths are available: local installation or Docker. Local gives better
+performance once you know the stack fits your use case. Docker is the faster
+way to get started with no risk of conflicting with an existing ROS2 install.
+
+Local Installation
+------------------
+
+**1. dynamicalnodes**
+
+Requires Python 3.12 or later. A virtual environment is recommended to keep
+dependencies isolated:
+
+.. code-block:: bash
+
+   python3 -m venv --system-site-packages .venv
+   source .venv/bin/activate
+
+``--system-site-packages`` makes ROS2 Python packages (``rclpy``, message
+types, etc.) visible inside the venv without reinstalling them.
+
+Then install dynamicalnodes:
+
+.. code-block:: bash
+
+   pip install dynamicalnodes
+
+For development:
+
+.. code-block:: bash
+
+   git clone https://github.com/nehalsinghmangat/dynamicalnodes
+   cd dynamicalnodes
+   python3 -m venv --system-site-packages .venv
+   source .venv/bin/activate
+   pip install -e ".[dev]"
+
+To reactivate the venv in a new terminal:
+
+.. code-block:: bash
+
+   source /path/to/dynamicalnodes/.venv/bin/activate
+
+**2. ROS2 Jazzy**
+
+Follow the `official ROS2 Jazzy installation instructions
+<https://docs.ros.org/en/jazzy/Installation.html>`_ for your platform, then
+source the setup file in every new terminal (or add it to ``~/.bashrc``):
+
+.. code-block:: bash
+
+   source /opt/ros/jazzy/setup.bash
+
+Verify the correct version is active:
+
+.. code-block:: bash
+
+   printenv ROS_DISTRO   # should print: jazzy
+   ros2 --version
+
+If ``ROS_DISTRO`` is empty, ROS2 is not sourced in the current shell. If it
+prints a different distro (e.g. ``humble``), another ROS2 version is sourced
+instead. Only one distro can be active per shell — source the one you want
+explicitly:
+
+.. code-block:: bash
+
+   source /opt/ros/jazzy/setup.bash   # overrides whatever was sourced before
+
+To make Jazzy the default in every new terminal, add this line to ``~/.bashrc``
+(replacing any existing ``source /opt/ros/.../setup.bash`` line):
+
+.. code-block:: bash
+
+   echo "source /opt/ros/jazzy/setup.bash" >> ~/.bashrc
+
+**3. PlotJuggler**
+
+.. code-block:: bash
+
+   sudo apt-get install -y ros-jazzy-plotjuggler-ros
+
+Launch it:
+
+.. code-block:: bash
+
+   ros2 run plotjuggler plotjuggler
 
 Docker (ROS2 + PlotJuggler)
 ----------------------------
@@ -9,6 +94,9 @@ Docker (ROS2 + PlotJuggler)
 A Docker image is provided that bundles dynamicalnodes, ROS2 Jazzy, and
 `PlotJuggler <https://github.com/facontidavide/PlotJuggler>`_ for immediate use
 without a local ROS2 install.
+
+We **highly recommend** starting here to avoid conflicts with any existing ROS2
+installation on your machine.
 
 **Prerequisites:** Docker. On Ubuntu / Linux Mint:
 
@@ -64,36 +152,3 @@ it inside the container:
    jupyter lab --ip=0.0.0.0 --no-browser --allow-root --ServerApp.token='' --ServerApp.password=''
 
 Then open your **host browser** at ``http://localhost:8888`` — no login required.
-
-Requirements
-------------
-
-Python 3.12 or later.
-
-Install
--------
-
-.. code-block:: bash
-
-   pip install dynamicalnodes
-
-For development:
-
-.. code-block:: bash
-
-   git clone https://github.com/nehalsinghmangat/dynamicalnodes
-   cd dynamicalnodes
-   pip install -e ".[dev]"
-
-ROS2 Integration
-----------------
-
-ROS2-dependent features (:class:`~dynamicalnodes.ROSNode`, :mod:`~dynamicalnodes.rostools`)
-require a working ROS2 installation (Jazzy Jalisco or later). Install ROS2 via the
-`official instructions <https://docs.ros.org/en/jazzy/Installation.html>`_,
-then install dynamicalnodes as above.
-
-The core :class:`~dynamicalnodes.DynamicalSystem` class has no ROS2 dependency
-and works anywhere Python runs.
-
-

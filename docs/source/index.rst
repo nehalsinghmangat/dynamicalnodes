@@ -1,19 +1,19 @@
-\dynamicalnodes
+dynamicalnodes
 ==============
 
 **dynamicalnodes** is a Python framework for modeling control systems and deploying them as ROS2 nodes.
 
 It follows a three-step pipeline: **Theory → Python → ROS**.
 
-Each component (plant, controller, estimator, reference generator) is modeled as a
-:class:`~dynamicalnodes.DynamicalSystem` with a state transition function ``f`` and an
-observation function ``h``. Components compose naturally by passing outputs of one
-system as inputs to another.
+This website is a work in progress. Proceed at your own risk.
+
+To get started, :doc:`install the package <installation>` and begin the :doc:`first tutorial <notebooks/tutorial>`. 
 
 .. toctree::
    :hidden:
 
    installation
+   notebooks/tutorial
    notebooks/f_h_library/f_h_functions
    api/index
    license
