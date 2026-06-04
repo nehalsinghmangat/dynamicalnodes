@@ -15,10 +15,6 @@ class DynamicalSystem:
     """
     A discrete-time dynamical system with (optional) state transition and (required) output functions.
 
-    Methods
-    ----------
-    ``step(**kwargs)``: Compute ``x_{k+1}, y_k = (f(*f_args, **f_kwargs), h(*h_args, **h_kwargs))``. For each keyword=value in ``**kwargs``, step binds the value to the keyword and then passes it to any function that declares that keyword as a parameter. See examples below.
-
     Examples
     --------
 
