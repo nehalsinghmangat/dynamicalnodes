@@ -7,11 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dynamicalnodes"
-<<<<<<< HEAD
 version = "0.1.2"
-=======
-version = "0.1.1"
->>>>>>> origin/main
 description = "dynamicalnodes is a Python library for modeling general control systems."
 readme = "README.md"
 requires-python = ">=3.12"
