@@ -1,13 +1,6 @@
 Installation
 ============
 
-Two paths are available: local installation or Docker. Local gives better
-performance once you know the stack fits your use case. Docker is the faster
-way to get started with no risk of conflicting with an existing ROS2 install.
-
-Local Installation
-------------------
-
 **1. dynamicalnodes**
 
 Requires Python 3.12 or later. A virtual environment is recommended to keep
@@ -87,68 +80,3 @@ Launch it:
 .. code-block:: bash
 
    ros2 run plotjuggler plotjuggler
-
-Docker (ROS2 + PlotJuggler)
-----------------------------
-
-A Docker image is provided that bundles dynamicalnodes, ROS2 Jazzy, and
-`PlotJuggler <https://github.com/facontidavide/PlotJuggler>`_ for immediate use
-without a local ROS2 install.
-
-We **highly recommend** starting here to avoid conflicts with any existing ROS2
-installation on your machine.
-
-**Prerequisites:** Docker. On Ubuntu / Linux Mint:
-
-.. code-block:: bash
-
-   # Add Docker's official GPG key and repository
-   sudo apt-get update
-   sudo apt-get install -y ca-certificates curl
-   sudo install -m 0755 -d /etc/apt/keyrings
-   sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-   sudo chmod a+r /etc/apt/keyrings/docker.asc
-   echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-   # Install Docker Engine
-   sudo apt-get update
-   sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-
-Allow the container to access your display (required for PlotJuggler):
-
-.. code-block:: bash
-
-   xhost +local:docker
-
-Clone the repo and build the image:
-
-.. code-block:: bash
-
-   git clone https://github.com/nehalsinghmangat/dynamicalnodes
-   cd dynamicalnodes
-   sudo docker build -t dynamicalnodes .
-
-Run the container:
-
-.. code-block:: bash
-
-   sudo docker run -it --env DISPLAY=$DISPLAY --volume /tmp/.X11-unix:/tmp/.X11-unix --volume $(pwd):/ws/dynamicalnodes --network host dynamicalnodes
-
-ROS2 is sourced automatically. You can immediately run:
-
-.. code-block:: bash
-
-   ros2 topic list
-   ros2 run plotjuggler plotjuggler
-   python3 -c "import dynamicalnodes; print('ok')"
-
-**JupyterLab inside the container:**
-
-JupyterLab runs as a web server — no X11 or display forwarding required. Start
-it inside the container:
-
-.. code-block:: bash
-
-   jupyter lab --ip=0.0.0.0 --no-browser --allow-root --ServerApp.token='' --ServerApp.password=''
-
-Then open your **host browser** at ``http://localhost:8888`` — no login required.

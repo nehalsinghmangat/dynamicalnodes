@@ -3,57 +3,14 @@ ROSNode wrapper for simulation and ROS2 deployment.
 
 Two workflows:
 
-**Simulation** — call ``step()`` directly in Python or Jupyter notebooks.
+**Simulation** — call ``step()`` directly in Python or Jupyter notebooks to test ros2py and/or py2ros translation functions.
 No ROS2 installation required.
 
 **Deployment** — call ``write_ROSNode_to_rclpy(path)`` to emit a self-contained
 ``.py`` file that spins up a native rclpy node.  Every ROS2 detail (QoS profiles,
-buffer depths, subscription callbacks, executor setup) is written out explicitly —
-the generated file reads exactly like a hand-authored rclpy node and has no runtime
-dependency on dynamicalnodes beyond ``DynamicalSystem``.
-
-Example
--------
-Develop and simulate in a notebook, then deploy:
-
->>> import numpy as np
->>> from dynamicalnodes import DynamicalSystem, ROSNode
->>> from std_msgs.msg import Float64
->>> from dynamicalnodes.ros2py_py2ros import ros2py_float64, py2ros_float64
->>>
->>> def f_plant(xk, u_k):
-...     return xk + 0.1 * u_k
->>> def h_plant(xk):
-...     return xk
->>>
->>> sys = DynamicalSystem(f=f_plant, h=h_plant)
->>> node = ROSNode(
-...     dynamical_system=sys,
-...     subscribes_to=[
-...         {"topic": "/u_k", "msg_type": Float64, "arg": "u_k",
-...          "ros2py": ros2py_float64, "stale_after": 0.5},
-...     ],
-...     publishes_to=[
-...         {"topic": "/y_k", "msg_type": Float64, "py2ros": py2ros_float64},
-...     ],
-...     state_name="xk",
-... )
->>>
->>> # Simulate
->>> node._state = np.array([0.0])
->>> for k in range(3):
-...     y = node.step(u_k=np.array([1.0]))
-...     print(f"k={k}: x={node.state}")
-k=0: x=[0.1]
-k=1: x=[0.2]
-k=2: x=[0.3]
->>>
->>> # Deploy — writes a standalone rclpy node to disk
->>> import tempfile, os
->>> with tempfile.NamedTemporaryFile(suffix=".py", delete=False) as f:
-...     path = f.name
->>> node.write_ROSNode_to_rclpy(path, node_name="plant", initial_state=np.array([0.0]))
->>> os.unlink(path)
+buffer depths, subscription callbacks, executor setup, etc...) is written out explicitly and
+can be modified as needed. The ``.py`` file also has no runtime dependency on dynamicalnodes beyond ``DynamicalSystem`` and whatever dependencies the
+f/h functions may have.
 
 See Also
 --------
@@ -93,7 +50,7 @@ class ROSNode:
         - ``"msg_type"`` (type): ROS message class.
         - ``"arg"`` (str): kwarg name passed to step().
         - ``"ros2py"`` (Callable): ROS msg → NumPy array converter.
-          Import from ``dynamicalnodes.ros2py_py2ros``.
+          Import from ``dynamicalnodes.ros2py_py2ros`` or write your own.
         - ``"stale_after"`` (float, optional): Seconds before data expires.
         - ``"buffer_size"`` (int, optional): Queue depth (default 1).
         - ``"use_msg_timestamp"`` (bool, optional): When ``True``, the
@@ -446,7 +403,8 @@ class ROSNode:
 
         Notes
         -----
-        **Function resolution**:
+        **Function resolution**
+
         Functions from ``dynamicalnodes.ros2py_py2ros`` are emitted as import
         statements.  Functions from any other importable module (not
         ``__main__`` or an IPython cell) are also imported by name.  All other
@@ -984,7 +942,9 @@ class ROSNode:
             )
             if topic in _sub_noise:
                 std = _sub_noise[topic]
-                ln(f"        arr = arr + np.random.normal(0.0, {std!r}, arr.shape)  # noise std={std}")
+                ln(
+                    f"        arr = arr + np.random.normal(0.0, {std!r}, arr.shape)  # noise std={std}"
+                )
             if use_msg_ts:
                 ln(
                     f"        ts = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9"
@@ -1081,10 +1041,14 @@ class ROSNode:
                 py2ros_name = _ref_name(py2ros, cls)
                 if key is not None:
                     ln(f"        if isinstance(yk, dict) and {key!r} in yk:")
-                    ln(f"            _arr = np.asarray(yk[{key!r}], dtype=float).ravel()")
+                    ln(
+                        f"            _arr = np.asarray(yk[{key!r}], dtype=float).ravel()"
+                    )
                     if topic in _pub_noise:
                         std = _pub_noise[topic]
-                        ln(f"            _arr = _arr + np.random.normal(0.0, {std!r}, _arr.shape)  # noise std={std}")
+                        ln(
+                            f"            _arr = _arr + np.random.normal(0.0, {std!r}, _arr.shape)  # noise std={std}"
+                        )
                     ln(f"            msg = {py2ros_name}(_arr)")
                     ln(f"            if hasattr(msg, 'header'):")
                     ln(
@@ -1095,7 +1059,9 @@ class ROSNode:
                     ln(f"        _arr = np.asarray(yk, dtype=float).ravel()")
                     if topic in _pub_noise:
                         std = _pub_noise[topic]
-                        ln(f"        _arr = _arr + np.random.normal(0.0, {std!r}, _arr.shape)  # noise std={std}")
+                        ln(
+                            f"        _arr = _arr + np.random.normal(0.0, {std!r}, _arr.shape)  # noise std={std}"
+                        )
                     ln(f"        msg = {py2ros_name}(_arr)")
                     ln(f"        if hasattr(msg, 'header'):")
                     ln(

@@ -1,20 +1,18 @@
 dynamicalnodes
 ==============
 
-**dynamicalnodes** is a Python framework for modeling control systems and deploying them as ROS2 nodes.
-
-It follows a three-step pipeline: **Theory → Python → ROS**.
+**dynamicalnodes** is a Python framework for modeling control systems as discrete-time diagrams and then deploying them as ROS2 nodes.
 
 This website is a work in progress. Proceed at your own risk.
 
-To get started, :doc:`install the package <installation>` and begin the :doc:`first tutorial <notebooks/tutorial>`. 
+To get started, :doc:`install the package <installation>` and begin the :doc:`first tutorial <tutorials/0_cruise_control/0_cruise_control>`. 
 
 .. toctree::
    :hidden:
 
    installation
-   notebooks/tutorial
-   notebooks/f_h_library/f_h_functions
+   tutorials/index
+   fh_library/index   
    api/index
    license
 
@@ -26,17 +24,19 @@ To get started, :doc:`install the package <installation>` and begin the :doc:`fi
               font-weight:600;color:#2980b9;border-bottom:2px solid #2980b9;margin-bottom:-2px;">
        Cruise Control
      </button>
-     <button id="tab-changing" onclick="dnTab('changing')"
-       style="padding:0.4rem 1rem;border:none;background:none;cursor:pointer;
-              color:#888;border-bottom:2px solid transparent;margin-bottom:-2px;">
-       Changing Blocks
-     </button>
-     <button id="tab-async" onclick="dnTab('async')"
+
+   <button id="tab-async" onclick="dnTab('async')"
        style="padding:0.4rem 1rem;border:none;background:none;cursor:pointer;
               color:#888;border-bottom:2px solid transparent;margin-bottom:-2px;">
        Async
      </button>
    </div>
+
+     <button id="tab-changing" onclick="dnTab('changing')"
+       style="padding:0.4rem 1rem;border:none;background:none;cursor:pointer;
+              color:#888;border-bottom:2px solid transparent;margin-bottom:-2px;">
+       Multiple Systems
+     </button>   
 
    <div id="view-cruise">
    <div style="display:grid;grid-template-columns:auto 1fr;gap:0.75rem 1.5rem;align-items:start;margin:1.5rem 0;">
