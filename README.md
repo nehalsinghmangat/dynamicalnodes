@@ -9,7 +9,7 @@ To get started, or to explore what this framework has to offer, click here: [dyn
 For a 22 second video describing this framework's intended workflow for, click here: [SAIL 2025 -- Presenting dynamicalnodes](https://youtu.be/5GbVHo6QZrw).
 
 ---
-## Turtlebot: Whiteboard -> Python -> ROS -> World
+## Turtlebot: Whiteboard ⟶ Python ⟶ ROS 2 ⟶ World
 <table>
   <tr>
     <td align="center">
@@ -28,7 +28,7 @@ For a 22 second video describing this framework's intended workflow for, click h
 </table>
 
 <p align="center">
-  <img src="docs/source/_static/figure_turtlebot_pipeline/labels_for_steps_from_theory_to_hardware.png" alt="Step Labels" width="800"/>
+  <img src="docs/source/_static/figures/pipeline_theory_python_ros_hardware.png" alt="Step Labels" width="800"/>
 </p>
 
 
