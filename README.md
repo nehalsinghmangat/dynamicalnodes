@@ -2,7 +2,7 @@
 
 > _"Give me a [control system] long enough and a [computer] on which to place it, and I shall move the world."_ - Archimedes 
 
-**dynamicalnodes** is a Python development framework that bridges the gap between control systems and their implementation onto ROS 2. Designed for hobbyists, students, and academics alike, this framework won't cure cancer, but it can do the next best thing: make robotics easier.
+**dynamicalnodes** is a Python development framework that bridges the gap between novel control systems and their implementation onto ROS 2. Designed for hobbyists, students, and academics alike, this framework won't cure cancer, but it can do the next best thing: make robotics easier.
 
 To get started, or to explore what this framework has to offer, click here: [dynamicalnodes Documentation](https://nehalsinghmangat.github.io/dynamicalnodes).
 
@@ -13,16 +13,16 @@ For a 22 second video describing this framework's intended workflow for, click h
 <table>
   <tr>
     <td align="center">
-      <img src="docs/source/_static/figure_turtlebot_pipeline/turtlebot.svg" alt="TurtleBot Overview" width="400"/><br/>
+      <img src="docs/source/_static/figures/turtlebot_schematic.svg" alt="TurtleBot Schematic" width="400"/><br/>
     </td>
     <td align="center">
-      <img src="docs/source/_static/figure_turtlebot_pipeline/turtlesim_software.gif" alt="Turtle Software" width="200"/><br/>
+      <img src="docs/source/_static/figures/turtlebot_python_simulation.gif" alt="Turtle Software" width="200"/><br/>
     </td>
     <td align="center">
-      <img src="docs/source/_static/figure_turtlebot_pipeline/turtlesim_simulation.gif" alt="Turtle Simulation" width="200"/><br/>
+      <img src="docs/source/_static/figures/turtlebot_ros_simulation.gif" alt="Turtle Simulation" width="200"/><br/>
     </td>
     <td align="center">
-      <img src="docs/source/_static/figure_turtlebot_pipeline/turtlesim_hardware.gif" alt="Turtle Hardware" width="200"/><br/>
+      <img src="docs/source/_static/figures/turtlebot_mocab.gif" alt="Turtle Hardware" width="200"/><br/>
     </td>
   </tr>
 </table>
