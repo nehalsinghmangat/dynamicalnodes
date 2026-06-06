@@ -2,3 +2,10 @@
   margin-top: 1em;
   margin-bottom: 1em;
 }
+
+.figure p.caption,
+figure figcaption {
+  font-style: normal;
+  font-family: "Computer Modern", "Latin Modern", "CMU Serif", Georgia, serif;
+  font-size: 0.9em;
+}
