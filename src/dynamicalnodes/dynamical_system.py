@@ -1,85 +1,105 @@
 """
-A dynamical system is defined by two functions:
+A discrete-time dynamical system (DTDS) is represented as a pair of functions,
+``(f, h)``, following the definition in Mangat et al., *dynamicalnodes: From
+Theory to Python to ROS*::
 
-- f: State transition function (optional) - computes next state
-- h: Output/observation function (required) - computes output from state
+    x_{k+1} = f(x_k, u_k, theta)
+    y_k     = h(x_k, u_k, theta)
 
-The dynamical system abstraction can model any control system componenent (e.g. plants, controllers, observers, signal generators, etc...) and enables their composition via the discrete-time diagram.
+``f`` is the evolution function that propagates the state forward one step;
+``h`` is the measurement (or output) function that computes an observation
+from the current state. Either function may be omitted -- denoted ``*`` in
+the paper, ``None`` here -- giving three cases:
+
+- ``(f, *)`` -- no output function.
+- ``(*, h)`` -- stateless, e.g. a signal generator.
+- ``(f, h)`` -- both state evolution and output are defined.
+
+Function signatures are unconstrained in name, type, and number of
+parameters. ``DynamicalSystem.eval`` binds keyword arguments to each
+function's signature by name, so the same keyword argument (e.g. a shared
+state or parameter) can be passed to both ``f`` and ``h``.
 """
 
 import inspect
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional, Tuple
 
 
 class DynamicalSystem:
     """
-    A discrete-time dynamical system with (optional) state transition and (required) output functions.
+    A discrete-time dynamical system with (optional) evolution and
+    (optional) measurement functions.
+
+    Parameters
+    ----------
+    f : Callable, optional
+        Evolution function ``f(x_k, u_k, theta) -> x_{k+1}``. ``None`` if
+        the system has no state transition, i.e. ``(*, h)``.
+    h : Callable, optional
+        Measurement function ``h(x_k, u_k, theta) -> y_k``. ``None`` if
+        the system has no output, i.e. ``(f, *)``.
 
     Examples
     --------
+    A stateful system with both an evolution and a measurement function --
+    a car whose state is ``(displacement, velocity)``, measured via its
+    speed:
 
-    Autonomous System with Parameters -- Exponential Growth
-
-    (put math and background explanation here.)
-
-    >>> def fexp(x_k):
-    ...     return x_k dt
-    >>> def hexp(x_k, u_k, dt):
-    ...     return x_k
-    >>> plant = DynamicalSystem(f=f_plant, h=h_plant)
-    >>> x_next, y = plant.step(x_k=0.0, u_k=1.0, dt=0.1)
+    >>> def fcar(xk, uk, theta_car):
+    ...     d, v = xk
+    ...     m, b, dt = theta_car
+    ...     return (d + dt * v, v + dt * (uk - b * v) / m)
+    >>> def hcar(xk):
+    ...     _, v = xk
+    ...     return abs(v)
+    >>> car = DynamicalSystem(f=fcar, h=hcar)
+    >>> x_next, y = car.eval(xk=(20.0, 0.0), uk=4.0, theta_car=(2.0, 0.0, 1.0))
     >>> x_next
-    0.1
-
-    Non-autonomous System with control input and parameters  -- Car Dynamics
-
-    (put math and background explanation here.)
-
-    Signal Generator (stateless DTDS)
-
-    (put math and background explanation here.)
-
-    >>> def h_ref(tk, params):
-    ...     u0, t_step = params
-    ...     return u0 if tk >= t_step else 0.0
-    >>> ref_signal = DynamicalSystem(h=h_ref)
-    >>> ref_signal.step(tk=0.0, params=(100, 15))  # Before step time
+    (20.0, 2.0)
+    >>> y
     0.0
-    >>> ref_signal.step(tk=20.0, params=(100, 15))  # After step time
-    100
 
-    Note: All functions have type hints in their signature. This is the modern (and much better) way of writing functions.
+    A stateless system, e.g. a signal generator -- ``(*, h)``:
 
-    See Also
-    --------
-    ROSNode : Wraps a DynamicalSystem as a ROS2 node for deployment.
+    >>> def h_ref(tk, A=1.0):
+    ...     return A if tk >= 1.0 else 0.0
+    >>> ref = DynamicalSystem(h=h_ref)
+    >>> ref.eval(tk=0.0)
+    (None, 0.0)
+    >>> ref.eval(tk=2.0)
+    (None, 1.0)
+
+    A system with no output function -- ``(f, *)``:
+
+    >>> def f_counter(xk):
+    ...     return xk + 1
+    >>> counter = DynamicalSystem(f=f_counter)
+    >>> counter.eval(xk=5)
+    (6, None)
     """
 
     def __init__(
         self,
         *,
         f: Optional[Callable] = None,
-        h: Callable,
+        h: Optional[Callable] = None,
     ) -> None:
         """
-        Initialize a discrete-time DynamicalSystem with state transition and output functions.
-
         Parameters
         ----------
         f : Callable, optional
-        State transition function.  Signature typing is not enforced, but must be of the form: f(*args,**kwargs) -> x_{k+1}
-        If None, the system is stateless (e.g. a signal generator).
-
-        Note:
-        h : Callable
-        Output function. Signature typing is not enforced, but must be of the form: h(*args,**kwargs) -> y_{k}
+            Evolution function ``f(x_k, u_k, theta) -> x_{k+1}``. Signature
+            typing is not enforced. ``None`` if the system is stateless.
+        h : Callable, optional
+            Measurement function ``h(x_k, u_k, theta) -> y_k``. Signature
+            typing is not enforced. ``None`` if the system has no output.
         """
         self._f = f
         self._h = h
 
     @property
     def f(self) -> Optional[Callable]:
-        """State transition function f(x_k, u_k, ...) -> x_{k+1}, or None if stateless."""
+        """Evolution function f(x_k, u_k, theta) -> x_{k+1}, or None if the system is stateless."""
         return self._f
 
     @f.setter
@@ -87,130 +107,98 @@ class DynamicalSystem:
         self._f = f
 
     @property
-    def h(self) -> Callable:
-        """Observation function h(x_k, u_k, ...) -> y_k."""
+    def h(self) -> Optional[Callable]:
+        """Measurement function h(x_k, u_k, theta) -> y_k, or None if the system has no output."""
         return self._h
 
     @h.setter
-    def h(self, h: Callable) -> None:
+    def h(self, h: Optional[Callable]) -> None:
         self._h = h
 
-    @staticmethod
-    def _smart_call(
-        func: Callable[..., Any],
-        **kwargs: Any,
-    ) -> Any:
+    def eval(self, **kwargs) -> Tuple[Optional[Any], Optional[Any]]:
         """
-        Call a function with smart parameter binding by name.
+        Evaluate the system for one discrete time step.
 
-        This method inspects the function signature and passes only the
-        parameters that the function declares.
-
-        Parameters
-        ----------
-        func : Callable
-            The function to call.
-        **kwargs : Any
-            Keyword arguments pool. Only arguments matching the function's
-            declared parameters are passed.
+        Keyword arguments are lexically bound by name to whichever of ``f``
+        and/or ``h`` declare them in their signature (see
+        ``_bind_and_call``), so the same keyword argument can be shared by
+        both functions.
 
         Returns
         -------
-        Any
-            The return value of the function.
+        Tuple[Optional[Any], Optional[Any]]
+            - ``(None, y_k)`` for a stateless system, ``(*, h)``.
+            - ``(x_{k+1}, None)`` for a system with no output, ``(f, *)``.
+            - ``(x_{k+1}, y_k)`` for a fully specified system, ``(f, h)``.
 
         Notes
         -----
-        If the function has a **kwargs parameter, all remaining kwargs
-        from the pool are passed through.
+        ``h`` is evaluated on the same (pre-update) state passed in via
+        keyword arguments, not on the value returned by ``f``, so the
+        returned observation is one step behind the returned state. In a
+        simulation loop, use the returned ``x_{k+1}`` directly if you need
+        the post-update state.
+
+        Raises
+        ------
+        ValueError
+            If neither ``f`` nor ``h`` is defined.
 
         Examples
         --------
-        Functions receive only the parameters they declare:
+        See the class docstring for worked examples covering all three
+        cases.
 
-        >>> def needs_time(tk, gain): return tk * gain
-        >>> def needs_state(xk, gain): return (xk, gain)
-        >>> def needs_both(tk, xk, gain): return (tk, xk, gain)
-
-        >>> DynamicalSystem._smart_call(needs_time, tk=1.0, xk=[0, 0], gain=2.0)
-        2.0
-        >>> DynamicalSystem._smart_call(needs_state, tk=1.0, xk=[5, 5], gain=2.0)
-        ([5, 5], 2.0)
-        >>> DynamicalSystem._smart_call(needs_both, tk=1.0, xk='state', gain=2.0)
-        (1.0, 'state', 2.0)
+        >>> empty = DynamicalSystem()
+        >>> empty.eval()
+        Traceback (most recent call last):
+            ...
+        ValueError: Nothing to evaluate; no f or h functions!
         """
-        sig = inspect.signature(func)
-        pool: Dict[str, Any] = dict(kwargs)
 
-        # Filter: only pass arguments the function declares
-        call_kwargs: Dict[str, Any] = {}
-        for name, p in sig.parameters.items():
-            if p.kind in (
-                inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                inspect.Parameter.KEYWORD_ONLY,
+        def _bind_and_call(
+            func: Callable[..., Any],
+            **kwargs: Any,
+        ) -> Any:
+            """
+            Call `func` with only the keyword arguments it declares.
+
+            Inspects `func`'s signature and passes only the entries of
+            `kwargs` matching its declared parameter names; if `func`
+            accepts `**kwargs`, the remaining pool is passed through too.
+            """
+            sig = inspect.signature(func)
+            pool: Dict[str, Any] = dict(kwargs)
+
+            # Filter: only pass arguments the function declares
+            call_kwargs: Dict[str, Any] = {}
+            for name, p in sig.parameters.items():
+                if p.kind in (
+                    inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                    inspect.Parameter.KEYWORD_ONLY,
+                ):
+                    if name in pool:
+                        call_kwargs[name] = pool.pop(name)
+
+            # Pass remaining kwargs if function has **kwargs
+            if any(
+                p.kind is inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
             ):
-                if name in pool:
-                    call_kwargs[name] = pool.pop(name)
+                call_kwargs.update(pool)
 
-        # Pass remaining kwargs if function has **kwargs
-        if any(
-            p.kind is inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
-        ):
-            call_kwargs.update(pool)
+            return func(**call_kwargs)
 
-        return func(**call_kwargs)
+        if self.f is None and self.h:
+            return (None, _bind_and_call(self.h, **kwargs))
 
-    def step(self, **kwargs: Any) -> Any:
-        """
-        Compute ``x_{k+1}, y_k = (f(*f_args, **f_kwargs), h(*h_args, **h_kwargs))``. For each keyword=value in ``**kwargs``, step binds the value to the keyword and then passes it to any function that declares that keyword as a parameter. See examples below.
+        elif self.f and self.h is None:
+            return (_bind_and_call(self.f, **kwargs), None)
 
-        Returns
-        -------
-        Any
-        If f is None (stateless system):
-            Returns y_k = h(...)
-        If f is defined (stateful system):
-            Returns (x_{k+1}, y_k) = (f(...), h(...))
+        elif self.f and self.h:
+            return (
+                _bind_and_call(self.f, **kwargs),
+                _bind_and_call(self.h, **kwargs),
+            )
 
-        Examples
-        --------
-
-        Autonomous System with Parameters -- Exponential Growth
-
-        (put math and background explanation here.)
-
-        >>> def fexp(x_k):
-        ...     return x_k dt
-        >>> def hexp(x_k, u_k, dt):
-        ...     return x_k
-        >>> plant = DynamicalSystem(f=f_plant, h=h_plant)
-        >>> x_next, y = plant.step(x_k=0.0, u_k=1.0, dt=0.1)
-        >>> x_next
-        0.1
-
-        Non-autonomous System with control input and parameters  -- Car Dynamics
-
-        (put math and background explanation here.)
-
-        Signal Generator (stateless DTDS)
-
-        (put math and background explanation here.)
-
-        >>> def h_ref(tk, params):
-        ...     u0, t_step = params
-        ...     return u0 if tk >= t_step else 0.0
-        >>> ref_signal = DynamicalSystem(h=h_ref)
-        >>> ref_signal.step(tk=0.0, params=(100, 15))  # Before step time
-        0.0
-        >>> ref_signal.step(tk=20.0, params=(100, 15))  # After step time
-        100
-
-        Note: All functions have type hints in their signature. This is the modern (and much better) way of writing functions.
-        """
-        if self.f is None:
-            return self._smart_call(self.h, **kwargs)
-
-        return (
-            self._smart_call(self.f, **kwargs),
-            self._smart_call(self.h, **kwargs),
-        )
+        else:
+            raise ValueError("Nothing to evaluate; no f or h functions!")

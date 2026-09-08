@@ -29,6 +29,7 @@ from dynamicalnodes.ros2py_py2ros import py2ros_imu
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
+
 def imu_h(tk, A, omega):
     ax = -A * omega**2 * np.sin(omega * tk)  # true acceleration
     return np.array(
@@ -59,7 +60,6 @@ QOS = QoSProfile(
 
 
 class ImuNode(Node):
-
     """
     Publishes to:
         /imu  (Imu)  [py2ros_imu]
@@ -75,11 +75,16 @@ class ImuNode(Node):
         self._state = None  # initial state — set before deploying if stateful
         self._t0 = self.get_clock().now()  # wall-clock reference for 'tk'
 
-        self._static_params: dict = {'A': 50.0, 'omega': 0.10471975511965977}  # static params
+        self._static_params: dict = {
+            "A": 50.0,
+            "omega": 0.10471975511965977,
+        }  # static params
 
         # ── Publishers ────────────────────────────────────────────────────────
         self._pub_imu = self.create_publisher(
-            Imu, '/imu', QOS,
+            Imu,
+            "/imu",
+            QOS,
         )
 
         # ── Timer ────────────────────────────────────────────────────────────
@@ -115,15 +120,15 @@ class ImuNode(Node):
 
         kwargs: dict = {"tk": tk, **self._static_params}
 
-        result = self._system.step(**kwargs)
+        result = self._system.eval(**kwargs)
         if self._system.f is not None:
             self._state, yk = result  # stateful: (next_state, output)
         else:
-            yk = result               # stateless: output only
+            yk = result  # stateless: output only
 
         _arr = np.asarray(yk, dtype=float).ravel()
         msg = py2ros_imu(_arr)
-        if hasattr(msg, 'header'):
+        if hasattr(msg, "header"):
             msg.header.stamp = self.get_clock().now().to_msg()
         self._pub_imu.publish(msg)
 
@@ -131,6 +136,7 @@ class ImuNode(Node):
 # ──────────────────────────────────────────────────────────────────────
 # Entry point
 # ──────────────────────────────────────────────────────────────────────
+
 
 def main() -> None:
     rclpy.init()

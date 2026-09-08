@@ -29,6 +29,7 @@ from dynamicalnodes.ros2py_py2ros import py2ros_nav_sat_fix
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
+
 def gps_h(tk, A, omega):
     x_true = A * np.sin(omega * tk)
     return np.array([x_true, 0.0, 0.0])  # [lat=x, lon=0, alt=0]
@@ -46,7 +47,6 @@ QOS = QoSProfile(
 
 
 class GpsNode(Node):
-
     """
     Publishes to:
         /gps  (NavSatFix)  [py2ros_nav_sat_fix]
@@ -62,11 +62,16 @@ class GpsNode(Node):
         self._state = None  # initial state — set before deploying if stateful
         self._t0 = self.get_clock().now()  # wall-clock reference for 'tk'
 
-        self._static_params: dict = {'A': 50.0, 'omega': 0.10471975511965977}  # static params
+        self._static_params: dict = {
+            "A": 50.0,
+            "omega": 0.10471975511965977,
+        }  # static params
 
         # ── Publishers ────────────────────────────────────────────────────────
         self._pub_gps = self.create_publisher(
-            NavSatFix, '/gps', QOS,
+            NavSatFix,
+            "/gps",
+            QOS,
         )
 
         # ── Timer ────────────────────────────────────────────────────────────
@@ -102,16 +107,16 @@ class GpsNode(Node):
 
         kwargs: dict = {"tk": tk, **self._static_params}
 
-        result = self._system.step(**kwargs)
+        result = self._system.eval(**kwargs)
         if self._system.f is not None:
             self._state, yk = result  # stateful: (next_state, output)
         else:
-            yk = result               # stateless: output only
+            yk = result  # stateless: output only
 
         _arr = np.asarray(yk, dtype=float).ravel()
         _arr = _arr + np.random.normal(0.0, 5.0, _arr.shape)  # noise std=5.0
         msg = py2ros_nav_sat_fix(_arr)
-        if hasattr(msg, 'header'):
+        if hasattr(msg, "header"):
             msg.header.stamp = self.get_clock().now().to_msg()
         self._pub_gps.publish(msg)
 
@@ -119,6 +124,7 @@ class GpsNode(Node):
 # ──────────────────────────────────────────────────────────────────────
 # Entry point
 # ──────────────────────────────────────────────────────────────────────
+
 
 def main() -> None:
     rclpy.init()

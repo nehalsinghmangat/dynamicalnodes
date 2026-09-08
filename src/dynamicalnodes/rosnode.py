@@ -3,7 +3,7 @@ ROSNode wrapper for simulation and ROS2 deployment.
 
 Two workflows:
 
-**Simulation** — call ``step()`` directly in Python or Jupyter notebooks to test ros2py and/or py2ros translation functions.
+**Simulation** — call ``eval()`` directly in Python or Jupyter notebooks to test ros2py and/or py2ros translation functions.
 No ROS2 installation required.
 
 **Deployment** — call ``write_ROSNode_to_rclpy(path)`` to emit a self-contained
@@ -36,19 +36,19 @@ class ROSNode:
     """
     Wraps a DynamicalSystem for simulation and ROS2 deployment.
 
-    Use ``step()`` for notebook simulation; use ``write_ROSNode_to_rclpy()`` to
+    Use ``eval()`` for notebook simulation; use ``write_ROSNode_to_rclpy()`` to
     generate a deployable rclpy node.
 
     Parameters
     ----------
     dynamical_system : DynamicalSystem
-        The dynamical system to step.
-    subscribes_to : list of dict, optional
+        The dynamical system to evaluate.
+    subs : list of dict, optional
         Each dict:
 
         - ``"topic"`` (str): ROS topic name.
         - ``"msg_type"`` (type): ROS message class.
-        - ``"arg"`` (str): kwarg name passed to step().
+        - ``"arg"`` (str): kwarg name passed to eval().
         - ``"ros2py"`` (Callable): ROS msg → NumPy array converter.
           Import from ``dynamicalnodes.ros2py_py2ros`` or write your own.
         - ``"stale_after"`` (float, optional): Seconds before data expires.
@@ -61,7 +61,7 @@ class ROSNode:
           rather than network-arrival time (e.g. sensor fusion, bag
           replay).  Defaults to ``False``.
 
-    publishes_to : list of dict, optional
+    pubs : list of dict, optional
         Each dict:
 
         - ``"topic"`` (str): ROS topic name.
@@ -71,15 +71,15 @@ class ROSNode:
         - ``"key"`` (str, optional): Key into h() return dict. Required when
           h() returns a dict and there are multiple publishers.
 
-    sync_mode : str, required when ``subscribes_to`` has more than one entry
+    sync_mode : str, required when ``subs`` has more than one entry
         ``"any"`` — step whenever any subscription has fresh data.
         ``"all"`` — step only when every subscription has fresh data.
 
     state_name : str, optional
         Name of the state parameter in ``f``'s signature (e.g. ``"ck"`` for
         ``f(ck, ...)``) .  Required for stateful systems; ignored if ``f`` is
-        ``None``.  ``step()`` injects ``self._state`` under this name before
-        calling ``DynamicalSystem.step()``.
+        ``None``.  ``eval()`` injects ``self._state`` under this name before
+        calling ``DynamicalSystem.eval()``.
 
     timer_hz : float, optional
         In the generated node: fires ``_run_step`` at this frequency instead
@@ -97,12 +97,12 @@ class ROSNode:
     >>> smoother = DynamicalSystem(h=lambda imu: imu * 0.5)
     >>> node = ROSNode(
     ...     dynamical_system=smoother,
-    ...     subscribes_to=[{"topic": "/raw", "msg_type": Float64,
-    ...                      "arg": "imu", "ros2py": ros2py_float64}],
-    ...     publishes_to=[{"topic": "/smooth", "msg_type": Float64,
-    ...                    "py2ros": py2ros_float64}],
+    ...     subs=[{"topic": "/raw", "msg_type": Float64,
+    ...            "arg": "imu", "ros2py": ros2py_float64}],
+    ...     pubs=[{"topic": "/smooth", "msg_type": Float64,
+    ...            "py2ros": py2ros_float64}],
     ... )
-    >>> out = node.step(imu=np.array([2.0]))
+    >>> out = node.eval(imu=np.array([2.0]))
     >>> out.data
     1.0
     """
@@ -112,15 +112,15 @@ class ROSNode:
         *,
         dynamical_system: DynamicalSystem,
         state_name: Optional[str] = None,
-        subscribes_to: Optional[Sequence[SubDict]] = None,
-        publishes_to: Optional[Sequence[PubDict]] = None,
+        subs: Optional[Sequence[SubDict]] = None,
+        pubs: Optional[Sequence[PubDict]] = None,
         sync_mode: Optional[str] = None,
         timer_hz: Optional[float] = None,
     ) -> None:
-        n_subs = len(subscribes_to) if subscribes_to else 0
+        n_subs = len(subs) if subs else 0
         if n_subs > 1 and sync_mode is None:
             raise ValueError(
-                "sync_mode ('any' or 'all') is required when subscribes_to has "
+                "sync_mode ('any' or 'all') is required when subs has "
                 "more than one subscription"
             )
         sync_mode = sync_mode or "any"
@@ -137,7 +137,7 @@ class ROSNode:
 
         # -------- Parse subscriptions --------
         self._subs: List[Tuple[str, type, Any, str, Optional[float], int, bool]] = []
-        for sub_dict in subscribes_to or []:
+        for sub_dict in subs or []:
             if not isinstance(sub_dict, dict):
                 raise TypeError("Each subscription must be a dict")
 
@@ -190,7 +190,7 @@ class ROSNode:
 
         # -------- Parse publications --------
         self._pubs_cfg: List[Tuple[str, type, Any, Optional[str]]] = []
-        for pub_dict in publishes_to or []:
+        for pub_dict in pubs or []:
             if not isinstance(pub_dict, dict):
                 raise TypeError("Each publication must be a dict")
 
@@ -222,7 +222,7 @@ class ROSNode:
     # SIMULATION API
     # --------------------------------------------------------------------------
 
-    def step(self, **kwargs: Any) -> Any:
+    def eval(self, **kwargs: Any) -> Any:
         """
         Simulate one step without ROS2.
 
@@ -254,12 +254,12 @@ class ROSNode:
         >>> double = DynamicalSystem(h=lambda x: x * 2)
         >>> node = ROSNode(
         ...     dynamical_system=double,
-        ...     subscribes_to=[{"topic": "/x", "msg_type": Float64,
-        ...                      "arg": "x", "ros2py": ros2py_float64}],
-        ...     publishes_to=[{"topic": "/y", "msg_type": Float64,
-        ...                    "py2ros": py2ros_float64}],
+        ...     subs=[{"topic": "/x", "msg_type": Float64,
+        ...            "arg": "x", "ros2py": ros2py_float64}],
+        ...     pubs=[{"topic": "/y", "msg_type": Float64,
+        ...            "py2ros": py2ros_float64}],
         ... )
-        >>> node.step(x=Float64(data=3.0)).data
+        >>> node.eval(x=Float64(data=3.0)).data
         6.0
         """
         sub_arg_names = {a for _, _, _, a, _, _, _ in self._subs}
@@ -285,11 +285,9 @@ class ROSNode:
         if self._state is not None and self._state_key is not None:
             step_kwargs[self._state_key] = self._state
 
-        result = self._dynamical_system.step(**step_kwargs)
+        x_next, yk = self._dynamical_system.eval(**step_kwargs)
         if self._dynamical_system.f is not None:
-            self._state, yk = result
-        else:
-            yk = result
+            self._state = x_next
 
         if not self._pubs_cfg:
             return yk
@@ -355,7 +353,7 @@ class ROSNode:
             ``__init__``.  Supports NumPy arrays and any ``repr()``-able value.
         static_params : dict, optional
             Parameters baked into the node at generation time.  Embedded as
-            ``self._static_params = {...}`` and merged into every ``step()``
+            ``self._static_params = {...}`` and merged into every ``eval()``
             call.  Use for values that never change after deployment.
         dynamic_params : dict, optional
             Parameters declared on the ROS2 parameter server with their
@@ -426,11 +424,11 @@ class ROSNode:
         >>> sys = DynamicalSystem(f=f_plant, h=h_plant)
         >>> node = ROSNode(
         ...     dynamical_system=sys,
-        ...     subscribes_to=[{"topic": "/u_k", "msg_type": Float64,
-        ...                      "arg": "u_k", "ros2py": ros2py_float64,
-        ...                      "stale_after": 0.5}],
-        ...     publishes_to=[{"topic": "/y_k", "msg_type": Float64,
-        ...                    "py2ros": py2ros_float64}],
+        ...     subs=[{"topic": "/u_k", "msg_type": Float64,
+        ...            "arg": "u_k", "ros2py": ros2py_float64,
+        ...            "stale_after": 0.5}],
+        ...     pubs=[{"topic": "/y_k", "msg_type": Float64,
+        ...            "py2ros": py2ros_float64}],
         ... )
         >>> with tempfile.NamedTemporaryFile(suffix=".py", delete=False) as tmp:
         ...     path = tmp.name
@@ -577,7 +575,7 @@ class ROSNode:
         if not self._subs and self._timer_hz is None and self._pubs_cfg:
             raise ValueError(
                 "Cannot write a node with no subscriptions and no timer_hz — "
-                "the generated node would never step.  Add timer_hz or subscribes_to."
+                "the generated node would never step.  Add timer_hz or subs."
             )
 
         ds = self._dynamical_system
@@ -594,10 +592,10 @@ class ROSNode:
         _valid_pub_topics = {t for t, *_ in self._pubs_cfg}
         for t in _sub_noise:
             if t not in _valid_sub_topics:
-                raise ValueError(f"sub_noise topic {t!r} not in subscribes_to")
+                raise ValueError(f"sub_noise topic {t!r} not in subs")
         for t in _pub_noise:
             if t not in _valid_pub_topics:
-                raise ValueError(f"pub_noise topic {t!r} not in publishes_to")
+                raise ValueError(f"pub_noise topic {t!r} not in pubs")
 
         # ── classify all functions ─────────────────────────────────────────────
 
@@ -975,7 +973,7 @@ class ROSNode:
         ln("    # Control step")
         ln("    # " + "─" * 68)
         ln("    # Builds kwargs from static params, dynamic params, fresh subscription")
-        ln("    # values, and current state, then calls DynamicalSystem.step() and")
+        ln("    # values, and current state, then calls DynamicalSystem.eval() and")
         ln("    # publishes. Skipped entirely when sync_mode conditions are not met.")
         blank()
         ln("    def _run_step(self) -> None:")
@@ -1029,11 +1027,9 @@ class ROSNode:
             ln(f'            kwargs["{self._state_key}"] = self._state')
 
         blank()
-        ln("        result = self._system.step(**kwargs)")
+        ln("        x_next, yk = self._system.eval(**kwargs)")
         ln("        if self._system.f is not None:")
-        ln("            self._state, yk = result  # stateful: (next_state, output)")
-        ln("        else:")
-        ln("            yk = result               # stateless: output only")
+        ln("            self._state = x_next  # stateful: advance to next state")
 
         if pubs:
             blank()

@@ -23,12 +23,17 @@ from sensor_msgs.msg import Imu, NavSatFix
 from std_msgs.msg import Float64MultiArray
 
 from dynamicalnodes import DynamicalSystem
-from dynamicalnodes.ros2py_py2ros import ros2py_nav_sat_fix, ros2py_imu, py2ros_float64_multiarray
+from dynamicalnodes.ros2py_py2ros import (
+    ros2py_nav_sat_fix,
+    ros2py_imu,
+    py2ros_float64_multiarray,
+)
 
 
 # ──────────────────────────────────────────────────────────────────────
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
+
 
 def ann_h(gps, imu, W1, b1, W2, b2):
     inp = np.array([float(gps[0]), float(imu[7])])  # [x_gps, ax_imu]
@@ -47,7 +52,6 @@ QOS = QoSProfile(
 
 
 class AnnEstimatorNode(Node):
-
     """
     Subscribes to:
         /gps  (NavSatFix)  →  gps  [ros2py_nav_sat_fix, buffer=5, stale_after=2.0s]
@@ -67,7 +71,46 @@ class AnnEstimatorNode(Node):
         self._state = None  # initial state — set before deploying if stateful
         self._t0 = self.get_clock().now()  # wall-clock reference for 'tk'
 
-        self._static_params: dict = {'W1': np.array([[0.01257302210933933, -0.013210486329130189], [0.06404226504432821, 0.010490011715303971], [-0.0535669373161111, 0.03615950549094848], [0.13040000451301373, 0.09470809631292422], [-0.07037352358069926, -0.12654214710460526], [-0.06232744625373522, 0.00413259793472436], [-0.23250307746388343, -0.021879166393254573], [-0.12459109472530652, -0.07322673547034517]]), 'b1': np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), 'W2': np.array([[-0.054425898285730995, -0.031630015636915455, 0.04116305363741329, 0.10425133694426776, -0.012853466294403426, 0.1366463470549686, -0.06651946734866136, 0.035151007009301974], [0.09034701816518087, 0.009401229776087457, -0.07434992493538084, -0.09217253762584195, -0.045772582566733916, 0.022019512347004944, -0.10096181835387359, -0.020917557487171307]]), 'b2': np.array([0.0, 0.0])}  # static params
+        self._static_params: dict = {
+            "W1": np.array(
+                [
+                    [0.01257302210933933, -0.013210486329130189],
+                    [0.06404226504432821, 0.010490011715303971],
+                    [-0.0535669373161111, 0.03615950549094848],
+                    [0.13040000451301373, 0.09470809631292422],
+                    [-0.07037352358069926, -0.12654214710460526],
+                    [-0.06232744625373522, 0.00413259793472436],
+                    [-0.23250307746388343, -0.021879166393254573],
+                    [-0.12459109472530652, -0.07322673547034517],
+                ]
+            ),
+            "b1": np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
+            "W2": np.array(
+                [
+                    [
+                        -0.054425898285730995,
+                        -0.031630015636915455,
+                        0.04116305363741329,
+                        0.10425133694426776,
+                        -0.012853466294403426,
+                        0.1366463470549686,
+                        -0.06651946734866136,
+                        0.035151007009301974,
+                    ],
+                    [
+                        0.09034701816518087,
+                        0.009401229776087457,
+                        -0.07434992493538084,
+                        -0.09217253762584195,
+                        -0.045772582566733916,
+                        0.022019512347004944,
+                        -0.10096181835387359,
+                        -0.020917557487171307,
+                    ],
+                ]
+            ),
+            "b2": np.array([0.0, 0.0]),
+        }  # static params
 
         # ── Subscription buffers ───────────────────────────────────────────────
         self._gps_buf: deque = deque(maxlen=5)
@@ -75,19 +118,25 @@ class AnnEstimatorNode(Node):
 
         # ── Subscriptions ────────────────────────────────────────────────────
         self._gps_sub = self.create_subscription(
-            NavSatFix, '/gps',
-            self._gps_cb, QOS,
+            NavSatFix,
+            "/gps",
+            self._gps_cb,
+            QOS,
             callback_group=self._cb_group,
         )
         self._imu_sub = self.create_subscription(
-            Imu, '/imu',
-            self._imu_cb, QOS,
+            Imu,
+            "/imu",
+            self._imu_cb,
+            QOS,
             callback_group=self._cb_group,
         )
 
         # ── Publishers ────────────────────────────────────────────────────────
         self._pub_x_est_ann = self.create_publisher(
-            Float64MultiArray, '/x_est_ann', QOS,
+            Float64MultiArray,
+            "/x_est_ann",
+            QOS,
         )
 
         self.get_logger().info("ann_estimator started")
@@ -148,15 +197,15 @@ class AnnEstimatorNode(Node):
         if imu is not None:
             kwargs["imu"] = imu
 
-        result = self._system.step(**kwargs)
+        result = self._system.eval(**kwargs)
         if self._system.f is not None:
             self._state, yk = result  # stateful: (next_state, output)
         else:
-            yk = result               # stateless: output only
+            yk = result  # stateless: output only
 
         _arr = np.asarray(yk, dtype=float).ravel()
         msg = py2ros_float64_multiarray(_arr)
-        if hasattr(msg, 'header'):
+        if hasattr(msg, "header"):
             msg.header.stamp = self.get_clock().now().to_msg()
         self._pub_x_est_ann.publish(msg)
 
@@ -164,6 +213,7 @@ class AnnEstimatorNode(Node):
 # ──────────────────────────────────────────────────────────────────────
 # Entry point
 # ──────────────────────────────────────────────────────────────────────
+
 
 def main() -> None:
     rclpy.init()

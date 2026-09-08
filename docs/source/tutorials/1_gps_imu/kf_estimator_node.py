@@ -30,6 +30,7 @@ from dynamicalnodes.ros2py_py2ros import ros2py_nav_sat_fix, ros2py_imu, py2ros_
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
+
 def kf_f(zk, imu, Fk, Bk, Hk, Qk, Rk, gps=None):
     """Predict always; update only when GPS is available."""
     x, P = zk
@@ -64,7 +65,6 @@ QOS = QoSProfile(
 
 
 class KfEstimatorNode(Node):
-
     """
     Subscribes to:
         /gps  (NavSatFix)  →  gps  [ros2py_nav_sat_fix, buffer=5, stale_after=2.0s]
@@ -82,10 +82,19 @@ class KfEstimatorNode(Node):
         self._cb_group = ReentrantCallbackGroup()
 
         self._system = DynamicalSystem(f=kf_f, h=kf_h)
-        self._state = (np.array([0.0, 0.0]), np.array([[100.0, 0.0], [0.0, 100.0]]))  # initial state
+        self._state = (
+            np.array([0.0, 0.0]),
+            np.array([[100.0, 0.0], [0.0, 100.0]]),
+        )  # initial state
         self._t0 = self.get_clock().now()  # wall-clock reference for 'tk'
 
-        self._static_params: dict = {'Fk': np.array([[1.0, 0.01], [0.0, 1.0]]), 'Bk': np.array([5e-05, 0.01]), 'Hk': np.array([[1.0, 0.0]]), 'Qk': np.array([[0.0001, 0.0], [0.0, 0.01]]), 'Rk': np.array([[25.0]])}  # static params
+        self._static_params: dict = {
+            "Fk": np.array([[1.0, 0.01], [0.0, 1.0]]),
+            "Bk": np.array([5e-05, 0.01]),
+            "Hk": np.array([[1.0, 0.0]]),
+            "Qk": np.array([[0.0001, 0.0], [0.0, 0.01]]),
+            "Rk": np.array([[25.0]]),
+        }  # static params
 
         # ── Subscription buffers ───────────────────────────────────────────────
         self._gps_buf: deque = deque(maxlen=5)
@@ -93,22 +102,30 @@ class KfEstimatorNode(Node):
 
         # ── Subscriptions ────────────────────────────────────────────────────
         self._gps_sub = self.create_subscription(
-            NavSatFix, '/gps',
-            self._gps_cb, QOS,
+            NavSatFix,
+            "/gps",
+            self._gps_cb,
+            QOS,
             callback_group=self._cb_group,
         )
         self._imu_sub = self.create_subscription(
-            Imu, '/imu',
-            self._imu_cb, QOS,
+            Imu,
+            "/imu",
+            self._imu_cb,
+            QOS,
             callback_group=self._cb_group,
         )
 
         # ── Publishers ────────────────────────────────────────────────────────
         self._pub_x_est_kf = self.create_publisher(
-            Float64, '/x_est_kf', QOS,
+            Float64,
+            "/x_est_kf",
+            QOS,
         )
         self._pub_P_kf = self.create_publisher(
-            Float64, '/P_kf', QOS,
+            Float64,
+            "/P_kf",
+            QOS,
         )
 
         self.get_logger().info("kf_estimator started")
@@ -171,22 +188,22 @@ class KfEstimatorNode(Node):
         if self._state is not None:
             kwargs["zk"] = self._state
 
-        result = self._system.step(**kwargs)
+        result = self._system.eval(**kwargs)
         if self._system.f is not None:
             self._state, yk = result  # stateful: (next_state, output)
         else:
-            yk = result               # stateless: output only
+            yk = result  # stateless: output only
 
-        if isinstance(yk, dict) and 'x_est' in yk:
-            _arr = np.asarray(yk['x_est'], dtype=float).ravel()
+        if isinstance(yk, dict) and "x_est" in yk:
+            _arr = np.asarray(yk["x_est"], dtype=float).ravel()
             msg = py2ros_float64(_arr)
-            if hasattr(msg, 'header'):
+            if hasattr(msg, "header"):
                 msg.header.stamp = self.get_clock().now().to_msg()
             self._pub_x_est_kf.publish(msg)
-        if isinstance(yk, dict) and 'P00' in yk:
-            _arr = np.asarray(yk['P00'], dtype=float).ravel()
+        if isinstance(yk, dict) and "P00" in yk:
+            _arr = np.asarray(yk["P00"], dtype=float).ravel()
             msg = py2ros_float64(_arr)
-            if hasattr(msg, 'header'):
+            if hasattr(msg, "header"):
                 msg.header.stamp = self.get_clock().now().to_msg()
             self._pub_P_kf.publish(msg)
 
@@ -194,6 +211,7 @@ class KfEstimatorNode(Node):
 # ──────────────────────────────────────────────────────────────────────
 # Entry point
 # ──────────────────────────────────────────────────────────────────────
+
 
 def main() -> None:
     rclpy.init()
