@@ -71,19 +71,17 @@ class ROSNode:
         - ``"key"`` (str, optional): Key into h() return dict. Required when
           h() returns a dict and there are multiple publishers.
 
-    sync_mode : str, required when ``subs`` has more than one entry
-        ``"any"`` — step whenever any subscription has fresh data.
-        ``"all"`` — step only when every subscription has fresh data.
-
     state_name : str, optional
         Name of the state parameter in ``f``'s signature (e.g. ``"ck"`` for
         ``f(ck, ...)``) .  Required for stateful systems; ignored if ``f`` is
         ``None``.  ``eval()`` injects ``self._state`` under this name before
         calling ``DynamicalSystem.eval()``.
 
-    timer_hz : float, optional
-        In the generated node: fires ``_run_step`` at this frequency instead
-        of triggering from subscription callbacks.
+    Notes
+    -----
+    ``sync_mode`` and ``timer_hz`` are not constructor parameters — they only
+    affect the generated ROS2 node's triggering behavior, so they're passed to
+    ``write_ROSNode_to_rclpy()`` instead.
 
     Examples
     --------
@@ -114,26 +112,10 @@ class ROSNode:
         state_name: Optional[str] = None,
         subs: Optional[Sequence[SubDict]] = None,
         pubs: Optional[Sequence[PubDict]] = None,
-        sync_mode: Optional[str] = None,
-        timer_hz: Optional[float] = None,
     ) -> None:
-        n_subs = len(subs) if subs else 0
-        if n_subs > 1 and sync_mode is None:
-            raise ValueError(
-                "sync_mode ('any' or 'all') is required when subs has "
-                "more than one subscription"
-            )
-        sync_mode = sync_mode or "any"
-        if sync_mode not in ("any", "all"):
-            raise ValueError(f"sync_mode must be 'any' or 'all', got: {sync_mode!r}")
-        if timer_hz is not None and timer_hz <= 0:
-            raise ValueError(f"timer_hz must be positive, got {timer_hz}")
-
         self._dynamical_system = dynamical_system
         self._state: Optional[Any] = None
         self._state_key: Optional[str] = state_name
-        self._sync_mode = sync_mode
-        self._timer_hz = timer_hz
 
         # -------- Parse subscriptions --------
         self._subs: List[Tuple[str, type, Any, str, Optional[float], int, bool]] = []
@@ -320,6 +302,8 @@ class ROSNode:
         path: str,
         *,
         node_name: str,
+        sync_mode: Optional[str] = None,
+        timer_hz: Optional[float] = None,
         deps: Optional[List[Any]] = None,
         initial_state: Optional[Any] = None,
         initial_inputs: Optional[Dict[str, Any]] = None,
@@ -343,6 +327,13 @@ class ROSNode:
         node_name : str
             ROS2 node name (used for the generated class name, ``super().__init__``,
             and logger messages).
+        sync_mode : str, optional
+            Required when there is more than one subscription. ``"any"`` —
+            step whenever any subscription has fresh data. ``"all"`` — step
+            only when every subscription has fresh data.
+        timer_hz : float, optional
+            Fires ``_run_step`` at this frequency instead of triggering from
+            subscription callbacks.
         deps : list of callable, optional
             Helper functions that ``f`` or ``h`` depend on.  Each function's
             source is inlined before the dynamics functions in the output file.
@@ -389,6 +380,10 @@ class ROSNode:
         ------
         ValueError
             If any function is a lambda (cannot be serialized).
+        ValueError
+            If there is more than one subscription and ``sync_mode`` is not
+            given, or ``sync_mode`` is not ``"any"``/``"all"``, or
+            ``timer_hz`` is not positive.
         ValueError
             If the node has no subscriptions and no ``timer_hz`` — the
             generated node would never step.
@@ -572,7 +567,19 @@ class ROSNode:
 
         # ── validate ──────────────────────────────────────────────────────────
 
-        if not self._subs and self._timer_hz is None and self._pubs_cfg:
+        n_subs = len(self._subs)
+        if n_subs > 1 and sync_mode is None:
+            raise ValueError(
+                "sync_mode ('any' or 'all') is required when subs has "
+                "more than one subscription"
+            )
+        sync_mode = sync_mode or "any"
+        if sync_mode not in ("any", "all"):
+            raise ValueError(f"sync_mode must be 'any' or 'all', got: {sync_mode!r}")
+        if timer_hz is not None and timer_hz <= 0:
+            raise ValueError(f"timer_hz must be positive, got {timer_hz}")
+
+        if not self._subs and timer_hz is None and self._pubs_cfg:
             raise ValueError(
                 "Cannot write a node with no subscriptions and no timer_hz — "
                 "the generated node would never step.  Add timer_hz or subs."
@@ -819,17 +826,17 @@ class ROSNode:
                     f"        {topic}  ({msg_type.__name__})  [{_ref_name(py2ros, py2ros_cls)}{key_str}]"
                 )
         ln("")
-        if self._timer_hz is not None:
-            ln(f"    step trigger: timer at {self._timer_hz} Hz")
+        if timer_hz is not None:
+            ln(f"    step trigger: timer at {timer_hz} Hz")
         else:
             ln("    step trigger: event-driven (fires on each subscription callback)")
         if subs:
             sync_desc = (
                 "step only when every subscription has a fresh value"
-                if self._sync_mode == "all"
+                if sync_mode == "all"
                 else "step when any subscription receives a fresh value"
             )
-            ln(f"    sync_mode={self._sync_mode!r}: {sync_desc}.")
+            ln(f"    sync_mode={sync_mode!r}: {sync_desc}.")
         _dynamic = dict(dynamic_params or {})
         if _dynamic:
             ln("")
@@ -902,12 +909,12 @@ class ROSNode:
                 ln(f"            {msg_type.__name__}, {topic!r}, QOS,")
                 ln(f"        )")
 
-        if self._timer_hz is not None:
+        if timer_hz is not None:
             blank()
             ln("        # ── Timer " + "─" * 60)
-            period = 1.0 / self._timer_hz
+            period = 1.0 / timer_hz
             ln(f"        self._timer = self.create_timer(")
-            ln(f"            {period},  # {self._timer_hz} Hz")
+            ln(f"            {period},  # {timer_hz} Hz")
             ln(f"            self._run_step,")
             ln(f"            callback_group=self._cb_group,")
             ln(f"        )")
@@ -950,7 +957,7 @@ class ROSNode:
             else:
                 ln(f"        ts = self.get_clock().now().nanoseconds * 1e-9")
             ln(f"        self._{arg}_buf.append((ts, arr))")
-            if self._timer_hz is None:
+            if timer_hz is None:
                 ln(f"        self._run_step()")
 
         # _fresh
@@ -1005,8 +1012,8 @@ class ROSNode:
                     )
 
             blank()
-            ln(f"        # sync_mode={self._sync_mode!r}")
-            if self._sync_mode == "all":
+            ln(f"        # sync_mode={sync_mode!r}")
+            if sync_mode == "all":
                 cond = " or ".join(f"{a} is None" for _, _, _, _, a, _, _, _ in subs)
                 ln(f"        if {cond}:")
                 ln("            return  # not all inputs are fresh — skip this tick")
