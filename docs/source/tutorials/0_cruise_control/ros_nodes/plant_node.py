@@ -29,14 +29,14 @@ from dynamicalnodes.ros2py_py2ros import ros2py_float64, py2ros_float64
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
+def fcar(xk, uk, m, b, dt):
+    v = xk
+    return v + dt * (uk - b * v) / m
 
-def plant_f(pk, uk, m, b, dt):
-    p, v = pk
-    return np.array([p + dt * v, v + dt * (-b / m * v + uk / m)])
 
-
-def plant_h(pk):
-    return pk[1]  # velocity
+def hcar(xk, sigma=0.0):
+    v = xk
+    return np.abs(v) + np.random.normal(0.0, sigma)
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -51,6 +51,7 @@ QOS = QoSProfile(
 
 
 class PlantNode(Node):
+
     """
     Subscribes to:
         /uk  (Float64)  →  uk  [ros2py_float64, buffer=1]
@@ -65,29 +66,25 @@ class PlantNode(Node):
         super().__init__("plant")
         self._cb_group = ReentrantCallbackGroup()
 
-        self._system = DynamicalSystem(f=plant_f, h=plant_h)
-        self._state = np.array([0.0, 0.0])  # initial state
+        self._system = DynamicalSystem(f=fcar, h=hcar)
+        self._state = 0.0  # initial state
         self._t0 = self.get_clock().now()  # wall-clock reference for 'tk'
 
-        self._static_params: dict = {"m": 1500.0, "b": 50.0, "dt": 0.1}  # static params
+        self._static_params: dict = {'m': 1500.0, 'b': 50.0, 'dt': 0.1, 'sigma': np.float64(1.4142135623730951)}  # static params
 
         # ── Subscription buffers ───────────────────────────────────────────────
         self._uk_buf: deque = deque(maxlen=1)
 
         # ── Subscriptions ────────────────────────────────────────────────────
         self._uk_sub = self.create_subscription(
-            Float64,
-            "/uk",
-            self._uk_cb,
-            QOS,
+            Float64, '/uk',
+            self._uk_cb, QOS,
             callback_group=self._cb_group,
         )
 
         # ── Publishers ────────────────────────────────────────────────────────
         self._pub_yk = self.create_publisher(
-            Float64,
-            "/yk",
-            QOS,
+            Float64, '/yk', QOS,
         )
 
         self.get_logger().info("plant started")
@@ -120,7 +117,7 @@ class PlantNode(Node):
     # Control step
     # ────────────────────────────────────────────────────────────────────
     # Builds kwargs from static params, dynamic params, fresh subscription
-    # values, and current state, then calls DynamicalSystem.step() and
+    # values, and current state, then calls DynamicalSystem.eval() and
     # publishes. Skipped entirely when sync_mode conditions are not met.
 
     def _run_step(self) -> None:
@@ -139,20 +136,15 @@ class PlantNode(Node):
         if uk is not None:
             kwargs["uk"] = uk
         if self._state is not None:
-            kwargs["pk"] = self._state
+            kwargs["xk"] = self._state
 
-        result = self._system.eval(**kwargs)
+        x_next, yk = self._system.eval(**kwargs)
         if self._system.f is not None:
-            self._state, yk = result  # stateful: (next_state, output)
-        else:
-            yk = result  # stateless: output only
+            self._state = x_next  # stateful: advance to next state
 
         _arr = np.asarray(yk, dtype=float).ravel()
-        _arr = _arr + np.random.normal(
-            0.0, np.float64(1.4142135623730951), _arr.shape
-        )  # noise std=1.4142135623730951
         msg = py2ros_float64(_arr)
-        if hasattr(msg, "header"):
+        if hasattr(msg, 'header'):
             msg.header.stamp = self.get_clock().now().to_msg()
         self._pub_yk.publish(msg)
 
@@ -160,7 +152,6 @@ class PlantNode(Node):
 # ──────────────────────────────────────────────────────────────────────
 # Entry point
 # ──────────────────────────────────────────────────────────────────────
-
 
 def main() -> None:
     rclpy.init()

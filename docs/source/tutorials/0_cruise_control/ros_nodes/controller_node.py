@@ -29,15 +29,14 @@ from dynamicalnodes.ros2py_py2ros import ros2py_float64, py2ros_float64
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
-
-def pid_f(ck, rk, xhatk, KP, KI, KD, dt):
+def fpid(ck, rk, xhatk, KP, KI, KD, dt):
     """Update PID state: returns (prev_error, integral)."""
     e_prev, e_int = ck
     ek = rk - xhatk
     return (ek, e_int + ek * dt)
 
 
-def pid_h(ck, rk, xhatk, KP, KI, KD, dt):
+def hpid(ck, rk, xhatk, KP, KI, KD, dt):
     """Compute control output from current PID state."""
     e_prev, e_int = ck
     ek = rk - xhatk
@@ -57,6 +56,7 @@ QOS = QoSProfile(
 
 
 class ControllerNode(Node):
+
     """
     Subscribes to:
         /rk  (Float64)  →  rk  [ros2py_float64, buffer=1]
@@ -77,17 +77,17 @@ class ControllerNode(Node):
         super().__init__("controller")
         self._cb_group = ReentrantCallbackGroup()
 
-        self._system = DynamicalSystem(f=pid_f, h=pid_h)
+        self._system = DynamicalSystem(f=fpid, h=hpid)
         self._state = (0.0, 0.0)  # initial state
         self._t0 = self.get_clock().now()  # wall-clock reference for 'tk'
 
-        self._static_params: dict = {"dt": 0.1}  # static params
+        self._static_params: dict = {'dt': 0.1}  # static params
 
         # ── Dynamic params ───────────────────────────────────────────────────
         # Readable/writable at runtime: ros2 param set /controller <name> <value>
-        self.declare_parameter("KP", 500.0)
-        self.declare_parameter("KI", 30.0)
-        self.declare_parameter("KD", 10.0)
+        self.declare_parameter('KP', 500.0)
+        self.declare_parameter('KI', 30.0)
+        self.declare_parameter('KD', 10.0)
 
         # ── Subscription buffers ───────────────────────────────────────────────
         self._rk_buf: deque = deque(maxlen=1)
@@ -95,25 +95,19 @@ class ControllerNode(Node):
 
         # ── Subscriptions ────────────────────────────────────────────────────
         self._rk_sub = self.create_subscription(
-            Float64,
-            "/rk",
-            self._rk_cb,
-            QOS,
+            Float64, '/rk',
+            self._rk_cb, QOS,
             callback_group=self._cb_group,
         )
         self._xhatk_sub = self.create_subscription(
-            Float64,
-            "/xhatk",
-            self._xhatk_cb,
-            QOS,
+            Float64, '/xhatk',
+            self._xhatk_cb, QOS,
             callback_group=self._cb_group,
         )
 
         # ── Publishers ────────────────────────────────────────────────────────
         self._pub_uk = self.create_publisher(
-            Float64,
-            "/uk",
-            QOS,
+            Float64, '/uk', QOS,
         )
 
         self.get_logger().info("controller started")
@@ -152,7 +146,7 @@ class ControllerNode(Node):
     # Control step
     # ────────────────────────────────────────────────────────────────────
     # Builds kwargs from static params, dynamic params, fresh subscription
-    # values, and current state, then calls DynamicalSystem.step() and
+    # values, and current state, then calls DynamicalSystem.eval() and
     # publishes. Skipped entirely when sync_mode conditions are not met.
 
     def _run_step(self) -> None:
@@ -183,15 +177,13 @@ class ControllerNode(Node):
         if self._state is not None:
             kwargs["ck"] = self._state
 
-        result = self._system.eval(**kwargs)
+        x_next, yk = self._system.eval(**kwargs)
         if self._system.f is not None:
-            self._state, yk = result  # stateful: (next_state, output)
-        else:
-            yk = result  # stateless: output only
+            self._state = x_next  # stateful: advance to next state
 
         _arr = np.asarray(yk, dtype=float).ravel()
         msg = py2ros_float64(_arr)
-        if hasattr(msg, "header"):
+        if hasattr(msg, 'header'):
             msg.header.stamp = self.get_clock().now().to_msg()
         self._pub_uk.publish(msg)
 
@@ -199,7 +191,6 @@ class ControllerNode(Node):
 # ──────────────────────────────────────────────────────────────────────
 # Entry point
 # ──────────────────────────────────────────────────────────────────────
-
 
 def main() -> None:
     rclpy.init()

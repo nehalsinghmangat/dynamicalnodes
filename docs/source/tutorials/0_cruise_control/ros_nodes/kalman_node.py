@@ -29,25 +29,24 @@ from dynamicalnodes.ros2py_py2ros import ros2py_float64, py2ros_float64
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
-
-def kf_f(zk, uk, yk, Fk, Bk, Hk, Qk, Rk):
-    """Discrete Kalman predict-update. Returns updated (x_est, P)."""
-    x, P = zk
+def fkf(ok, uk, yk, Fk, Bk, Hk, Qk, Rk):
+    """Discrete Kalman predict-update (scalar state). Returns updated (v_est, P)."""
+    v, P = ok
     # Predict
-    x_pred = Fk @ x + Bk * uk
-    P_pred = Fk @ P @ Fk.T + Qk
+    v_pred = Fk * v + Bk * uk
+    P_pred = Fk * P * Fk + Qk
     # Update
-    yk = np.atleast_1d(yk)
-    y_res = yk - Hk @ x_pred
-    S = Hk @ P_pred @ Hk.T + Rk
-    K = P_pred @ Hk.T @ np.linalg.inv(S)
-    x_upd = x_pred + K @ y_res
-    P_upd = (np.eye(len(x)) - K @ Hk) @ P_pred
-    return (x_upd, P_upd)
+    y_res = yk - Hk * v_pred
+    S = Hk * P_pred * Hk + Rk
+    K = P_pred * Hk / S
+    v_upd = v_pred + K * y_res
+    P_upd = (1 - K * Hk) * P_pred
+    return (v_upd, P_upd)
 
 
-def kf_h(zk):
-    return zk[0][1]  # velocity estimate
+def hkf(ok):
+    xhatk, P = ok
+    return xhatk
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -62,6 +61,7 @@ QOS = QoSProfile(
 
 
 class KalmanNode(Node):
+
     """
     Subscribes to:
         /uk  (Float64)  →  uk  [ros2py_float64, buffer=1]
@@ -77,20 +77,11 @@ class KalmanNode(Node):
         super().__init__("kalman")
         self._cb_group = ReentrantCallbackGroup()
 
-        self._system = DynamicalSystem(f=kf_f, h=kf_h)
-        self._state = (
-            np.array([0.0, 0.0]),
-            np.array([[1.0, 0.0], [0.0, 1.0]]),
-        )  # initial state
+        self._system = DynamicalSystem(f=fkf, h=hkf)
+        self._state = (0.0, 1.0)  # initial state
         self._t0 = self.get_clock().now()  # wall-clock reference for 'tk'
 
-        self._static_params: dict = {
-            "Fk": np.array([[1.0, 0.1], [0.0, 0.9966666666666667]]),
-            "Bk": np.array([0.0, 6.666666666666667e-05]),
-            "Hk": np.array([[0.0, 1.0]]),
-            "Qk": np.array([[0.005000000000000001, 0.0], [0.0, 0.010000000000000002]]),
-            "Rk": np.array([[2.0]]),
-        }  # static params
+        self._static_params: dict = {'Fk': 0.9966666666666667, 'Bk': 6.666666666666667e-05, 'Hk': 1.0, 'Qk': 0.010000000000000002, 'Rk': 2.0}  # static params
 
         # ── Subscription buffers ───────────────────────────────────────────────
         self._uk_buf: deque = deque(maxlen=1)
@@ -98,25 +89,19 @@ class KalmanNode(Node):
 
         # ── Subscriptions ────────────────────────────────────────────────────
         self._uk_sub = self.create_subscription(
-            Float64,
-            "/uk",
-            self._uk_cb,
-            QOS,
+            Float64, '/uk',
+            self._uk_cb, QOS,
             callback_group=self._cb_group,
         )
         self._yk_sub = self.create_subscription(
-            Float64,
-            "/yk",
-            self._yk_cb,
-            QOS,
+            Float64, '/yk',
+            self._yk_cb, QOS,
             callback_group=self._cb_group,
         )
 
         # ── Publishers ────────────────────────────────────────────────────────
         self._pub_xhatk = self.create_publisher(
-            Float64,
-            "/xhatk",
-            QOS,
+            Float64, '/xhatk', QOS,
         )
 
         self.get_logger().info("kalman started")
@@ -155,7 +140,7 @@ class KalmanNode(Node):
     # Control step
     # ────────────────────────────────────────────────────────────────────
     # Builds kwargs from static params, dynamic params, fresh subscription
-    # values, and current state, then calls DynamicalSystem.step() and
+    # values, and current state, then calls DynamicalSystem.eval() and
     # publishes. Skipped entirely when sync_mode conditions are not met.
 
     def _run_step(self) -> None:
@@ -177,17 +162,15 @@ class KalmanNode(Node):
         if yk is not None:
             kwargs["yk"] = yk
         if self._state is not None:
-            kwargs["zk"] = self._state
+            kwargs["ok"] = self._state
 
-        result = self._system.eval(**kwargs)
+        x_next, yk = self._system.eval(**kwargs)
         if self._system.f is not None:
-            self._state, yk = result  # stateful: (next_state, output)
-        else:
-            yk = result  # stateless: output only
+            self._state = x_next  # stateful: advance to next state
 
         _arr = np.asarray(yk, dtype=float).ravel()
         msg = py2ros_float64(_arr)
-        if hasattr(msg, "header"):
+        if hasattr(msg, 'header'):
             msg.header.stamp = self.get_clock().now().to_msg()
         self._pub_xhatk.publish(msg)
 
@@ -195,7 +178,6 @@ class KalmanNode(Node):
 # ──────────────────────────────────────────────────────────────────────
 # Entry point
 # ──────────────────────────────────────────────────────────────────────
-
 
 def main() -> None:
     rclpy.init()

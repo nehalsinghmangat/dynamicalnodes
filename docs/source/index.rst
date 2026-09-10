@@ -3,7 +3,7 @@ dynamicalnodes
 
 **dynamicalnodes** is a Python framework for modeling control systems as discrete-time diagrams and then deploying them as ROS2 nodes.
 
-To get started, :doc:`install the package <installation>` and begin the :doc:`tutorial <tutorials/index>`.
+To get started, :doc:`install the package <installation>` and begin the :doc:`tutorial <tutorials/0_cruise_control/0_cruise_control.ipynb>`.
 
 .. warning::
 
@@ -20,8 +20,4 @@ To get started, :doc:`install the package <installation>` and begin the :doc:`tu
    api/index
    license
 
-.. figure:: overview.svg
-   :width: 100%
-   :alt: dynamicalnodes overview
 
-   Overview of the **dynamicalnodes** framework and correspondence between discrete-time diagrams and ROS~2 node topologies. a) The discrete block diagram of an abstract feedback system. b) A feedback system implemented via **DynamicalSystem** objects. c) A feedback system implemented in ROS via the **ROSNode** class. 

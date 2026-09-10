@@ -29,8 +29,7 @@ from dynamicalnodes.ros2py_py2ros import py2ros_float64
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
-
-def ref_h(tk, A, omega):
+def href(tk, A, omega):
     return A * np.sin(omega * tk)
 
 
@@ -46,6 +45,7 @@ QOS = QoSProfile(
 
 
 class ReferenceNode(Node):
+
     """
     Publishes to:
         /rk  (Float64)  [py2ros_float64]
@@ -57,20 +57,15 @@ class ReferenceNode(Node):
         super().__init__("reference")
         self._cb_group = ReentrantCallbackGroup()
 
-        self._system = DynamicalSystem(h=ref_h)
+        self._system = DynamicalSystem(h=href)
         self._state = None  # initial state — set before deploying if stateful
         self._t0 = self.get_clock().now()  # wall-clock reference for 'tk'
 
-        self._static_params: dict = {
-            "A": 30.0,
-            "omega": 0.05235987755982988,
-        }  # static params
+        self._static_params: dict = {'A': 30.0, 'omega': 0.05235987755982988}  # static params
 
         # ── Publishers ────────────────────────────────────────────────────────
         self._pub_rk = self.create_publisher(
-            Float64,
-            "/rk",
-            QOS,
+            Float64, '/rk', QOS,
         )
 
         # ── Timer ────────────────────────────────────────────────────────────
@@ -96,7 +91,7 @@ class ReferenceNode(Node):
     # Control step
     # ────────────────────────────────────────────────────────────────────
     # Builds kwargs from static params, dynamic params, fresh subscription
-    # values, and current state, then calls DynamicalSystem.step() and
+    # values, and current state, then calls DynamicalSystem.eval() and
     # publishes. Skipped entirely when sync_mode conditions are not met.
 
     def _run_step(self) -> None:
@@ -106,15 +101,13 @@ class ReferenceNode(Node):
 
         kwargs: dict = {"tk": tk, **self._static_params}
 
-        result = self._system.eval(**kwargs)
+        x_next, yk = self._system.eval(**kwargs)
         if self._system.f is not None:
-            self._state, yk = result  # stateful: (next_state, output)
-        else:
-            yk = result  # stateless: output only
+            self._state = x_next  # stateful: advance to next state
 
         _arr = np.asarray(yk, dtype=float).ravel()
         msg = py2ros_float64(_arr)
-        if hasattr(msg, "header"):
+        if hasattr(msg, 'header'):
             msg.header.stamp = self.get_clock().now().to_msg()
         self._pub_rk.publish(msg)
 
@@ -122,7 +115,6 @@ class ReferenceNode(Node):
 # ──────────────────────────────────────────────────────────────────────
 # Entry point
 # ──────────────────────────────────────────────────────────────────────
-
 
 def main() -> None:
     rclpy.init()
