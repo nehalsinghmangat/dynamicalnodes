@@ -14,10 +14,7 @@ To get started, :doc:`install the package <installation>` and begin the :doc:`tu
 .. toctree::
    :hidden:
 
-   installation
-   tutorials/index
-   fh_library/index   
    api/index
-   license
+
 
 

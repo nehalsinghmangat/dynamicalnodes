@@ -29,14 +29,14 @@ from dynamicalnodes.ros2py_py2ros import ros2py_float64, py2ros_float64
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
-def fpid(ck, rk, xhatk, KP, KI, KD, dt):
+def fpid(ck, rk, xhatk, KP=500.0, KI=30.0, KD=10.0, dt=1.0):
     """Update PID state: returns (prev_error, integral)."""
     e_prev, e_int = ck
     ek = rk - xhatk
     return (ek, e_int + ek * dt)
 
 
-def hpid(ck, rk, xhatk, KP, KI, KD, dt):
+def hpid(ck, rk, xhatk, KP=500.0, KI=30.0, KD=10.0, dt=1.0):
     """Compute control output from current PID state."""
     e_prev, e_int = ck
     ek = rk - xhatk
@@ -59,8 +59,8 @@ class ControllerNode(Node):
 
     """
     Subscribes to:
-        /rk  (Float64)  →  rk  [ros2py_float64, buffer=1]
-        /xhatk  (Float64)  →  xhatk  [ros2py_float64, buffer=1, initial=0.0]
+        /rk  (Float64)  →  rk  [ros2py_float64, buffer=1, stale_after=0.2s]
+        /xhatk  (Float64)  →  xhatk  [ros2py_float64, buffer=1, stale_after=0.2s, initial=0.0]
     Publishes to:
         /uk  (Float64)  [py2ros_float64]
 
@@ -118,7 +118,9 @@ class ControllerNode(Node):
     # Each callback converts the incoming message to NumPy, stores it with an
     # arrival timestamp, then attempts a control step. The (time, value) tuple
     # enables the staleness check in _fresh(). _run_step() proceeds only when
-    # sync_mode conditions are satisfied.
+    # sync_mode conditions are satisfied, and pops each value it consumes —
+    # so a stored value can trigger at most one step before it must be
+    # refreshed by new data.
 
     def _rk_cb(self, msg: Float64) -> None:
         arr = np.asarray(ros2py_float64(msg), dtype=float)  # ROS msg → NumPy
@@ -155,8 +157,8 @@ class ControllerNode(Node):
         tk: float = (_now - self._t0).nanoseconds * 1e-9  # seconds since node started
 
         # Gather fresh inputs
-        rk = self._fresh(self._rk_buf, None, now_ts)
-        xhatk = self._fresh(self._xhatk_buf, None, now_ts)
+        rk = self._fresh(self._rk_buf, 0.2, now_ts)
+        xhatk = self._fresh(self._xhatk_buf, 0.2, now_ts)
 
         # Cold-start fallbacks — used only before first message arrives
         if xhatk is None and not self._xhatk_buf:
@@ -165,6 +167,15 @@ class ControllerNode(Node):
         # sync_mode='all'
         if rk is None or xhatk is None:
             return  # not all inputs are fresh — skip this tick
+
+        # Consume: pop each fresh value now that we're committing to a
+        # step, so it cannot re-trigger another step until genuinely new
+        # data arrives (prevents event-driven feedback loops from
+        # cascading at an unbounded rate).
+        if rk is not None and self._rk_buf:
+            self._rk_buf.pop()
+        if xhatk is not None and self._xhatk_buf:
+            self._xhatk_buf.pop()
 
         kwargs: dict = {"tk": tk, **self._static_params}
         kwargs["KP"] = self.get_parameter("KP").value

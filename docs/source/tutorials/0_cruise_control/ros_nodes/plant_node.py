@@ -29,7 +29,7 @@ from dynamicalnodes.ros2py_py2ros import ros2py_float64, py2ros_float64
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
-def fcar(xk, uk, m, b, dt):
+def fcar(xk, uk, m=1500.0, b=50.0, dt=1.0):
     v = xk
     return v + dt * (uk - b * v) / m
 
@@ -95,7 +95,9 @@ class PlantNode(Node):
     # Each callback converts the incoming message to NumPy, stores it with an
     # arrival timestamp, then attempts a control step. The (time, value) tuple
     # enables the staleness check in _fresh(). _run_step() proceeds only when
-    # sync_mode conditions are satisfied.
+    # sync_mode conditions are satisfied, and pops each value it consumes —
+    # so a stored value can trigger at most one step before it must be
+    # refreshed by new data.
 
     def _uk_cb(self, msg: Float64) -> None:
         arr = np.asarray(ros2py_float64(msg), dtype=float)  # ROS msg → NumPy
@@ -131,6 +133,13 @@ class PlantNode(Node):
         # sync_mode='any'
         if uk is None:
             return  # all inputs are stale — skip this tick
+
+        # Consume: pop each fresh value now that we're committing to a
+        # step, so it cannot re-trigger another step until genuinely new
+        # data arrives (prevents event-driven feedback loops from
+        # cascading at an unbounded rate).
+        if uk is not None and self._uk_buf:
+            self._uk_buf.pop()
 
         kwargs: dict = {"tk": tk, **self._static_params}
         if uk is not None:

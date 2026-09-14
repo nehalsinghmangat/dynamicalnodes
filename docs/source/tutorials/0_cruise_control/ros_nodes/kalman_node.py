@@ -29,12 +29,22 @@ from dynamicalnodes.ros2py_py2ros import ros2py_float64, py2ros_float64
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
-def fkf(ok, uk, yk, Fk, Bk, Hk, Qk, Rk):
-    """Discrete Kalman predict-update (scalar state). Returns updated (v_est, P)."""
-    v, P = ok
+def fkf(ok, Fk, Bk, Hk, Qk, Rk, uk=None, yk=None):
+    """Discrete Kalman filter (scalar state), predict and update as separable stages.
+
+    Both uk and yk are optional: predict runs only when uk is fresh, update
+    only when yk is fresh. With sync_mode="any" each subscription triggers
+    the node independently, so a step may see just one of them — e.g. a
+    /uk-only callback predicts and leaves the update for the next /yk
+    callback, which updates the already-predicted state directly.
+    """
+    v_pred, P_pred = ok
     # Predict
-    v_pred = Fk * v + Bk * uk
-    P_pred = Fk * P * Fk + Qk
+    if uk is not None:
+        v_pred = Fk * v_pred + Bk * uk
+        P_pred = Fk * P_pred * Fk + Qk
+    if yk is None:
+        return (v_pred, P_pred)
     # Update
     y_res = yk - Hk * v_pred
     S = Hk * P_pred * Hk + Rk
@@ -64,13 +74,13 @@ class KalmanNode(Node):
 
     """
     Subscribes to:
-        /uk  (Float64)  →  uk  [ros2py_float64, buffer=1]
-        /yk  (Float64)  →  yk  [ros2py_float64, buffer=1]
+        /uk  (Float64)  →  uk  [ros2py_float64, buffer=1, stale_after=0.15s]
+        /yk  (Float64)  →  yk  [ros2py_float64, buffer=1, stale_after=0.15s]
     Publishes to:
         /xhatk  (Float64)  [py2ros_float64]
 
     step trigger: event-driven (fires on each subscription callback)
-    sync_mode='all': step only when every subscription has a fresh value.
+    sync_mode='any': step when any subscription receives a fresh value.
     """
 
     def __init__(self) -> None:
@@ -112,7 +122,9 @@ class KalmanNode(Node):
     # Each callback converts the incoming message to NumPy, stores it with an
     # arrival timestamp, then attempts a control step. The (time, value) tuple
     # enables the staleness check in _fresh(). _run_step() proceeds only when
-    # sync_mode conditions are satisfied.
+    # sync_mode conditions are satisfied, and pops each value it consumes —
+    # so a stored value can trigger at most one step before it must be
+    # refreshed by new data.
 
     def _uk_cb(self, msg: Float64) -> None:
         arr = np.asarray(ros2py_float64(msg), dtype=float)  # ROS msg → NumPy
@@ -149,12 +161,21 @@ class KalmanNode(Node):
         tk: float = (_now - self._t0).nanoseconds * 1e-9  # seconds since node started
 
         # Gather fresh inputs
-        uk = self._fresh(self._uk_buf, None, now_ts)
-        yk = self._fresh(self._yk_buf, None, now_ts)
+        uk = self._fresh(self._uk_buf, 0.15, now_ts)
+        yk = self._fresh(self._yk_buf, 0.15, now_ts)
 
-        # sync_mode='all'
-        if uk is None or yk is None:
-            return  # not all inputs are fresh — skip this tick
+        # sync_mode='any'
+        if uk is None and yk is None:
+            return  # all inputs are stale — skip this tick
+
+        # Consume: pop each fresh value now that we're committing to a
+        # step, so it cannot re-trigger another step until genuinely new
+        # data arrives (prevents event-driven feedback loops from
+        # cascading at an unbounded rate).
+        if uk is not None and self._uk_buf:
+            self._uk_buf.pop()
+        if yk is not None and self._yk_buf:
+            self._yk_buf.pop()
 
         kwargs: dict = {"tk": tk, **self._static_params}
         if uk is not None:

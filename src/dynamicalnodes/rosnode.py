@@ -51,7 +51,6 @@ class ROSNode:
         - ``"arg"`` (str): kwarg name passed to eval().
         - ``"ros2py"`` (Callable): ROS msg → NumPy array converter.
           Import from ``dynamicalnodes.ros2py_py2ros`` or write your own.
-        - ``"stale_after"`` (float, optional): Seconds before data expires.
         - ``"buffer_size"`` (int, optional): Queue depth (default 1).
         - ``"use_msg_timestamp"`` (bool, optional): When ``True``, the
           subscription buffer stores the message's own ``header.stamp``
@@ -79,9 +78,9 @@ class ROSNode:
 
     Notes
     -----
-    ``sync_mode`` and ``timer_hz`` are not constructor parameters — they only
-    affect the generated ROS2 node's triggering behavior, so they're passed to
-    ``write_ROSNode_to_rclpy()`` instead.
+    ``sync_mode``, ``timer_hz``, and ``stale_after`` are not constructor
+    parameters — they only affect the generated ROS2 node's triggering
+    behavior, so they're passed to ``write_ROSNode_to_rclpy()`` instead.
 
     Examples
     --------
@@ -118,7 +117,7 @@ class ROSNode:
         self._state_key: Optional[str] = state_name
 
         # -------- Parse subscriptions --------
-        self._subs: List[Tuple[str, type, Any, str, Optional[float], int, bool]] = []
+        self._subs: List[Tuple[str, type, Any, str, int, bool]] = []
         for sub_dict in subs or []:
             if not isinstance(sub_dict, dict):
                 raise TypeError("Each subscription must be a dict")
@@ -127,7 +126,6 @@ class ROSNode:
             msg_type = sub_dict.get("msg_type")
             arg_name = sub_dict.get("arg")
             ros2py = sub_dict.get("ros2py")
-            stale_after = sub_dict.get("stale_after")
             buffer_size = sub_dict.get("buffer_size", 1)
             use_msg_timestamp = bool(sub_dict.get("use_msg_timestamp", False))
 
@@ -159,7 +157,6 @@ class ROSNode:
                     msg_type,
                     ros2py,
                     arg_name,
-                    float(stale_after) if stale_after else None,
                     int(buffer_size),
                     use_msg_timestamp,
                 )
@@ -244,7 +241,7 @@ class ROSNode:
         >>> node.eval(x=Float64(data=3.0)).data
         6.0
         """
-        sub_arg_names = {a for _, _, _, a, _, _, _ in self._subs}
+        sub_arg_names = {a for _, _, _, a, _, _ in self._subs}
         step_kwargs: Dict[str, Any] = {}
 
         for arg_name, value in kwargs.items():
@@ -252,7 +249,7 @@ class ROSNode:
                 continue
             if arg_name in sub_arg_names:
                 ros2py = next(
-                    (c for _, _, c, a, _, _, _ in self._subs if a == arg_name), None
+                    (c for _, _, c, a, _, _ in self._subs if a == arg_name), None
                 )
                 assert ros2py is not None
                 if hasattr(value, "__slots__") or hasattr(
@@ -304,6 +301,7 @@ class ROSNode:
         node_name: str,
         sync_mode: Optional[str] = None,
         timer_hz: Optional[float] = None,
+        stale_after: Optional[Dict[str, float]] = None,
         deps: Optional[List[Any]] = None,
         initial_state: Optional[Any] = None,
         initial_inputs: Optional[Dict[str, Any]] = None,
@@ -334,6 +332,15 @@ class ROSNode:
         timer_hz : float, optional
             Fires ``_run_step`` at this frequency instead of triggering from
             subscription callbacks.
+        stale_after : dict, optional
+            Maximum age, in seconds, a buffered subscription value may have
+            before it's treated as stale — dropped to ``None``, the same as
+            an empty buffer, instead of being reused indefinitely. Keys must
+            match subscription ``arg`` names; a subscription not listed here
+            never expires. Use this to bound how long a value may go
+            unrefreshed before a step must skip (``sync_mode="all"``) or
+            ignore (``sync_mode="any"``) it.
+            Example: ``{"rk": 0.2, "xhatk": 0.2}``.
         deps : list of callable, optional
             Helper functions that ``f`` or ``h`` depend on.  Each function's
             source is inlined before the dynamics functions in the output file.
@@ -420,15 +427,15 @@ class ROSNode:
         >>> node = ROSNode(
         ...     dynamical_system=sys,
         ...     subs=[{"topic": "/u_k", "msg_type": Float64,
-        ...            "arg": "u_k", "ros2py": ros2py_float64,
-        ...            "stale_after": 0.5}],
+        ...            "arg": "u_k", "ros2py": ros2py_float64}],
         ...     pubs=[{"topic": "/y_k", "msg_type": Float64,
         ...            "py2ros": py2ros_float64}],
         ... )
         >>> with tempfile.NamedTemporaryFile(suffix=".py", delete=False) as tmp:
         ...     path = tmp.name
         >>> node.write_ROSNode_to_rclpy(path, node_name="plant",
-        ...                             initial_state=np.array([0.0]))
+        ...                             initial_state=np.array([0.0]),
+        ...                             stale_after={"u_k": 0.5})
         >>> content = open(path).read()
         >>> "def f_plant" in content and "def h_plant" in content
         True
@@ -588,21 +595,26 @@ class ROSNode:
         ds = self._dynamical_system
         _check_lambda(ds.f, "DynamicalSystem.f")
         _check_lambda(ds.h, "DynamicalSystem.h")
-        for _, _, ros2py, arg, _, _, _ in self._subs:
+        for _, _, ros2py, arg, _, _ in self._subs:
             _check_lambda(ros2py, f"ros2py for '{arg}'")
         for _, _, py2ros, key in self._pubs_cfg:
             _check_lambda(py2ros, f"py2ros for key={key!r}")
 
         _sub_noise: Dict[str, float] = dict(sub_noise or {})
         _pub_noise: Dict[str, float] = dict(pub_noise or {})
+        _stale_after: Dict[str, float] = dict(stale_after or {})
         _valid_sub_topics = {t for t, *_ in self._subs}
         _valid_pub_topics = {t for t, *_ in self._pubs_cfg}
+        _valid_sub_args = {a for _, _, _, a, _, _ in self._subs}
         for t in _sub_noise:
             if t not in _valid_sub_topics:
                 raise ValueError(f"sub_noise topic {t!r} not in subs")
         for t in _pub_noise:
             if t not in _valid_pub_topics:
                 raise ValueError(f"pub_noise topic {t!r} not in pubs")
+        for a in _stale_after:
+            if a not in _valid_sub_args:
+                raise ValueError(f"stale_after key {a!r} not a subscription 'arg'")
 
         # ── classify all functions ─────────────────────────────────────────────
 
@@ -611,7 +623,7 @@ class ROSNode:
 
         # subs: [(topic, msg_type, ros2py, cls, arg, stale, buf, use_msg_ts), ...]
         subs = []
-        for topic, msg_type, ros2py, arg, stale, buf, use_msg_ts in self._subs:
+        for topic, msg_type, ros2py, arg, buf, use_msg_ts in self._subs:
             subs.append(
                 (
                     topic,
@@ -619,7 +631,7 @@ class ROSNode:
                     ros2py,
                     _classify(ros2py),
                     arg,
-                    stale,
+                    _stale_after.get(arg),
                     buf,
                     use_msg_ts,
                 )
@@ -937,7 +949,13 @@ class ROSNode:
             ln(
                 "    # enables the staleness check in _fresh(). _run_step() proceeds only when"
             )
-            ln("    # sync_mode conditions are satisfied.")
+            ln(
+                "    # sync_mode conditions are satisfied, and pops each value it consumes —"
+            )
+            ln(
+                "    # so a stored value can trigger at most one step before it must be"
+            )
+            ln("    # refreshed by new data.")
         for topic, msg_type, ros2py, cls, arg, _, _, use_msg_ts in subs:
             ros2py_name = _ref_name(ros2py, cls)
             blank()
@@ -1021,6 +1039,21 @@ class ROSNode:
                 cond = " and ".join(f"{a} is None" for _, _, _, _, a, _, _, _ in subs)
                 ln(f"        if {cond}:")
                 ln("            return  # all inputs are stale — skip this tick")
+
+            blank()
+            ln(
+                "        # Consume: pop each fresh value now that we're committing to a"
+            )
+            ln(
+                "        # step, so it cannot re-trigger another step until genuinely new"
+            )
+            ln(
+                "        # data arrives (prevents event-driven feedback loops from"
+            )
+            ln("        # cascading at an unbounded rate).")
+            for _, _, _, _, arg, _, _, _ in subs:
+                ln(f"        if {arg} is not None and self._{arg}_buf:")
+                ln(f"            self._{arg}_buf.pop()")
 
         blank()
         ln('        kwargs: dict = {"tk": tk, **self._static_params}')

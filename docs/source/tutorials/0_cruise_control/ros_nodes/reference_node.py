@@ -29,7 +29,7 @@ from dynamicalnodes.ros2py_py2ros import py2ros_float64
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
-def href(tk, A, omega):
+def href(tk, A=30.0, omega=np.pi / 60):
     return A * np.sin(omega * tk)
 
 

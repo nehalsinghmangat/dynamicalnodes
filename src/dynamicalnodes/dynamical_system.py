@@ -97,6 +97,26 @@ class DynamicalSystem:
         self._f = f
         self._h = h
 
+    def __repr__(self) -> str:
+        """
+        Show the system as its ``(f, h)`` pair, using ``*`` for whichever
+        half is unset -- matching the paper's notation.
+
+        Examples
+        --------
+        >>> def fcar(xk): return xk
+        >>> def hcar(xk): return xk
+        >>> DynamicalSystem(f=fcar, h=hcar)
+        (fcar, hcar)
+        >>> DynamicalSystem(f=fcar)
+        (fcar, *)
+        >>> DynamicalSystem(h=hcar)
+        (*, hcar)
+        """
+        f_name = self._f.__name__ if self._f is not None else "*"
+        h_name = self._h.__name__ if self._h is not None else "*"
+        return f"({f_name}, {h_name})"
+
     @property
     def f(self) -> Optional[Callable]:
         """Evolution function f(x_k, u_k, theta) -> x_{k+1}, or None if the system is stateless."""
