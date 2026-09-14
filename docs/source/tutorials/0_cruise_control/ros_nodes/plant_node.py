@@ -29,12 +29,14 @@ from dynamicalnodes.ros2py_py2ros import ros2py_float64, py2ros_float64
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
-def fcar(xk, uk, m=1500.0, b=50.0, dt=1.0):
+def fcar(
+    xk: float, uk: float, m: float = 1500.0, b: float = 50.0, dt: float = 1.0
+) -> float:
     v = xk
     return v + dt * (uk - b * v) / m
 
 
-def hcar(xk, sigma=0.0):
+def hcar(xk: float, sigma: float = 0.0) -> float:
     v = xk
     return np.abs(v) + np.random.normal(0.0, sigma)
 
@@ -54,7 +56,7 @@ class PlantNode(Node):
 
     """
     Subscribes to:
-        /uk  (Float64)  →  uk  [ros2py_float64, buffer=1]
+        /uk  (Float64)  →  uk: float  [ros2py_float64, buffer=1]
     Publishes to:
         /yk  (Float64)  [py2ros_float64]
 

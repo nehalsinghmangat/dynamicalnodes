@@ -29,7 +29,16 @@ from dynamicalnodes.ros2py_py2ros import ros2py_float64, py2ros_float64
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
-def fkf(ok, Fk, Bk, Hk, Qk, Rk, uk=None, yk=None):
+def fkf(
+    ok: tuple[float, float],
+    Fk: float,
+    Bk: float,
+    Hk: float,
+    Qk: float,
+    Rk: float,
+    uk: float | None = None,
+    yk: float | None = None,
+) -> tuple[float, float]:
     """Discrete Kalman filter (scalar state), predict and update as separable stages.
 
     Both uk and yk are optional: predict runs only when uk is fresh, update
@@ -54,7 +63,7 @@ def fkf(ok, Fk, Bk, Hk, Qk, Rk, uk=None, yk=None):
     return (v_upd, P_upd)
 
 
-def hkf(ok):
+def hkf(ok: tuple[float, float]) -> float:
     xhatk, P = ok
     return xhatk
 
@@ -74,8 +83,8 @@ class KalmanNode(Node):
 
     """
     Subscribes to:
-        /uk  (Float64)  →  uk  [ros2py_float64, buffer=1, stale_after=0.15s]
-        /yk  (Float64)  →  yk  [ros2py_float64, buffer=1, stale_after=0.15s]
+        /uk  (Float64)  →  uk: float | None  [ros2py_float64, buffer=1, stale_after=0.15s]
+        /yk  (Float64)  →  yk: float | None  [ros2py_float64, buffer=1, stale_after=0.15s]
     Publishes to:
         /xhatk  (Float64)  [py2ros_float64]
 

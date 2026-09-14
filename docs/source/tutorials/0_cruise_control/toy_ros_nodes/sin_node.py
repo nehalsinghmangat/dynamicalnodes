@@ -29,7 +29,7 @@ from dynamicalnodes.ros2py_py2ros import py2ros_float64
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
-def hsin(tk, A=1.0, omega=1.0):
+def hsin(tk: float, A: float = 1.0, omega: float = 1.0) -> float:
     return A * np.sin(omega * tk)
 
 

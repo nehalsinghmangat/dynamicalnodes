@@ -29,14 +29,30 @@ from dynamicalnodes.ros2py_py2ros import ros2py_float64, py2ros_float64
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
-def fpid(ck, rk, xhatk, KP=500.0, KI=30.0, KD=10.0, dt=1.0):
+def fpid(
+    ck: tuple[float, float],
+    rk: float,
+    xhatk: float,
+    KP: float = 500.0,
+    KI: float = 30.0,
+    KD: float = 10.0,
+    dt: float = 1.0,
+) -> tuple[float, float]:
     """Update PID state: returns (prev_error, integral)."""
     e_prev, e_int = ck
     ek = rk - xhatk
     return (ek, e_int + ek * dt)
 
 
-def hpid(ck, rk, xhatk, KP=500.0, KI=30.0, KD=10.0, dt=1.0):
+def hpid(
+    ck: tuple[float, float],
+    rk: float,
+    xhatk: float,
+    KP: float = 500.0,
+    KI: float = 30.0,
+    KD: float = 10.0,
+    dt: float = 1.0,
+) -> float:
     """Compute control output from current PID state."""
     e_prev, e_int = ck
     ek = rk - xhatk
@@ -59,8 +75,8 @@ class ControllerNode(Node):
 
     """
     Subscribes to:
-        /rk  (Float64)  →  rk  [ros2py_float64, buffer=1, stale_after=0.2s]
-        /xhatk  (Float64)  →  xhatk  [ros2py_float64, buffer=1, stale_after=0.2s, initial=0.0]
+        /rk  (Float64)  →  rk: float  [ros2py_float64, buffer=1, stale_after=0.2s]
+        /xhatk  (Float64)  →  xhatk: float  [ros2py_float64, buffer=1, stale_after=0.2s, initial=0.0]
     Publishes to:
         /uk  (Float64)  [py2ros_float64]
 

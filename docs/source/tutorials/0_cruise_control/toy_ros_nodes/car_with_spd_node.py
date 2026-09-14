@@ -29,13 +29,15 @@ from dynamicalnodes.ros2py_py2ros import ros2py_float64, py2ros_float64
 # Functions — inlined from source
 # ──────────────────────────────────────────────────────────────────────
 
-def fcar(xk, uk, theta_car):
+def fcar(
+    xk: tuple[float, float], uk: float, theta_car: tuple[float, float, float]
+) -> tuple[float, float]:
     dk, vk = xk
     m, b, dt = theta_car
     return (dk + dt * vk, vk + dt * (uk - b * vk) / m)
 
 
-def hcar(xk, sigma=0.5):
+def hcar(xk: tuple[float, float], sigma: float = 0.5) -> float:
     _, vk = xk
     return np.abs(vk) + np.random.normal(0.0, sigma)
 
@@ -55,7 +57,7 @@ class CarWithSpeedometerNode(Node):
 
     """
     Subscribes to:
-        /uk  (Float64)  →  uk  [ros2py_float64, buffer=1]
+        /uk  (Float64)  →  uk: float  [ros2py_float64, buffer=1]
     Publishes to:
         /yk  (Float64)  [py2ros_float64]
 
