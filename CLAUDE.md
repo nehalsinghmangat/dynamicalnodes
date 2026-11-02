@@ -4,7 +4,7 @@ Guidance for Claude Code (claude.ai/code) working in this repository, and for an
 
 ## Project Overview
 
-**dynamicalnodes** (v0.1.5, Python >=3.12, MIT) is a Python framework that bridges control-systems theory and ROS2. Pipeline: **Theory → Python → ROS2 → Hardware**.
+**dynamicalnodes** (v0.2.0, Python >=3.12, MIT) is a Python framework that bridges control-systems theory and ROS2. Pipeline: **Theory → Python → ROS2 → Hardware**.
 
 1. Cast the system as a discrete-time diagram; derive an `(f, h)` pair per block.
 2. Implement each `f`/`h` as a plain Python function; wrap in a `DynamicalSystem`; simulate with an ordinary `for` loop.

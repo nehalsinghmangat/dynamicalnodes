@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.abspath("../../src"))
 project = "dynamicalnodes"
 copyright = "2025, Nehal Singh Mangat"
 author = "Nehal Singh Mangat"
-release = "0.1.5"
+release = "0.2.0"
 
 extensions = [
     "myst_nb",
