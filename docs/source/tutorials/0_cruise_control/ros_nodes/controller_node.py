@@ -107,7 +107,9 @@ class ControllerNode(Node):
 
         # ── Subscription buffers ───────────────────────────────────────────────
         self._rk_buf: deque = deque(maxlen=1)
+        self._rk_seen: bool = False  # any message ever received
         self._xhatk_buf: deque = deque(maxlen=1)
+        self._xhatk_seen: bool = False  # any message ever received
 
         # ── Subscriptions ────────────────────────────────────────────────────
         self._rk_sub = self.create_subscription(
@@ -142,12 +144,14 @@ class ControllerNode(Node):
         arr = np.asarray(ros2py_float64(msg), dtype=float)  # ROS msg → NumPy
         ts = self.get_clock().now().nanoseconds * 1e-9
         self._rk_buf.append((ts, arr))
+        self._rk_seen = True
         self._run_step()
 
     def _xhatk_cb(self, msg: Float64) -> None:
         arr = np.asarray(ros2py_float64(msg), dtype=float)  # ROS msg → NumPy
         ts = self.get_clock().now().nanoseconds * 1e-9
         self._xhatk_buf.append((ts, arr))
+        self._xhatk_seen = True
         self._run_step()
 
     @staticmethod
@@ -164,7 +168,7 @@ class ControllerNode(Node):
     # Control step
     # ────────────────────────────────────────────────────────────────────
     # Builds kwargs from static params, dynamic params, fresh subscription
-    # values, and current state, then calls DynamicalSystem.eval() and
+    # values, and current state, then calls DynamicalSystem.step() and
     # publishes. Skipped entirely when sync_mode conditions are not met.
 
     def _run_step(self) -> None:
@@ -177,7 +181,7 @@ class ControllerNode(Node):
         xhatk = self._fresh(self._xhatk_buf, 0.2, now_ts)
 
         # Cold-start fallbacks — used only before first message arrives
-        if xhatk is None and not self._xhatk_buf:
+        if xhatk is None and not self._xhatk_seen:
             xhatk = 0.0  # initial input
 
         # sync_mode='all'
@@ -204,7 +208,7 @@ class ControllerNode(Node):
         if self._state is not None:
             kwargs["ck"] = self._state
 
-        x_next, yk = self._system.eval(**kwargs)
+        x_next, yk = self._system.step(**kwargs)
         if self._system.f is not None:
             self._state = x_next  # stateful: advance to next state
 

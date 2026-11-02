@@ -50,7 +50,7 @@ class SinGeneratorNode(Node):
     Publishes to:
         /uk  (Float64)  [py2ros_float64]
 
-    step trigger: timer at 10 Hz
+    step trigger: timer at 10.0 Hz
     """
 
     def __init__(self) -> None:
@@ -61,7 +61,7 @@ class SinGeneratorNode(Node):
         self._state = None  # initial state — set before deploying if stateful
         self._t0 = self.get_clock().now()  # wall-clock reference for 'tk'
 
-        self._static_params: dict = {}  # static params — add fixed kwargs here, e.g. {'dt': 0.1}
+        self._static_params: dict = {'A': 39.0, 'omega': 1.0}  # static params
 
         # ── Publishers ────────────────────────────────────────────────────────
         self._pub_uk = self.create_publisher(
@@ -70,7 +70,7 @@ class SinGeneratorNode(Node):
 
         # ── Timer ────────────────────────────────────────────────────────────
         self._timer = self.create_timer(
-            0.1,  # 10 Hz
+            0.1,  # 10.0 Hz
             self._run_step,
             callback_group=self._cb_group,
         )
@@ -91,7 +91,7 @@ class SinGeneratorNode(Node):
     # Control step
     # ────────────────────────────────────────────────────────────────────
     # Builds kwargs from static params, dynamic params, fresh subscription
-    # values, and current state, then calls DynamicalSystem.eval() and
+    # values, and current state, then calls DynamicalSystem.step() and
     # publishes. Skipped entirely when sync_mode conditions are not met.
 
     def _run_step(self) -> None:
@@ -101,7 +101,7 @@ class SinGeneratorNode(Node):
 
         kwargs: dict = {"tk": tk, **self._static_params}
 
-        x_next, yk = self._system.eval(**kwargs)
+        x_next, yk = self._system.step(**kwargs)
         if self._system.f is not None:
             self._state = x_next  # stateful: advance to next state
 

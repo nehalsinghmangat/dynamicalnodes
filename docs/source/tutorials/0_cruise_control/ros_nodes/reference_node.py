@@ -91,7 +91,7 @@ class ReferenceNode(Node):
     # Control step
     # ────────────────────────────────────────────────────────────────────
     # Builds kwargs from static params, dynamic params, fresh subscription
-    # values, and current state, then calls DynamicalSystem.eval() and
+    # values, and current state, then calls DynamicalSystem.step() and
     # publishes. Skipped entirely when sync_mode conditions are not met.
 
     def _run_step(self) -> None:
@@ -101,7 +101,7 @@ class ReferenceNode(Node):
 
         kwargs: dict = {"tk": tk, **self._static_params}
 
-        x_next, yk = self._system.eval(**kwargs)
+        x_next, yk = self._system.step(**kwargs)
         if self._system.f is not None:
             self._state = x_next  # stateful: advance to next state
 

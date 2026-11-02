@@ -3,7 +3,7 @@ ROSNode wrapper for simulation and ROS2 deployment.
 
 Two workflows:
 
-**Simulation** — call ``eval()`` directly in Python or Jupyter notebooks to test ros2py and/or py2ros translation functions.
+**Simulation** — call ``step()`` directly in Python or Jupyter notebooks to test ros2py and/or py2ros translation functions.
 No ROS2 installation required.
 
 **Deployment** — call ``write_ROSNode_to_rclpy(path)`` to emit a self-contained
@@ -36,7 +36,7 @@ class ROSNode:
     """
     Wraps a DynamicalSystem for simulation and ROS2 deployment.
 
-    Use ``eval()`` for notebook simulation; use ``write_ROSNode_to_rclpy()`` to
+    Use ``step()`` for notebook simulation; use ``write_ROSNode_to_rclpy()`` to
     generate a deployable rclpy node.
 
     Parameters
@@ -48,7 +48,7 @@ class ROSNode:
 
         - ``"topic"`` (str): ROS topic name.
         - ``"msg_type"`` (type): ROS message class.
-        - ``"arg"`` (str): kwarg name passed to eval().
+        - ``"arg"`` (str): kwarg name passed to step().
         - ``"ros2py"`` (Callable): ROS msg → NumPy array converter.
           Import from ``dynamicalnodes.ros2py_py2ros`` or write your own.
         - ``"buffer_size"`` (int, optional): Queue depth (default 1).
@@ -73,8 +73,8 @@ class ROSNode:
     state_name : str, optional
         Name of the state parameter in ``f``'s signature (e.g. ``"ck"`` for
         ``f(ck, ...)``) .  Required for stateful systems; ignored if ``f`` is
-        ``None``.  ``eval()`` injects ``self._state`` under this name before
-        calling ``DynamicalSystem.eval()``.
+        ``None``.  ``step()`` injects ``self._state`` under this name before
+        calling ``DynamicalSystem.step()``.
 
     Notes
     -----
@@ -99,7 +99,7 @@ class ROSNode:
     ...     pubs=[{"topic": "/smooth", "msg_type": Float64,
     ...            "py2ros": py2ros_float64}],
     ... )
-    >>> out = node.eval(imu=np.array([2.0]))
+    >>> out = node.step(imu=np.array([2.0]))
     >>> out.data
     1.0
     """
@@ -201,7 +201,7 @@ class ROSNode:
     # SIMULATION API
     # --------------------------------------------------------------------------
 
-    def eval(self, **kwargs: Any) -> Any:
+    def step(self, **kwargs: Any) -> Any:
         """
         Simulate one step without ROS2.
 
@@ -238,7 +238,7 @@ class ROSNode:
         ...     pubs=[{"topic": "/y", "msg_type": Float64,
         ...            "py2ros": py2ros_float64}],
         ... )
-        >>> node.eval(x=Float64(data=3.0)).data
+        >>> node.step(x=Float64(data=3.0)).data
         6.0
         """
         sub_arg_names = {a for _, _, _, a, _, _ in self._subs}
@@ -264,7 +264,7 @@ class ROSNode:
         if self._state is not None and self._state_key is not None:
             step_kwargs[self._state_key] = self._state
 
-        x_next, yk = self._dynamical_system.eval(**step_kwargs)
+        x_next, yk = self._dynamical_system.step(**step_kwargs)
         if self._dynamical_system.f is not None:
             self._state = x_next
 
@@ -351,7 +351,7 @@ class ROSNode:
             ``__init__``.  Supports NumPy arrays and any ``repr()``-able value.
         static_params : dict, optional
             Parameters baked into the node at generation time.  Embedded as
-            ``self._static_params = {...}`` and merged into every ``eval()``
+            ``self._static_params = {...}`` and merged into every ``step()``
             call.  Use for values that never change after deployment.
         dynamic_params : dict, optional
             Parameters declared on the ROS2 parameter server with their
@@ -365,9 +365,9 @@ class ROSNode:
             restarting the node (e.g. controller gains).
         initial_inputs : dict, optional
             Cold-start fallback values for subscription inputs.  Keys must
-            match subscription ``arg`` names.  A value is used only when the
-            subscription buffer is completely empty — i.e. no message has
-            ever arrived on that topic.  Once the first message arrives the
+            match subscription ``arg`` names.  A value is used only while no
+            message has ever arrived on that topic (consuming a buffered
+            value in a step does not count as "never arrived").  Once the first message arrives the
             subscription value takes over permanently.  If the subscription
             later goes stale the step is skipped (``None`` is not replaced),
             preventing silent operation on dead data.  Use this to break
@@ -400,6 +400,11 @@ class ROSNode:
         SyntaxError
             If the generated file contains invalid Python (indicates a bug
             in the generator).
+
+        Returns
+        -------
+        None
+            The generated node is written to ``path``.
 
         Notes
         -----
@@ -444,6 +449,8 @@ class ROSNode:
         >>> "create_subscription" in content and "create_publisher" in content
         True
         >>> "SingleThreadedExecutor" in content
+        True
+        >>> "_u_k_seen" in content
         True
         >>> os.unlink(path)
         """
@@ -903,6 +910,7 @@ class ROSNode:
             ln("        # ── Subscription buffers " + "─" * 47)
             for _, _, _, _, arg, _, buf, _ in subs:
                 ln(f"        self._{arg}_buf: deque = deque(maxlen={buf})")
+                ln(f"        self._{arg}_seen: bool = False  # any message ever received")
 
             blank()
             ln("        # ── Subscriptions " + "─" * 52)
@@ -952,9 +960,7 @@ class ROSNode:
             ln(
                 "    # sync_mode conditions are satisfied, and pops each value it consumes —"
             )
-            ln(
-                "    # so a stored value can trigger at most one step before it must be"
-            )
+            ln("    # so a stored value can trigger at most one step before it must be")
             ln("    # refreshed by new data.")
         for topic, msg_type, ros2py, cls, arg, _, _, use_msg_ts in subs:
             ros2py_name = _ref_name(ros2py, cls)
@@ -975,6 +981,7 @@ class ROSNode:
             else:
                 ln(f"        ts = self.get_clock().now().nanoseconds * 1e-9")
             ln(f"        self._{arg}_buf.append((ts, arr))")
+            ln(f"        self._{arg}_seen = True")
             if timer_hz is None:
                 ln(f"        self._run_step()")
 
@@ -998,7 +1005,7 @@ class ROSNode:
         ln("    # Control step")
         ln("    # " + "─" * 68)
         ln("    # Builds kwargs from static params, dynamic params, fresh subscription")
-        ln("    # values, and current state, then calls DynamicalSystem.eval() and")
+        ln("    # values, and current state, then calls DynamicalSystem.step() and")
         ln("    # publishes. Skipped entirely when sync_mode conditions are not met.")
         blank()
         ln("    def _run_step(self) -> None:")
@@ -1024,7 +1031,7 @@ class ROSNode:
                     "        # Cold-start fallbacks — used only before first message arrives"
                 )
                 for arg in cold_start_args:
-                    ln(f"        if {arg} is None and not self._{arg}_buf:")
+                    ln(f"        if {arg} is None and not self._{arg}_seen:")
                     ln(
                         f"            {arg} = {_repr_value(_initial[arg])}  # initial input"
                     )
@@ -1041,15 +1048,11 @@ class ROSNode:
                 ln("            return  # all inputs are stale — skip this tick")
 
             blank()
-            ln(
-                "        # Consume: pop each fresh value now that we're committing to a"
-            )
+            ln("        # Consume: pop each fresh value now that we're committing to a")
             ln(
                 "        # step, so it cannot re-trigger another step until genuinely new"
             )
-            ln(
-                "        # data arrives (prevents event-driven feedback loops from"
-            )
+            ln("        # data arrives (prevents event-driven feedback loops from")
             ln("        # cascading at an unbounded rate).")
             for _, _, _, _, arg, _, _, _ in subs:
                 ln(f"        if {arg} is not None and self._{arg}_buf:")
@@ -1067,7 +1070,7 @@ class ROSNode:
             ln(f'            kwargs["{self._state_key}"] = self._state')
 
         blank()
-        ln("        x_next, yk = self._system.eval(**kwargs)")
+        ln("        x_next, yk = self._system.step(**kwargs)")
         ln("        if self._system.f is not None:")
         ln("            self._state = x_next  # stateful: advance to next state")
 

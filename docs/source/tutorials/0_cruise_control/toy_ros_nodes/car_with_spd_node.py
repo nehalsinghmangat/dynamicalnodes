@@ -73,10 +73,11 @@ class CarWithSpeedometerNode(Node):
         self._state = (20.0, 0.0)  # initial state
         self._t0 = self.get_clock().now()  # wall-clock reference for 'tk'
 
-        self._static_params: dict = {'theta_car': (20.0, 39.0, 0.1)}  # static params
+        self._static_params: dict = {'theta_car': (20.0, 39.0, 0.1), 'sigma': 0.1}  # static params
 
         # ── Subscription buffers ───────────────────────────────────────────────
         self._uk_buf: deque = deque(maxlen=1)
+        self._uk_seen: bool = False  # any message ever received
 
         # ── Subscriptions ────────────────────────────────────────────────────
         self._uk_sub = self.create_subscription(
@@ -106,6 +107,7 @@ class CarWithSpeedometerNode(Node):
         arr = np.asarray(ros2py_float64(msg), dtype=float)  # ROS msg → NumPy
         ts = self.get_clock().now().nanoseconds * 1e-9
         self._uk_buf.append((ts, arr))
+        self._uk_seen = True
         self._run_step()
 
     @staticmethod
@@ -122,7 +124,7 @@ class CarWithSpeedometerNode(Node):
     # Control step
     # ────────────────────────────────────────────────────────────────────
     # Builds kwargs from static params, dynamic params, fresh subscription
-    # values, and current state, then calls DynamicalSystem.eval() and
+    # values, and current state, then calls DynamicalSystem.step() and
     # publishes. Skipped entirely when sync_mode conditions are not met.
 
     def _run_step(self) -> None:
@@ -150,7 +152,7 @@ class CarWithSpeedometerNode(Node):
         if self._state is not None:
             kwargs["xk"] = self._state
 
-        x_next, yk = self._system.eval(**kwargs)
+        x_next, yk = self._system.step(**kwargs)
         if self._system.f is not None:
             self._state = x_next  # stateful: advance to next state
 

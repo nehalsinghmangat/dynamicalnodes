@@ -107,7 +107,7 @@ class GpsNode(Node):
 
         kwargs: dict = {"tk": tk, **self._static_params}
 
-        result = self._system.eval(**kwargs)
+        result = self._system.step(**kwargs)
         if self._system.f is not None:
             self._state, yk = result  # stateful: (next_state, output)
         else:

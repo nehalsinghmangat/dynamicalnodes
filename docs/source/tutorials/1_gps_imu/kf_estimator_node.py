@@ -188,7 +188,7 @@ class KfEstimatorNode(Node):
         if self._state is not None:
             kwargs["zk"] = self._state
 
-        result = self._system.eval(**kwargs)
+        result = self._system.step(**kwargs)
         if self._system.f is not None:
             self._state, yk = result  # stateful: (next_state, output)
         else:

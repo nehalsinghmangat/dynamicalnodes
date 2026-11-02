@@ -1,0 +1,176 @@
+\begin{thebibliography}{25}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[alb()]{albonico_et_al}
+Software engineering research on the robot operating system: A systematic
+  mapping study.
+
+\bibitem[Quigley et~al.({\natexlab{a}})Quigley, Gerkey, Conley, Faust, Foote,
+  Leibs, Berger, Wheeler, and Ng]{quigley_ros_nodate}
+Morgan Quigley, Brian Gerkey, Ken Conley, Josh Faust, Tully Foote, Jeremy
+  Leibs, Eric Berger, Rob Wheeler, and Andrew Ng.
+\newblock {ROS}: an open-source robot operating system.
+\newblock {\natexlab{a}}.
+
+\bibitem[Quigley et~al.({\natexlab{b}})Quigley, Gerkey, and
+  Smart]{quigley_programming_nodate}
+Morgan Quigley, Brian Gerkey, and William~D Smart.
+\newblock Programming robots with {ROS}.
+\newblock {\natexlab{b}}.
+
+\bibitem[{The MathWorks Inc.}(2024)]{ControlSystemToolbox}
+{The MathWorks Inc.}
+\newblock {MATLAB Control System Toolbox} version: 24.2 (r2024b), 2024.
+\newblock URL \url{https://www.mathworks.com}.
+
+\bibitem[Fuller et~al.(2021)Fuller, Greiner, Moore, Murray, van Paassen, and
+  Yorke]{python-control2021}
+Sawyer Fuller, Ben Greiner, Jason Moore, Richard Murray, Ren{\'e} van Paassen,
+  and Rory Yorke.
+\newblock The python control systems library (python-control).
+\newblock In \emph{60th IEEE Conference on Decision and Control (CDC)}, pages
+  4875--4881. IEEE, 2021.
+
+\bibitem[Hoffmann et~al.(2010)Hoffmann, Angerer, Schierl, Vistein, and
+  Reif]{hoffmann2010objectoriented}
+Alwin Hoffmann, Andreas Angerer, Andreas Schierl, Michael Vistein, and Wolfgang
+  Reif.
+\newblock Towards object-oriented software development for industrial robots.
+\newblock 2010.
+
+\bibitem[Hager et~al.(2002)Hager, Peterson, and Nilsson]{hager2002frob}
+Gregory Hager, John Peterson, and Henrik Nilsson.
+\newblock Frob: Functional reactive programming applied to robotics.
+\newblock In \emph{ICRA 2002 Tutorial}, 2002.
+
+\bibitem[Astrom and Murray()]{astrom_feedback_2008}
+Karl~J. Astrom and Richard~M. Murray.
+\newblock \emph{Feedback systems: an introduction for scientists and
+  engineers}.
+\newblock Princeton University Press.
+\newblock ISBN 9780691135762 9781400828739 9781282607965 9786612607967.
+
+\bibitem[Myers()]{myers_categorical_nodate}
+David~Jaz Myers.
+\newblock Categorical systems theory.
+
+\bibitem[Moret()]{moret_theory_1998}
+Bernard Marcel~Edmond Moret.
+\newblock \emph{The theory of computation}.
+\newblock Addison-Wesley.
+\newblock ISBN 978-0-201-25828-8.
+
+\bibitem[Libkind et~al.(2021)Libkind, Patterson, Baas, and
+  Fairbanks]{libkind2021operadic}
+Sophie Libkind, Evan Patterson, Andrew Baas, and James Fairbanks.
+\newblock Operadic modeling of dynamical systems: Mathematics and computation.
+\newblock \emph{arXiv preprint arXiv:2105.12282}, 2021.
+\newblock URL \url{https://arxiv.org/abs/2105.12282}.
+
+\bibitem[{Open Robotics}(2024)]{rclpy}
+{Open Robotics}.
+\newblock rclpy: Ros client library for the python language.
+\newblock \url{https://github.com/ros2/rclpy}, 2024.
+
+\bibitem[Milnor(1997)]{milnor1997topology}
+John~W. Milnor.
+\newblock \emph{Topology from the Differentiable Viewpoint}.
+\newblock Princeton University Press, Princeton, NJ, rev. edition, 1997.
+\newblock ISBN 978-0691048338.
+\newblock Based on notes by David W. Weaver.
+
+\bibitem[Sontag()]{sontag_mathematical_1998}
+Eduardo~D. Sontag.
+\newblock \emph{Mathematical control theory: deterministic finite dimensional
+  systems}.
+\newblock Number~6 in Texts in applied mathematics. Springer, 2. ed edition.
+\newblock ISBN 978-0-387-98489-6.
+
+\bibitem[Macenski et~al.(2022)Macenski, Foote, Gerkey, Lalancette, and
+  Woodall]{macenski2022robot}
+Steven Macenski, Tully Foote, Brian Gerkey, Chris Lalancette, and William
+  Woodall.
+\newblock Robot operating system 2: Design, architecture, and uses in the wild.
+\newblock \emph{Science Robotics}, 7\penalty0 (66):\penalty0 eabm6074, 2022.
+\newblock \doi{10.1126/scirobotics.abm6074}.
+\newblock URL
+  \url{https://www.science.org/doi/abs/10.1126/scirobotics.abm6074}.
+
+\bibitem[Garcia()]{garcia_numerical_2000}
+Alejandro~L. Garcia.
+\newblock \emph{Numerical methods for physics}.
+\newblock Prentice Hall, 2nd ed edition.
+\newblock ISBN 978-0-13-906744-0.
+
+\bibitem[Åström et~al.()Åström, Hägglund, and Åström]{astrom_pid_1995}
+Karl~Johan Åström, Tore Hägglund, and Karl~Johan Åström.
+\newblock \emph{{PID} controllers}.
+\newblock International Society for Measurement and Control, 2nd ed edition.
+\newblock ISBN 978-1-55617-516-9 978-1-61583-557-7.
+\newblock \doi{10.1002/9781394438365}.
+
+\bibitem[Grewal and Andrews()]{grewal_kalman_2008}
+Mohinder~S. Grewal and Angus~P. Andrews.
+\newblock \emph{Kalman filtering: theory and practice using {MATLAB}}.
+\newblock Wiley, third edition edition.
+\newblock ISBN 978-0-470-17366-4 978-0-470-37781-9.
+\newblock \doi{10.1002/9780470377819}.
+
+\bibitem[Ramos et~al.(2022)Ramos, Brink, Ganesh, and
+  Hurtado]{ramos2022factorized}
+J.~Humberto Ramos, Kevin~M. Brink, Prashant Ganesh, and John~E. Hurtado.
+\newblock Factorized partial-update schmidt--kalman filter.
+\newblock \emph{Journal of Guidance, Control, and Dynamics}, 45\penalty0
+  (9):\penalty0 1567--1582, 2022.
+\newblock \doi{10.2514/1.G006449}.
+
+\bibitem[Brink(2017)]{brink2017partial}
+Kevin~M. Brink.
+\newblock Partial-update schmidt-kalman filter.
+\newblock \emph{Journal of Guidance, Control, and Dynamics}, 40\penalty0 (09),
+  2017.
+\newblock \doi{10.2514/1.G002785}.
+
+\bibitem[Cellini et~al.(2025)Cellini, Boyacioglu, Lopez, and van
+  Breugel]{cellini2025discovering}
+Benjamin Cellini, Burak Boyacioglu, Austin Lopez, and Floris van Breugel.
+\newblock Discovering and exploiting active sensing motifs for estimation.
+\newblock \emph{arXiv preprint arXiv:2511.08766}, 2025.
+\newblock \doi{10.48550/arXiv.2511.08766}.
+
+\bibitem[{AlgebraicJulia}(2024)]{AlgebraicDynamicsjl}
+{AlgebraicJulia}.
+\newblock {AlgebraicDynamics.jl}: A library for compositional dynamical
+  systems.
+\newblock \url{https://algebraicjulia.github.io/AlgebraicDynamics.jl/dev/},
+  2024.
+\newblock Accessed: 2026-09-05.
+
+\bibitem[Adelhoven et~al.(2025)Adelhoven, Froehlich, et~al.]{ros2_control}
+Karsten Adelhoven, Christoph Froehlich, et~al.
+\newblock {ros2\_control: A generic and simple control framework for ROS~2}.
+\newblock \url{https://control.ros.org}, 2025.
+
+\bibitem[Fiedler et~al.(2023)Fiedler, Karg, L{\"u}ken, Brandner, Heinlein,
+  Brabender, and Lucia]{fiedler2023domoc}
+Felix Fiedler, Benjamin Karg, Lukas L{\"u}ken, Dean Brandner, Moritz Heinlein,
+  Felix Brabender, and Sergio Lucia.
+\newblock do-mpc: Towards {FAIR} nonlinear and robust model predictive control.
+\newblock \emph{Control Engineering Practice}, 140:\penalty0 105676, 2023.
+\newblock \doi{10.1016/j.conengprac.2023.105676}.
+
+\bibitem[Andersson et~al.(2019)Andersson, Gillis, Horn, Rawlings, and
+  Diehl]{andersson2019casadi}
+Joel A.~E. Andersson, Joris Gillis, Greg Horn, James~B. Rawlings, and Moritz
+  Diehl.
+\newblock {CasADi} -- a software framework for nonlinear optimization and
+  optimal control.
+\newblock \emph{Mathematical Programming Computation}, 11\penalty0
+  (1):\penalty0 1--36, 2019.
+\newblock \doi{10.1007/s12532-018-0139-4}.
+
+\end{thebibliography}

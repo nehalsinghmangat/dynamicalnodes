@@ -30,42 +30,40 @@ from dynamicalnodes.ros2py_py2ros import ros2py_float64, py2ros_float64
 # ──────────────────────────────────────────────────────────────────────
 
 def fkf(
-    ok: tuple[float, float],
-    Fk: float,
-    Bk: float,
-    Hk: float,
-    Qk: float,
-    Rk: float,
-    uk: float | None = None,
-    yk: float | None = None,
-) -> tuple[float, float]:
-    """Discrete Kalman filter (scalar state), predict and update as separable stages.
+    ok: tuple[np.ndarray, np.ndarray],
+    Fk: np.ndarray,
+    Bk: np.ndarray,
+    Hk: np.ndarray,
+    Qk: np.ndarray,
+    Rk: np.ndarray,
+    uk: np.ndarray | None = None,
+    yk: np.ndarray | None = None,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Discrete Kalman filter in prior form: ok = (xhat_{k|k-1}, P_{k|k-1}).
 
-    Both uk and yk are optional: predict runs only when uk is fresh, update
-    only when yk is fresh. With sync_mode="any" each subscription triggers
-    the node independently, so a step may see just one of them — e.g. a
-    /uk-only callback predicts and leaves the update for the next /yk
-    callback, which updates the already-predicted state directly.
+    Update with yk (the measurement of x_k), then predict with uk to give
+    ok_next = (xhat_{k+1|k}, P_{k+1|k}). Both uk and yk are optional: update
+    runs only when yk is fresh, predict only when uk is fresh. With
+    sync_mode="any" each subscription triggers the node independently, so a
+    step may see just one of them.
     """
-    v_pred, P_pred = ok
+    xhat, P = ok
+    # Update
+    if yk is not None:
+        S = Hk @ P @ Hk.T + Rk
+        K = P @ Hk.T @ np.linalg.inv(S)
+        xhat = xhat + K @ (np.atleast_1d(yk) - Hk @ xhat)
+        P = (np.eye(len(xhat)) - K @ Hk) @ P
     # Predict
     if uk is not None:
-        v_pred = Fk * v_pred + Bk * uk
-        P_pred = Fk * P_pred * Fk + Qk
-    if yk is None:
-        return (v_pred, P_pred)
-    # Update
-    y_res = yk - Hk * v_pred
-    S = Hk * P_pred * Hk + Rk
-    K = P_pred * Hk / S
-    v_upd = v_pred + K * y_res
-    P_upd = (1 - K * Hk) * P_pred
-    return (v_upd, P_upd)
+        xhat = Fk @ xhat + Bk @ np.atleast_1d(uk)
+        P = Fk @ P @ Fk.T + Qk
+    return (xhat, P)
 
 
-def hkf(ok: tuple[float, float]) -> float:
-    xhatk, P = ok
-    return xhatk
+def hkf(ok: tuple[np.ndarray, np.ndarray]) -> np.ndarray:
+    xhat, P = ok
+    return xhat
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -83,8 +81,8 @@ class KalmanNode(Node):
 
     """
     Subscribes to:
-        /uk  (Float64)  →  uk: float | None  [ros2py_float64, buffer=1, stale_after=0.15s]
-        /yk  (Float64)  →  yk: float | None  [ros2py_float64, buffer=1, stale_after=0.15s]
+        /uk  (Float64)  →  uk: ndarray | None  [ros2py_float64, buffer=1, stale_after=0.15s]
+        /yk  (Float64)  →  yk: ndarray | None  [ros2py_float64, buffer=1, stale_after=0.15s]
     Publishes to:
         /xhatk  (Float64)  [py2ros_float64]
 
@@ -97,14 +95,16 @@ class KalmanNode(Node):
         self._cb_group = ReentrantCallbackGroup()
 
         self._system = DynamicalSystem(f=fkf, h=hkf)
-        self._state = (0.0, 1.0)  # initial state
+        self._state = (np.array([0.0]), np.array([[1.0]]))  # initial state
         self._t0 = self.get_clock().now()  # wall-clock reference for 'tk'
 
-        self._static_params: dict = {'Fk': 0.9966666666666667, 'Bk': 6.666666666666667e-05, 'Hk': 1.0, 'Qk': 0.010000000000000002, 'Rk': 2.0}  # static params
+        self._static_params: dict = {'Fk': np.array([[0.9966666666666667]]), 'Bk': np.array([[6.666666666666667e-05]]), 'Hk': np.array([[1.0]]), 'Qk': np.array([[0.010000000000000002]]), 'Rk': np.array([[2.0]])}  # static params
 
         # ── Subscription buffers ───────────────────────────────────────────────
         self._uk_buf: deque = deque(maxlen=1)
+        self._uk_seen: bool = False  # any message ever received
         self._yk_buf: deque = deque(maxlen=1)
+        self._yk_seen: bool = False  # any message ever received
 
         # ── Subscriptions ────────────────────────────────────────────────────
         self._uk_sub = self.create_subscription(
@@ -139,12 +139,14 @@ class KalmanNode(Node):
         arr = np.asarray(ros2py_float64(msg), dtype=float)  # ROS msg → NumPy
         ts = self.get_clock().now().nanoseconds * 1e-9
         self._uk_buf.append((ts, arr))
+        self._uk_seen = True
         self._run_step()
 
     def _yk_cb(self, msg: Float64) -> None:
         arr = np.asarray(ros2py_float64(msg), dtype=float)  # ROS msg → NumPy
         ts = self.get_clock().now().nanoseconds * 1e-9
         self._yk_buf.append((ts, arr))
+        self._yk_seen = True
         self._run_step()
 
     @staticmethod
@@ -161,7 +163,7 @@ class KalmanNode(Node):
     # Control step
     # ────────────────────────────────────────────────────────────────────
     # Builds kwargs from static params, dynamic params, fresh subscription
-    # values, and current state, then calls DynamicalSystem.eval() and
+    # values, and current state, then calls DynamicalSystem.step() and
     # publishes. Skipped entirely when sync_mode conditions are not met.
 
     def _run_step(self) -> None:
@@ -194,7 +196,7 @@ class KalmanNode(Node):
         if self._state is not None:
             kwargs["ok"] = self._state
 
-        x_next, yk = self._system.eval(**kwargs)
+        x_next, yk = self._system.step(**kwargs)
         if self._system.f is not None:
             self._state = x_next  # stateful: advance to next state
 

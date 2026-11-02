@@ -1,0 +1,73 @@
+This is BibTeX, Version 0.99d (TeX Live 2023/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+The style file: unsrtnat.bst
+Database file #1: references.bib
+Warning--entry type for "ControlSystemToolbox" isn't style-file defined
+--line 22 of file references.bib
+Warning--empty author in albonico_et_al
+Warning--empty journal in albonico_et_al
+Warning--empty year in albonico_et_al
+Warning--empty year in albonico_et_al
+Warning--empty journal in quigley_ros_nodate
+Warning--empty year in quigley_ros_nodate
+Warning--empty journal in quigley_programming_nodate
+Warning--empty year in quigley_programming_nodate
+Warning--empty booktitle in hoffmann2010objectoriented
+Warning--empty year in astrom_feedback_2008
+Warning--empty year in astrom_feedback_2008
+Warning--empty journal in myers_categorical_nodate
+Warning--empty year in myers_categorical_nodate
+Warning--empty year in myers_categorical_nodate
+Warning--empty year in moret_theory_1998
+Warning--empty year in moret_theory_1998
+Warning--empty year in sontag_mathematical_1998
+Warning--empty year in sontag_mathematical_1998
+Warning--empty year in garcia_numerical_2000
+Warning--empty year in garcia_numerical_2000
+Warning--empty year in astrom_pid_1995
+Warning--empty year in astrom_pid_1995
+Warning--empty year in grewal_kalman_2008
+Warning--empty year in grewal_kalman_2008
+You've used 25 entries,
+            2481 wiz_defined-function locations,
+            698 strings with 8888 characters,
+and the built_in function-call counts, 8875 in all, are:
+= -- 696
+> -- 498
+< -- 13
++ -- 199
+- -- 148
+* -- 674
+:= -- 1454
+add.period$ -- 93
+call.type$ -- 25
+change.case$ -- 48
+chr.to.int$ -- 24
+cite$ -- 50
+duplicate$ -- 467
+empty$ -- 808
+format.name$ -- 176
+if$ -- 1858
+int.to.chr$ -- 2
+int.to.str$ -- 26
+missing$ -- 28
+newline$ -- 149
+num.names$ -- 72
+pop$ -- 271
+preamble$ -- 1
+purify$ -- 25
+quote$ -- 0
+skip$ -- 249
+stack$ -- 0
+substring$ -- 180
+swap$ -- 62
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 154
+warning$ -- 24
+while$ -- 57
+width$ -- 0
+write$ -- 342
+(There were 25 warnings)

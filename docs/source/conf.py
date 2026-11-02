@@ -6,7 +6,7 @@ sys.path.insert(0, os.path.abspath("../../src"))
 project = "dynamicalnodes"
 copyright = "2025, Nehal Singh Mangat"
 author = "Nehal Singh Mangat"
-release = "0.1.1"
+release = "0.1.5"
 
 extensions = [
     "myst_nb",
@@ -19,7 +19,7 @@ extensions = [
 ]
 
 myst_enable_extensions = ["dollarmath", "amsmath"]
-myst_heading_anchors = 3
+myst_heading_anchors = 4
 
 nb_execution_mode = "off"
 
@@ -67,3 +67,4 @@ html_theme_options = {
 }
 
 mathjax_path = "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+

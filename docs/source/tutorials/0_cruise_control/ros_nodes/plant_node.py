@@ -32,13 +32,13 @@ from dynamicalnodes.ros2py_py2ros import ros2py_float64, py2ros_float64
 def fcar(
     xk: float, uk: float, m: float = 1500.0, b: float = 50.0, dt: float = 1.0
 ) -> float:
-    v = xk
-    return v + dt * (uk - b * v) / m
+    vk = xk
+    return vk + dt * (uk - b * vk) / m
 
 
 def hcar(xk: float, sigma: float = 0.0) -> float:
-    v = xk
-    return np.abs(v) + np.random.normal(0.0, sigma)
+    vk = xk
+    return np.abs(vk) + np.random.normal(0.0, sigma)
 
 
 # ──────────────────────────────────────────────────────────────────────
@@ -76,6 +76,7 @@ class PlantNode(Node):
 
         # ── Subscription buffers ───────────────────────────────────────────────
         self._uk_buf: deque = deque(maxlen=1)
+        self._uk_seen: bool = False  # any message ever received
 
         # ── Subscriptions ────────────────────────────────────────────────────
         self._uk_sub = self.create_subscription(
@@ -105,6 +106,7 @@ class PlantNode(Node):
         arr = np.asarray(ros2py_float64(msg), dtype=float)  # ROS msg → NumPy
         ts = self.get_clock().now().nanoseconds * 1e-9
         self._uk_buf.append((ts, arr))
+        self._uk_seen = True
         self._run_step()
 
     @staticmethod
@@ -121,7 +123,7 @@ class PlantNode(Node):
     # Control step
     # ────────────────────────────────────────────────────────────────────
     # Builds kwargs from static params, dynamic params, fresh subscription
-    # values, and current state, then calls DynamicalSystem.eval() and
+    # values, and current state, then calls DynamicalSystem.step() and
     # publishes. Skipped entirely when sync_mode conditions are not met.
 
     def _run_step(self) -> None:
@@ -149,7 +151,7 @@ class PlantNode(Node):
         if self._state is not None:
             kwargs["xk"] = self._state
 
-        x_next, yk = self._system.eval(**kwargs)
+        x_next, yk = self._system.step(**kwargs)
         if self._system.f is not None:
             self._state = x_next  # stateful: advance to next state
 

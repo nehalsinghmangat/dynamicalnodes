@@ -16,7 +16,7 @@ the paper, ``None`` here -- giving three cases:
 - ``(f, h)`` -- both state evolution and output are defined.
 
 Function signatures are unconstrained in name, type, and number of
-parameters. ``DynamicalSystem.eval`` binds keyword arguments to each
+parameters. ``DynamicalSystem.step`` binds keyword arguments to each
 function's signature by name, so the same keyword argument (e.g. a shared
 state or parameter) can be passed to both ``f`` and ``h``.
 """
@@ -53,7 +53,7 @@ class DynamicalSystem:
     ...     _, v = xk
     ...     return abs(v)
     >>> car = DynamicalSystem(f=fcar, h=hcar)
-    >>> x_next, y = car.eval(xk=(20.0, 0.0), uk=4.0, theta_car=(2.0, 0.0, 1.0))
+    >>> x_next, y = car.step(xk=(20.0, 0.0), uk=4.0, theta_car=(2.0, 0.0, 1.0))
     >>> x_next
     (20.0, 2.0)
     >>> y
@@ -64,9 +64,9 @@ class DynamicalSystem:
     >>> def h_ref(tk, A=1.0):
     ...     return A if tk >= 1.0 else 0.0
     >>> ref = DynamicalSystem(h=h_ref)
-    >>> ref.eval(tk=0.0)
+    >>> ref.step(tk=0.0)
     (None, 0.0)
-    >>> ref.eval(tk=2.0)
+    >>> ref.step(tk=2.0)
     (None, 1.0)
 
     A system with no output function -- ``(f, *)``:
@@ -74,7 +74,7 @@ class DynamicalSystem:
     >>> def f_counter(xk):
     ...     return xk + 1
     >>> counter = DynamicalSystem(f=f_counter)
-    >>> counter.eval(xk=5)
+    >>> counter.step(xk=5)
     (6, None)
     """
 
@@ -135,7 +135,7 @@ class DynamicalSystem:
     def h(self, h: Optional[Callable]) -> None:
         self._h = h
 
-    def eval(self, **kwargs) -> Tuple[Optional[Any], Optional[Any]]:
+    def step(self, **kwargs) -> Tuple[Optional[Any], Optional[Any]]:
         """
         Evaluate the system for one discrete time step.
 
@@ -170,7 +170,7 @@ class DynamicalSystem:
         cases.
 
         >>> empty = DynamicalSystem()
-        >>> empty.eval()
+        >>> empty.step()
         Traceback (most recent call last):
             ...
         ValueError: Nothing to evaluate; no f or h functions!

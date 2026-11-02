@@ -6,3 +6,4 @@ API Reference
 
    dynamical_system
    rosnode
+   ros2py_py2ros

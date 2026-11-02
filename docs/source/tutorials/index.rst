@@ -68,5 +68,5 @@ Miscellaneous (but potentially enlightening) Examples
    :maxdepth: 2
    :caption: Examples
 
-   0_cruise_control/0_cruise_control
+   0_cruise_control/cruise_control_with_dynamicalnodes
    1_gps_imu/1_gps_imu
