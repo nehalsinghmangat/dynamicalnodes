@@ -20,7 +20,9 @@ def __getattr__(name):
             return mod if attr is None else getattr(mod, attr)
         except ImportError as e:
             raise ImportError(
-                f"{name} requires ROS2 dependencies. Install with: pip install dynamicalnodes[ros2]\n"
+                f"{name} requires a ROS2 installation (rclpy and the ROS message packages are "
+                f"system packages, not on PyPI). Install ROS2 and source its setup script, "
+                f"e.g. `source /opt/ros/jazzy/setup.bash`.\n"
                 f"Original error: {e}"
             ) from e
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")

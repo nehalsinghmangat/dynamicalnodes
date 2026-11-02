@@ -450,6 +450,8 @@ class ROSNode:
         True
         >>> "SingleThreadedExecutor" in content
         True
+        >>> "ExternalShutdownException" in content and "if rclpy.ok():" in content
+        True
         >>> "_u_k_seen" in content
         True
         >>> os.unlink(path)
@@ -751,7 +753,7 @@ class ROSNode:
         blank()
         ln("import rclpy")
         ln("from rclpy.node import Node")
-        ln("from rclpy.executors import SingleThreadedExecutor")
+        ln("from rclpy.executors import ExternalShutdownException, SingleThreadedExecutor")
         ln("from rclpy.callback_groups import ReentrantCallbackGroup")
         ln("from rclpy.qos import QoSProfile, QoSHistoryPolicy, QoSReliabilityPolicy")
         blank()
@@ -1121,11 +1123,12 @@ class ROSNode:
         ln("    executor.add_node(node)")
         ln("    try:")
         ln("        executor.spin()")
-        ln("    except KeyboardInterrupt:")
+        ln("    except (KeyboardInterrupt, ExternalShutdownException):")
         ln("        pass")
         ln("    finally:")
         ln("        node.destroy_node()")
-        ln("        rclpy.shutdown()")
+        ln("        if rclpy.ok():")
+        ln("            rclpy.shutdown()")
         blank()
         blank()
         ln('if __name__ == "__main__":')
