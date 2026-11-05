@@ -34,9 +34,9 @@ For a cute 22-second video I made to describe this framework's intended workflow
 ---
 
 ## What will this package do that LLMs won't?
-When this package was first being written, LLMs were still in their infancy. They have now advanced to the point where anyone, armed only with tokens and patience, can probably implement a custom control algorithm within ROS. In fact, this repo now contains skill.md files (described below) that helps potential users work through the tutorial, and eventually use the package, with minimal effort. 
+When this package was first being written, LLMs were still in their infancy. They have now advanced to the point where anyone, armed only with tokens and patience, can probably implement a custom control algorithm within ROS. 
 
-So why use dynamicalnodes? Because the package leverages the theory of discrete-time dynamical systems to create a one-to-one mapping between control diagrams and ROS node graphs. This is huge. Why? Because such a correspondence not only helps us mere mortals reason about the generated graphs, it also helps the *LLMs* reason about them. Pairing this package with your LLM of choice is a dangerous combination and would make the enterprising user nigh-invincible.
+So why use **dynamicalnodes**? Because this package leverages the theory of discrete-time dynamical systems to create a one-to-one mapping between control diagrams and ROS node graphs. This is huge. Why? Because such a correspondence not only helps us mere mortals reason about the live control systems in ROS, it also helps *LLMs* reason about them. Pairing this package with your LLM of choice is a dangerous combination, and I dare say it would make the enterprising user all but invincible. In fact, this repo now contains skill.md files (described below) that can give context to LLMs and help you use this package with minimal effort.
 
 ## Agent skills for writing code with dynamicalnodes
 
