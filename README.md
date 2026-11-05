@@ -1,4 +1,4 @@
-# dynamicalnodes: Control Systems on ROS 2
+# dynamicalnodes: Control Systems in ROS 2
 
 > _"Give me a [control system] long enough and a [computer] on which to place it, and I shall move the world."_ - Archimedes 
 
