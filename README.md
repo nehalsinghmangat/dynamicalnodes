@@ -6,7 +6,7 @@
 
 To get started, or to explore what this framework has to offer, click here: [dynamicalnodes Documentation](https://nehalsinghmangat.github.io/dynamicalnodes).
 
-For a 22 second video describing this framework's intended workflow for, click here: [SAIL 2025 -- Presenting dynamicalnodes](https://youtu.be/5GbVHo6QZrw).
+For a cute 22-second video I made to describe this framework's intended workflow for, click here: [SAIL 2025 -- Presenting dynamicalnodes](https://youtu.be/5GbVHo6QZrw).
 
 ---
 ## Turtlebot: Whiteboard ⟶ Python ⟶ ROS 2 ⟶ World
@@ -32,6 +32,12 @@ For a 22 second video describing this framework's intended workflow for, click h
 </p>
 
 ---
+
+## What will this package do that LLMs won't?
+When this package was first being written, LLMs were still in their infancy. They have now advanced to the point where anyone, armed only with tokens and patience, can probably implement a custom control algorithm within ROS. In fact, this repo now contains skill.md files (described below) that helps potential users work through the tutorial, and eventually use the package, with minimal effort. 
+
+So why use dynamicalnodes? Because the package leverages the theory of discrete-time dynamical systems to create a one-to-one mapping between control diagrams and ROS node graphs. This is huge. Why? Because such a correspondence not only helps us mere mortals reason about the generated graphs, it also helps the *LLMs* reason about them. Pairing this package with your LLM of choice is a dangerous combination and would make the enterprising user nigh-invincible.
+
 ## Agent skills for writing code with dynamicalnodes
 
 The repo ships [Claude Code skills](https://docs.claude.com/en/docs/claude-code/skills) in [`.claude/skills/`](.claude/skills) that walk an AI coding assistant (and you) through the workflow step by step. Each skill is a short, checked procedure with a runnable example and a list of common mistakes. They follow the same four steps as the tutorial:
@@ -45,3 +51,6 @@ The repo ships [Claude Code skills](https://docs.claude.com/en/docs/claude-code/
 | [`deploy-rosnodes-to-rclpy`](.claude/skills/deploy-rosnodes-to-rclpy/SKILL.md) | Generate, run and debug the `rclpy` files (`sync_mode`, `timer_hz`, `stale_after`, parameters) |
 
 **Using them.** Clone this repository and open it with Claude Code: the skills in `.claude/skills/` are picked up automatically. To use them in your own project, copy the folders you want into your project's `.claude/skills/` (or into `~/.claude/skills/` for all projects). They are not part of the `pip` package. The [tutorial notebook](https://nehalsinghmangat.github.io/dynamicalnodes/tutorials/0_cruise_control/cruise_control_with_dynamicalnodes.html) points to the relevant skill at each step. The [`CLAUDE.md`](CLAUDE.md) file describes the package semantics those skills rely on.
+
+
+
