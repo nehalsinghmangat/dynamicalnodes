@@ -85,6 +85,7 @@ How to help:
 - **Estimator conventions**: the cruise-control Kalman filter is in matrix form (works for any state dimension; 1×1 here) and in **prior form**: state `ok = (x̂_{k|k-1}, P_{k|k-1})`; `fkf` *updates* with `yk` first, then *predicts* with `uk`; `hkf(ok)` returns the prior `x̂_{k|k-1}`. Use `float(xhat[0])` to feed a scalar PID. The estimate returned at step `k` reaches the controller at `k+1` (one-sample feedback delay). Under `sync_mode="any"` the node may see only one of `uk`/`yk`, so both are optional (`None` skips that half).
 - **Variations**: other estimators/controllers only need new `f`/`h` functions; the pipeline is unchanged.
 - Point users to the API pages for argument details rather than re-deriving them.
+- **Skills** in `.claude/skills/` give step-by-step procedures; use them when a user's task matches: `discretize-f-h` (continuous-time → discrete-time `f`/`h`), `simulate-with-dynamicalsystem` (Python loops, feedback, estimators), `wrap-in-rosnode` (build `ROSNode`s and test the ROS-typed loop), `write-ros-converters` (new `ros2py_*`/`py2ros_*` pairs), `deploy-rosnodes-to-rclpy` (generate, run, debug nodes). The tutorial notebook and README point to them. Keep them consistent with this file and the tested notebook when the API changes. (`control-theory-specialist`, `documentation-generator` and `ros2-integration-expert` in the same folder are older, broader skills.)
 
 ## Development
 
@@ -148,6 +149,7 @@ docs/
 └── Makefile, build/       # build/ is generated, not committed
 
 paper/                     # IEEE conference paper (see below)
+.claude/skills/            # Claude Code skills for users of the package (see Helping users); .claude/settings.local.json is local, don't commit
 .github/workflows/         # docs.yml, publish.yml
 ```
 
