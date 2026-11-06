@@ -8,6 +8,8 @@ To get started, or to explore what this framework has to offer, click here: [dyn
 
 For a cute 22-second video I made to describe this framework's intended workflow for, click here: [SAIL 2025 -- Presenting dynamicalnodes](https://youtu.be/5GbVHo6QZrw).
 
+You can find the preprint of the paper [here](https://arxiv.org/abs/2611.07565). 
+
 ---
 ## Turtlebot: Whiteboard ⟶ Python ⟶ ROS 2 ⟶ World
 <table>
